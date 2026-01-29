@@ -58,10 +58,18 @@
             this.cmbsection.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
             this.cmbsection.ItemHeight = 30;
             this.cmbsection.Items.AddRange(new object[] {
-            "SHAFT",
+            "ASSY-ADF",
+            "ASSY-OTHER",
+            "ASSY-SCANNER",
             "MOLDING",
-            "DENSO",
-            "RUBBER/TUBEPUMP"});
+            "MOTOR ASSY",
+            "PAINTING",
+            "QC F2",
+            "QC F1",
+            "RETAINER",
+            "RUBBER",
+            "SHAFT",
+            "TUBEPUMP"});
             this.cmbsection.Location = new System.Drawing.Point(83, 71);
             this.cmbsection.Name = "cmbsection";
             this.cmbsection.Size = new System.Drawing.Size(274, 36);

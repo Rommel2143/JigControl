@@ -28,8 +28,10 @@ namespace QCInventoryF2.Account
             Properties.Settings.Default.Section = cmbsection.Text;
 
             Properties.Settings.Default.Save();
-
+            User.userSection = cmbsection.Text;
             MessageBox.Show("Section saved!");
+         
+            this.Close();   
         }
     }
 }

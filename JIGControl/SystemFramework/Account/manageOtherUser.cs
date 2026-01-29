@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Data;
+using System.Diagnostics;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 using QCInventoryF2.Database;
 
 namespace QCInventoryF2.Account
 {
+    [DebuggerDisplay("{" + nameof(GetDebuggerDisplay) + "(),nq}")]
     public partial class manageOtherUser : Form
     {
         private DataTable usersTable;
@@ -17,6 +19,11 @@ namespace QCInventoryF2.Account
         }
 
         private void manageOtherUser_Load(object sender, EventArgs e)
+        {
+            LoadUsers();
+        }
+
+        private void LoadUsers()
         {
             usersTable = dbQueries.GetDataTable("SELECT * FROM trc_user.jig_users");
             datagridUsers.DataSource = usersTable;
@@ -144,7 +151,7 @@ namespace QCInventoryF2.Account
                       
 
                         string query = @"
-                    UPDATE users_qc
+                    UPDATE trc_user.jig_users   
                     SET username = @username,
                         firstname = @firstname,
                         lastname = @lastname,
@@ -199,6 +206,27 @@ namespace QCInventoryF2.Account
                     MessageBoxIcon.Error
                 );
             }
+        }
+
+        private void guna2Button2_Click(object sender, EventArgs e)
+        {
+            using (AddUser addUserForm = new AddUser())
+            {
+                if (addUserForm.ShowDialog() == DialogResult.OK)
+                {
+                    // Refresh the users table after adding a new user
+                    usersTable = dbQueries.GetDataTable("SELECT * FROM trc_user.jig_users");
+                    datagridUsers.DataSource = usersTable;
+                    isDirty = false; // reset dirty flag
+                }
+                LoadUsers();
+
+            }
+        }
+
+        private string GetDebuggerDisplay()
+        {
+            return ToString();
         }
     }
 }

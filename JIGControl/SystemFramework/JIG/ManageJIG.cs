@@ -1,4 +1,6 @@
-﻿using QCInventoryF2.Database;
+﻿using Guna.UI2.WinForms;
+using QCInventoryF2.Database;
+using QCInventoryF2.Reports;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -26,7 +28,7 @@ namespace QCInventoryF2.JIG
                 MessageBox.Show("User section is not defined. Please set Section first.");
                 return;
             }
-            dbQueries.LoadGrid($"SELECT jig_id, control_no, partcode, partname ,status FROM jig_masterlist WHERE section = '{User.userSection}'", datagrid1);
+             dbQueries.LoadGrid($"SELECT jig_id, control_no, partcode, partname ,status,updatestamp FROM jig_masterlist WHERE section = '{User.userSection}'", datagrid1);
 
             datagrid1.Columns["jig_id"].Visible = false;
         }
@@ -83,6 +85,7 @@ namespace QCInventoryF2.JIG
         private void ManageJIG_Load(object sender, EventArgs e)
         {
             reloadJIG();
+            lblSection.Text = "Section: " + User.userSection;
         }
 
         private void guna2Button2_Click(object sender, EventArgs e)
@@ -112,20 +115,10 @@ namespace QCInventoryF2.JIG
             }
         }
 
+        private void guna2Button3_Click(object sender, EventArgs e)
+        {
+            ExportData.ToExcel(datagrid1, "JIG-Masterlist-" + User.userSection);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        }
     }
 }

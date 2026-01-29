@@ -36,11 +36,21 @@ namespace QCInventoryF2
         {
 
             btnFOrm.PerformClick();
+           
         }
+
+
+        public static void getSectionLabel(Guna2Button lbl)
+        {
+            lbl.Text = "Section: " + User.userSection;
+        }
+
+
 
         private void btnFOrm_Click(object sender, EventArgs e)
         {
             displayForm(new JIG.ManageJIG());
+
         }
 
         private void guna2ImageButton1_Click(object sender, EventArgs e)

@@ -84,7 +84,7 @@
             this.btnFOrm.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
             this.btnFOrm.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.btnFOrm.ForeColor = System.Drawing.Color.White;
-            this.btnFOrm.Location = new System.Drawing.Point(16, 152);
+            this.btnFOrm.Location = new System.Drawing.Point(16, 142);
             this.btnFOrm.Name = "btnFOrm";
             this.btnFOrm.Size = new System.Drawing.Size(209, 38);
             this.btnFOrm.TabIndex = 1;
@@ -99,7 +99,7 @@
             this.btnDashboard.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
             this.btnDashboard.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.btnDashboard.ForeColor = System.Drawing.Color.White;
-            this.btnDashboard.Location = new System.Drawing.Point(16, 108);
+            this.btnDashboard.Location = new System.Drawing.Point(16, 98);
             this.btnDashboard.Name = "btnDashboard";
             this.btnDashboard.Size = new System.Drawing.Size(209, 38);
             this.btnDashboard.TabIndex = 0;
