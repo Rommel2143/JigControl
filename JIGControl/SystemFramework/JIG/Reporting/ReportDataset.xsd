@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="ReportDataset" targetNamespace="http://tempuri.org/ReportDataset.xsd" xmlns:mstns="http://tempuri.org/ReportDataset.xsd" xmlns="http://tempuri.org/ReportDataset.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="ReportDataset" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_UserDSName="ReportDataset" msprop:Generator_DataSetName="ReportDataset">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="JIG_Data" msprop:Generator_RowEvHandlerName="JIG_DataRowChangeEventHandler" msprop:Generator_RowDeletedName="JIG_DataRowDeleted" msprop:Generator_RowDeletingName="JIG_DataRowDeleting" msprop:Generator_RowEvArgName="JIG_DataRowChangeEvent" msprop:Generator_TablePropName="JIG_Data" msprop:Generator_RowChangedName="JIG_DataRowChanged" msprop:Generator_RowChangingName="JIG_DataRowChanging" msprop:Generator_TableClassName="JIG_DataDataTable" msprop:Generator_RowClassName="JIG_DataRow" msprop:Generator_TableVarName="tableJIG_Data" msprop:Generator_UserTableName="JIG_Data">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="jig_id" msprop:Generator_ColumnPropNameInRow="jig_id" msprop:Generator_ColumnPropNameInTable="jig_idColumn" msprop:Generator_ColumnVarNameInTable="columnjig_id" msprop:Generator_UserColumnName="jig_id" type="xs:int" minOccurs="0" />
+              <xs:element name="control_no" msprop:Generator_ColumnPropNameInRow="control_no" msprop:Generator_ColumnPropNameInTable="control_noColumn" msprop:Generator_ColumnVarNameInTable="columncontrol_no" msprop:Generator_UserColumnName="control_no" type="xs:string" minOccurs="0" />
+              <xs:element name="partname" msprop:Generator_ColumnPropNameInRow="partname" msprop:Generator_ColumnPropNameInTable="partnameColumn" msprop:Generator_ColumnVarNameInTable="columnpartname" msprop:Generator_UserColumnName="partname" type="xs:string" minOccurs="0" />
+              <xs:element name="partcode" msprop:Generator_ColumnPropNameInRow="partcode" msprop:Generator_ColumnPropNameInTable="partcodeColumn" msprop:Generator_ColumnVarNameInTable="columnpartcode" msprop:Generator_UserColumnName="partcode" type="xs:string" minOccurs="0" />
+              <xs:element name="section" msprop:Generator_ColumnPropNameInRow="section" msprop:Generator_ColumnPropNameInTable="sectionColumn" msprop:Generator_ColumnVarNameInTable="columnsection" msprop:Generator_UserColumnName="section" type="xs:string" minOccurs="0" />
+              <xs:element name="user" msprop:Generator_ColumnPropNameInRow="user" msprop:Generator_ColumnPropNameInTable="userColumn" msprop:Generator_ColumnVarNameInTable="columnuser" msprop:Generator_UserColumnName="user" type="xs:string" minOccurs="0" />
+              <xs:element name="inventory_status" msprop:Generator_ColumnPropNameInRow="inventory_status" msprop:Generator_ColumnPropNameInTable="inventory_statusColumn" msprop:Generator_ColumnVarNameInTable="columninventory_status" msprop:Generator_UserColumnName="inventory_status" type="xs:string" minOccurs="0" />
+              <xs:element name="timestamp" msprop:Generator_ColumnPropNameInRow="timestamp" msprop:Generator_ColumnPropNameInTable="timestampColumn" msprop:Generator_ColumnVarNameInTable="columntimestamp" msprop:Generator_UserColumnName="timestamp" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="JIG_Missing" msprop:Generator_RowEvHandlerName="JIG_MissingRowChangeEventHandler" msprop:Generator_RowDeletedName="JIG_MissingRowDeleted" msprop:Generator_RowDeletingName="JIG_MissingRowDeleting" msprop:Generator_RowEvArgName="JIG_MissingRowChangeEvent" msprop:Generator_TablePropName="JIG_Missing" msprop:Generator_RowChangedName="JIG_MissingRowChanged" msprop:Generator_RowChangingName="JIG_MissingRowChanging" msprop:Generator_TableClassName="JIG_MissingDataTable" msprop:Generator_RowClassName="JIG_MissingRow" msprop:Generator_TableVarName="tableJIG_Missing" msprop:Generator_UserTableName="JIG_Missing">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="jig_id" msprop:Generator_ColumnPropNameInRow="jig_id" msprop:Generator_ColumnPropNameInTable="jig_idColumn" msprop:Generator_ColumnVarNameInTable="columnjig_id" msprop:Generator_UserColumnName="jig_id" type="xs:int" minOccurs="0" />
+              <xs:element name="control_no" msprop:Generator_ColumnPropNameInRow="control_no" msprop:Generator_ColumnPropNameInTable="control_noColumn" msprop:Generator_ColumnVarNameInTable="columncontrol_no" msprop:Generator_UserColumnName="control_no" type="xs:string" minOccurs="0" />
+              <xs:element name="partname" msprop:Generator_ColumnPropNameInRow="partname" msprop:Generator_ColumnPropNameInTable="partnameColumn" msprop:Generator_ColumnVarNameInTable="columnpartname" msprop:Generator_UserColumnName="partname" type="xs:string" minOccurs="0" />
+              <xs:element name="partcode" msprop:Generator_ColumnPropNameInRow="partcode" msprop:Generator_ColumnPropNameInTable="partcodeColumn" msprop:Generator_ColumnVarNameInTable="columnpartcode" msprop:Generator_UserColumnName="partcode" type="xs:string" minOccurs="0" />
+              <xs:element name="section" msprop:Generator_ColumnPropNameInRow="section" msprop:Generator_ColumnPropNameInTable="sectionColumn" msprop:Generator_ColumnVarNameInTable="columnsection" msprop:Generator_UserColumnName="section" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

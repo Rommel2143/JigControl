@@ -1,5 +1,7 @@
 ﻿using Guna.UI2.WinForms;
+using MySql.Data.MySqlClient;
 using QCInventoryF2.Database;
+using QCInventoryF2.Model;
 using QCInventoryF2.Reports;
 using System;
 using System.Collections.Generic;
@@ -46,41 +48,56 @@ namespace QCInventoryF2.JIG
 
         private void guna2TextBox1_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Enter)
+            if (e.KeyCode != Keys.Enter) return;
 
+            if (string.IsNullOrEmpty(User.userSection))
             {
-                if (User.userSection == "")
-                {
-                    MessageBox.Show("User section is not defined. Please set Section first.");
-                    return;
-                }
+                MessageBox.Show("User section is not defined. Please set Section first.");
+                return;
+            }
 
-                string jigID = guna2TextBox1.Text.Split('|')[1].Trim();
-                string query = @"SELECT * FROM jig_masterlist WHERE jig_id = '" + jigID + "' AND section ='" + User.userSection + "'";
-                using (var conn = Database.conString.GetConnection())
+            var parts = guna2TextBox1.Text.Split('|');
+            if (parts.Length < 2)
+            {
+                MessageBox.Show("Invalid JIG format.");
+                return;
+            }
+
+            string jigID = parts[1].Trim();
+
+            string query = @"SELECT * FROM jig_masterlist 
+                     WHERE jig_id = @jigID 
+                     AND section = @section";
+
+            using (var conn = Database.conString.GetConnection())
+            {
+                conn.Open();
+                using (var cmd = new MySqlCommand(query, conn))
                 {
-                    conn.Open();
-                    using (var cmd = new MySql.Data.MySqlClient.MySqlCommand(query, conn))
+                    cmd.Parameters.AddWithValue("@jigID", jigID);
+                    cmd.Parameters.AddWithValue("@section", User.userSection);
+
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        using (var reader = cmd.ExecuteReader())
+                        if (reader.Read())
                         {
-                            if (reader.Read())
-                            {
-                                lblControlno.Text = "Control No: " + reader["control_no"].ToString();
-                                lblPartcode.Text = "Partcode: " + reader["partcode"].ToString();
-                                lblPartname.Text = "Partname: " + reader["partname"].ToString();
-                                lbljigID.Text = reader["jig_id"].ToString();
-                            }
-                            else
-                            {
-                                MessageBox.Show("JIG not found.");
-                            }
+                            lblControlno.Text = "Control No: " + reader["control_no"];
+                            lblPartcode.Text = "Partcode: " + reader["partcode"];
+                            lblPartname.Text = "Partname: " + reader["partname"];
+                            lbljigID.Text = reader["jig_id"].ToString();
+                            cmbStatus.Text = reader["status"].ToString();
+                        }
+                        else
+                        {
+                            MessageBox.Show("JIG not found.");
                         }
                     }
                 }
-
             }
+
+            e.SuppressKeyPress = true;
         }
+
 
         private void ManageJIG_Load(object sender, EventArgs e)
         {

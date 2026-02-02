@@ -68,5 +68,10 @@ namespace QCInventoryF2
         {
 
         }
+
+        private void guna2Button1_Click(object sender, EventArgs e)
+        {
+            displayForm(new JIG.JIGInventory());
+        }
     }
 }

@@ -24,7 +24,7 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <UpdateUrl>\\ptif1-ds\SystemServer\JIGControl\</UpdateUrl>
-    <ApplicationRevision>10</ApplicationRevision>
+    <ApplicationRevision>15</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -229,11 +229,38 @@
     <Compile Include="JIG\JIGInventory.Designer.cs">
       <DependentUpon>JIGInventory.cs</DependentUpon>
     </Compile>
+    <Compile Include="JIG\JIGQueries.cs" />
     <Compile Include="JIG\ManageJIG.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="JIG\ManageJIG.Designer.cs">
       <DependentUpon>ManageJIG.cs</DependentUpon>
+    </Compile>
+    <Compile Include="JIG\Reporting\MissingJigReport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="JIG\Reporting\MissingJigReport.Designer.cs">
+      <DependentUpon>MissingJigReport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="JIG\Reporting\printData.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="JIG\Reporting\printData.Designer.cs">
+      <DependentUpon>printData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="JIG\Reporting\printGraph.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="JIG\Reporting\printGraph.Designer.cs">
+      <DependentUpon>printGraph.cs</DependentUpon>
+    </Compile>
+    <Compile Include="JIG\Reporting\ReportDataset.cs">
+      <DependentUpon>ReportDataset.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="JIG\Reporting\ReportDataset.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ReportDataset.xsd</DependentUpon>
     </Compile>
     <Compile Include="Login.cs">
       <SubType>Form</SubType>
@@ -247,6 +274,7 @@
     <Compile Include="MainFrame.Designer.cs">
       <DependentUpon>MainFrame.cs</DependentUpon>
     </Compile>
+    <Compile Include="Model\JIG.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -293,6 +321,18 @@
     <EmbeddedResource Include="JIG\ManageJIG.resx">
       <DependentUpon>ManageJIG.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="JIG\Reporting\DataReport.rdlc" />
+    <EmbeddedResource Include="JIG\Reporting\GraphReport.rdlc" />
+    <EmbeddedResource Include="JIG\Reporting\MissingJigReport.rdlc" />
+    <EmbeddedResource Include="JIG\Reporting\MissingJigReport.resx">
+      <DependentUpon>MissingJigReport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="JIG\Reporting\printData.resx">
+      <DependentUpon>printData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="JIG\Reporting\printGraph.resx">
+      <DependentUpon>printGraph.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Login.resx">
       <DependentUpon>Login.cs</DependentUpon>
     </EmbeddedResource>
@@ -307,6 +347,17 @@
     <EmbeddedResource Include="subFrame.resx">
       <DependentUpon>subFrame.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="JIG\Reporting\ReportDataset.xsc">
+      <DependentUpon>ReportDataset.xsd</DependentUpon>
+    </None>
+    <None Include="JIG\Reporting\ReportDataset.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>ReportDataset.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="JIG\Reporting\ReportDataset.xss">
+      <DependentUpon>ReportDataset.xsd</DependentUpon>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

@@ -41,6 +41,7 @@
             this.guna2Separator1 = new Guna.UI2.WinForms.Guna2Separator();
             this.lblTittle = new System.Windows.Forms.Label();
             this.panelForm = new System.Windows.Forms.Panel();
+            this.guna2Button1 = new Guna.UI2.WinForms.Guna2Button();
             this.panelMenu.SuspendLayout();
             this.panel2.SuspendLayout();
             this.userMenu.SuspendLayout();
@@ -48,6 +49,7 @@
             // 
             // panelMenu
             // 
+            this.panelMenu.Controls.Add(this.guna2Button1);
             this.panelMenu.Controls.Add(this.guna2VSeparator1);
             this.panelMenu.Controls.Add(this.label1);
             this.panelMenu.Controls.Add(this.btnFOrm);
@@ -189,6 +191,21 @@
             this.panelForm.Size = new System.Drawing.Size(896, 536);
             this.panelForm.TabIndex = 2;
             // 
+            // guna2Button1
+            // 
+            this.guna2Button1.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.guna2Button1.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.guna2Button1.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.guna2Button1.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.guna2Button1.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.guna2Button1.ForeColor = System.Drawing.Color.White;
+            this.guna2Button1.Location = new System.Drawing.Point(16, 186);
+            this.guna2Button1.Name = "guna2Button1";
+            this.guna2Button1.Size = new System.Drawing.Size(209, 38);
+            this.guna2Button1.TabIndex = 5;
+            this.guna2Button1.Text = "Inventory";
+            this.guna2Button1.Click += new System.EventHandler(this.guna2Button1_Click);
+            // 
             // subFrame
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -223,5 +240,6 @@
         private Guna.UI2.WinForms.Guna2ContextMenuStrip userMenu;
         private System.Windows.Forms.ToolStripMenuItem accountSettingsToolStripMenuItem;
         private Guna.UI2.WinForms.Guna2VSeparator guna2VSeparator1;
+        private Guna.UI2.WinForms.Guna2Button guna2Button1;
     }
 }

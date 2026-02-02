@@ -191,6 +191,8 @@
             this.cmbStatus.Items.AddRange(new object[] {
             "Available",
             "In-Use",
+            "Under Repair",
+            "For Modification",
             "Other"});
             this.cmbStatus.Location = new System.Drawing.Point(33, 298);
             this.cmbStatus.Name = "cmbStatus";
