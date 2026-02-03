@@ -28,7 +28,7 @@ namespace QCInventoryF2.JIG
 
         private void JIGInventory_Load(object sender, EventArgs e)
         {
-            Loaddata();
+            cmbStatus.SelectedItem = "ALL";
 
         }
         private void guna2TextBox1_TextChanged(object sender, EventArgs e)
@@ -77,7 +77,7 @@ namespace QCInventoryF2.JIG
                 {
                     if (JIGQueries.InsertJIG(txtQR.Text,txtStatus.Text ))
                     {
-                        Loaddata();
+                        Loaddata("");
 
                     }
 
@@ -102,7 +102,7 @@ namespace QCInventoryF2.JIG
 
 
 
-        private void Loaddata()
+        private void Loaddata(string search)
         {
             dbQueries.LoadGrid(
                 "SELECT ji.record_id, " +
@@ -111,19 +111,21 @@ namespace QCInventoryF2.JIG
                 "jm.section, " +
                 "ji.inventory_status, " +
                 "CONCAT(UPPER(LEFT(ju.Firstname,1)), '. ', " +
-                "UPPER(LEFT(ju.Lastname,1)), LOWER(SUBSTRING(ju.Lastname,2))) AS 'User Reponsible', " +
+                "UPPER(LEFT(ju.Lastname,1)), LOWER(SUBSTRING(ju.Lastname,2))) AS 'User Responsible', " +
                 "ji.timestamp " +
                 "FROM jig_inventory ji " +
                 "JOIN jig_masterlist jm ON ji.jig_id = jm.jig_id " +
                 "JOIN trc_user.jig_users ju ON ju.user_id = ji.user_id " +
-                "ORDER BY ji.timestamp DESC",
+                "WHERE ji.inventory_status LIKE '%" + search + "%' " +
+                "ORDER BY jm.section,ji.inventory_status DESC",
                 datagrid1
             );
         }
 
-        
 
-  
+
+
+
 
         private void guna2Button3_Click(object sender, EventArgs e)
         {
@@ -174,6 +176,19 @@ namespace QCInventoryF2.JIG
             MissingJigReport print = new MissingJigReport();
             print.ShowDialog();
             print.BringToFront();
+        }
+
+        private void cmbStatus_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+            if (cmbStatus.Text == "ALL")
+            {
+                Loaddata("");
+            }
+            else
+            {
+                Loaddata(cmbStatus.Text);
+            }
         }
     }
 }

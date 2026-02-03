@@ -7,6 +7,7 @@ namespace QCInventoryF2.JIG.Reporting
     partial class ReportDataset
     {
 
+
         public void LoadJIGData()
         {
             string query = @"
@@ -92,6 +93,48 @@ namespace QCInventoryF2.JIG.Reporting
                 }
             }
         }
+
+        public void LoadJIGSummary()
+        {
+            string query = @"
+        SELECT
+            jm.section,
+            COUNT(jm.jig_id) AS total_jig,
+            SUM(CASE WHEN ji.jig_id IS NULL THEN 1 ELSE 0 END) AS total_missing,
+            ROUND(
+                (COUNT(jm.jig_id) - SUM(CASE WHEN ji.jig_id IS NULL THEN 1 ELSE 0 END))
+                / COUNT(jm.jig_id) * 100, 2
+            ) AS percentage
+        FROM jig_masterlist jm
+        LEFT JOIN jig_inventory ji ON ji.jig_id = jm.jig_id
+        GROUP BY jm.section
+        ORDER BY jm.section;
+    ";
+
+            using (var con = new MySqlConnection(conString.ConnectionString))
+            using (var cmd = new MySqlCommand(query, con))
+            {
+                con.Open();
+                using (var dr = cmd.ExecuteReader())
+                {
+                    this.JIG_Summary.Clear();
+
+                    while (dr.Read())
+                    {
+                        var row = this.JIG_Summary.NewJIG_SummaryRow();
+
+                        row.section = dr["section"].ToString();
+                        row.total_jig = Convert.ToInt32(dr["total_jig"]);
+                        row.total_missing = Convert.ToInt32(dr["total_missing"]);
+                        row.percentage = dr["percentage"].ToString() + "%";
+
+                        this.JIG_Summary.Rows.Add(row);
+                    }
+                }
+            }
+        }
+
+
 
 
     }

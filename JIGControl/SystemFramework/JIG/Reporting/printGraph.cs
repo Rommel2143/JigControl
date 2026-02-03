@@ -23,16 +23,15 @@ namespace QCInventoryF2.JIG.Reporting
             // Create a single ReportDataset instance
             _report = new ReportDataset();
 
-            // Load scanned JIGs
-            _report.LoadJIGData();
-
-            // Load missing/unscanned JIGs
-            _report.LoadJIGMissing();
+            // Load datasets
+            _report.LoadJIGData();      // scanned
+            _report.LoadJIGMissing();   // missing / unscanned
+            _report.LoadJIGSummary();   // summary per section
 
             // Clear any previous data sources
             reportViewer1.LocalReport.DataSources.Clear();
 
-            // Add both datasets to the report
+            // Add datasets to the report
             reportViewer1.LocalReport.DataSources.Add(
                 new Microsoft.Reporting.WinForms.ReportDataSource(
                     "JIG_Data",
@@ -43,9 +42,15 @@ namespace QCInventoryF2.JIG.Reporting
                     "JIG_Missing",
                     (System.Data.DataTable)_report.JIG_Missing));
 
+            reportViewer1.LocalReport.DataSources.Add(
+                new Microsoft.Reporting.WinForms.ReportDataSource(
+                    "JIG_Summary",
+                    (System.Data.DataTable)_report.JIG_Summary));
+
             // Refresh the report
             reportViewer1.RefreshReport();
         }
+
 
 
 
