@@ -238,7 +238,6 @@ namespace QCInventoryF2.JIG
             else
             {
                 Loaddata(cmbStatus.Text);
-           
             }
         }
 

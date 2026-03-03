@@ -42,6 +42,7 @@
             this.guna2Separator1 = new Guna.UI2.WinForms.Guna2Separator();
             this.lblTittle = new System.Windows.Forms.Label();
             this.panelForm = new System.Windows.Forms.Panel();
+            this.checkUpdatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panelMenu.SuspendLayout();
             this.panel2.SuspendLayout();
             this.userMenu.SuspendLayout();
@@ -163,7 +164,8 @@
             // 
             this.userMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.userMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.accountSettingsToolStripMenuItem});
+            this.accountSettingsToolStripMenuItem,
+            this.checkUpdatesToolStripMenuItem});
             this.userMenu.Name = "userMenu";
             this.userMenu.RenderStyle.ArrowColor = System.Drawing.Color.FromArgb(((int)(((byte)(151)))), ((int)(((byte)(143)))), ((int)(((byte)(255)))));
             this.userMenu.RenderStyle.BorderColor = System.Drawing.Color.Gainsboro;
@@ -174,7 +176,7 @@
             this.userMenu.RenderStyle.SelectionForeColor = System.Drawing.Color.White;
             this.userMenu.RenderStyle.SeparatorColor = System.Drawing.Color.Gainsboro;
             this.userMenu.RenderStyle.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SystemDefault;
-            this.userMenu.Size = new System.Drawing.Size(194, 30);
+            this.userMenu.Size = new System.Drawing.Size(194, 78);
             // 
             // accountSettingsToolStripMenuItem
             // 
@@ -209,6 +211,14 @@
             this.panelForm.Name = "panelForm";
             this.panelForm.Size = new System.Drawing.Size(896, 536);
             this.panelForm.TabIndex = 2;
+            // 
+            // checkUpdatesToolStripMenuItem
+            // 
+            this.checkUpdatesToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkUpdatesToolStripMenuItem.Name = "checkUpdatesToolStripMenuItem";
+            this.checkUpdatesToolStripMenuItem.Size = new System.Drawing.Size(193, 26);
+            this.checkUpdatesToolStripMenuItem.Text = "Check Updates";
+            this.checkUpdatesToolStripMenuItem.Click += new System.EventHandler(this.checkUpdatesToolStripMenuItem_Click);
             // 
             // subFrame
             // 
@@ -245,5 +255,6 @@
         private System.Windows.Forms.ToolStripMenuItem accountSettingsToolStripMenuItem;
         private Guna.UI2.WinForms.Guna2VSeparator guna2VSeparator1;
         private Guna.UI2.WinForms.Guna2Button guna2Button1;
+        private System.Windows.Forms.ToolStripMenuItem checkUpdatesToolStripMenuItem;
     }
 }
