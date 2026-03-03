@@ -29,17 +29,58 @@
         private void InitializeComponent()
         {
             this.reportViewer1 = new Microsoft.Reporting.WinForms.ReportViewer();
+            this.guna2Panel1 = new Guna.UI2.WinForms.Guna2Panel();
+            this.cmbMonth = new Guna.UI2.WinForms.Guna2ComboBox();
+            this.guna2Panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // reportViewer1
             // 
             this.reportViewer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.reportViewer1.LocalReport.ReportEmbeddedResource = "QCInventoryF2.JIG.Reporting.GraphReport.rdlc";
-            this.reportViewer1.Location = new System.Drawing.Point(0, 0);
+            this.reportViewer1.Location = new System.Drawing.Point(0, 79);
             this.reportViewer1.Name = "reportViewer1";
             this.reportViewer1.ServerReport.BearerToken = null;
-            this.reportViewer1.Size = new System.Drawing.Size(1062, 626);
+            this.reportViewer1.Size = new System.Drawing.Size(1062, 547);
             this.reportViewer1.TabIndex = 0;
+            // 
+            // guna2Panel1
+            // 
+            this.guna2Panel1.Controls.Add(this.cmbMonth);
+            this.guna2Panel1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.guna2Panel1.Location = new System.Drawing.Point(0, 0);
+            this.guna2Panel1.Name = "guna2Panel1";
+            this.guna2Panel1.Size = new System.Drawing.Size(1062, 79);
+            this.guna2Panel1.TabIndex = 1;
+            // 
+            // cmbMonth
+            // 
+            this.cmbMonth.BackColor = System.Drawing.Color.Transparent;
+            this.cmbMonth.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.cmbMonth.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbMonth.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.cmbMonth.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.cmbMonth.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.cmbMonth.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(68)))), ((int)(((byte)(88)))), ((int)(((byte)(112)))));
+            this.cmbMonth.ItemHeight = 30;
+            this.cmbMonth.Items.AddRange(new object[] {
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December"});
+            this.cmbMonth.Location = new System.Drawing.Point(12, 32);
+            this.cmbMonth.Name = "cmbMonth";
+            this.cmbMonth.Size = new System.Drawing.Size(275, 36);
+            this.cmbMonth.TabIndex = 0;
+            this.cmbMonth.SelectedIndexChanged += new System.EventHandler(this.cmbMonth_SelectedIndexChanged);
             // 
             // printGraph
             // 
@@ -47,9 +88,11 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1062, 626);
             this.Controls.Add(this.reportViewer1);
+            this.Controls.Add(this.guna2Panel1);
             this.Name = "printGraph";
             this.Text = "printGraph";
             this.Load += new System.EventHandler(this.printGraph_Load);
+            this.guna2Panel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -57,5 +100,7 @@
         #endregion
 
         private Microsoft.Reporting.WinForms.ReportViewer reportViewer1;
+        private Guna.UI2.WinForms.Guna2Panel guna2Panel1;
+        private Guna.UI2.WinForms.Guna2ComboBox cmbMonth;
     }
 }

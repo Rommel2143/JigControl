@@ -8,30 +8,34 @@ namespace QCInventoryF2.JIG.Reporting
     {
 
 
-        public void LoadJIGData()
+        public void LoadJIGData(int monthselect)
         {
             string query = @"
-                SELECT 
-                    ji.jig_id,
-                    jm.control_no,
-                    jm.partname,
-                    jm.partcode,
-                    jm.section,
-                    CONCAT(
-                        UPPER(LEFT(ju.Firstname,1)), '. ',
-                        UPPER(LEFT(ju.Lastname,1)), LOWER(SUBSTRING(ju.Lastname,2))
-                    ) AS user,
-                    ji.inventory_status,
-                    ji.timestamp
-                FROM jig_inventory ji
-                JOIN jig_masterlist jm ON ji.jig_id = jm.jig_id
-                JOIN trc_user.jig_users ju ON ju.user_id = ji.user_id
-                ORDER BY ji.timestamp,jm.section DESC;
-            ";
+        SELECT 
+            ji.jig_id,
+            jm.control_no,
+            jm.partname,
+            jm.partcode,
+            jm.section,
+            CONCAT(
+                UPPER(LEFT(ju.Firstname,1)), '. ',
+                UPPER(LEFT(ju.Lastname,1)), LOWER(SUBSTRING(ju.Lastname,2))
+            ) AS user,
+            ji.inventory_status,
+            ji.timestamp
+        FROM jig_inventory ji
+        INNER JOIN jig_masterlist jm ON ji.jig_id = jm.jig_id
+        INNER JOIN trc_user.jig_users ju ON ju.user_id = ji.user_id
+        WHERE ji.scan_month = @month
+          AND ji.scan_year = YEAR(CURRENT_DATE())
+        ORDER BY ji.timestamp ASC, jm.section DESC;
+    ";
 
             using (var con = new MySqlConnection(conString.ConnectionString))
             using (var cmd = new MySqlCommand(query, con))
             {
+                cmd.Parameters.AddWithValue("@month", monthselect);
+
                 con.Open();
                 using (var dr = cmd.ExecuteReader())
                 {
@@ -57,23 +61,29 @@ namespace QCInventoryF2.JIG.Reporting
         }
 
 
-        public void LoadJIGMissing()
+        public void LoadJIGMissing(int monthselect)
         {
-            string query = @"SELECT 
-                                jm.jig_id,
-                                jm.control_no,
-                                jm.partname,
-                                jm.partcode,
-                                jm.section
-                            FROM jig_masterlist jm
-                            LEFT JOIN jig_inventory ji ON ji.jig_id = jm.jig_id
-                            WHERE ji.jig_id IS NULL
-                            ORDER BY jm.section DESC;";
-
+            string query = @"
+        SELECT 
+            jm.jig_id,
+            jm.control_no,
+            jm.partname,
+            jm.partcode,
+            jm.section
+        FROM jig_masterlist jm
+        LEFT JOIN jig_inventory ji 
+            ON ji.jig_id = jm.jig_id
+           AND ji.scan_month = @month
+           AND ji.scan_year = YEAR(CURRENT_DATE())
+        WHERE ji.jig_id IS NULL
+        ORDER BY jm.section DESC;
+    ";
 
             using (var con = new MySqlConnection(conString.ConnectionString))
             using (var cmd = new MySqlCommand(query, con))
             {
+                cmd.Parameters.AddWithValue("@month", monthselect);
+
                 con.Open();
                 using (var dr = cmd.ExecuteReader())
                 {
@@ -88,13 +98,13 @@ namespace QCInventoryF2.JIG.Reporting
                         row.partname = dr["partname"].ToString();
                         row.partcode = dr["partcode"].ToString();
                         row.section = dr["section"].ToString();
+
                         this.JIG_Missing.Rows.Add(row);
                     }
                 }
             }
         }
-
-        public void LoadJIGSummary()
+        public void LoadJIGSummary(int monthselect)
         {
             string query = @"
         SELECT
@@ -106,7 +116,10 @@ namespace QCInventoryF2.JIG.Reporting
                 / COUNT(jm.jig_id) * 100, 2
             ) AS percentage
         FROM jig_masterlist jm
-        LEFT JOIN jig_inventory ji ON ji.jig_id = jm.jig_id
+        LEFT JOIN jig_inventory ji 
+            ON ji.jig_id = jm.jig_id 
+           AND ji.scan_month = @month
+           AND ji.scan_year = YEAR(CURRENT_DATE())
         GROUP BY jm.section
         ORDER BY jm.section;
     ";
@@ -114,7 +127,9 @@ namespace QCInventoryF2.JIG.Reporting
             using (var con = new MySqlConnection(conString.ConnectionString))
             using (var cmd = new MySqlCommand(query, con))
             {
+                cmd.Parameters.AddWithValue("@month", monthselect);
                 con.Open();
+
                 using (var dr = cmd.ExecuteReader())
                 {
                     this.JIG_Summary.Clear();
@@ -133,7 +148,6 @@ namespace QCInventoryF2.JIG.Reporting
                 }
             }
         }
-
 
 
 

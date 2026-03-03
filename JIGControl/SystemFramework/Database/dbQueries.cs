@@ -1,6 +1,7 @@
 ﻿using Guna.UI2.WinForms;
 using MySql.Data.MySqlClient;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Windows.Forms;
 
@@ -33,6 +34,25 @@ namespace QCInventoryF2.Database
 
         }
 
+        public static void LoadGrid(string query, DataGridView grid, params MySqlParameter[] parameters)
+        {
+            using (var con = new MySqlConnection(connString))
+            using (var cmd = new MySqlCommand(query, con))
+            {
+                // Add parameters if any
+                if (parameters != null)
+                {
+                    cmd.Parameters.AddRange(parameters);
+                }
+
+                using (var adapter = new MySqlDataAdapter(cmd))
+                {
+                    DataTable dt = new DataTable();
+                    adapter.Fill(dt);
+                    grid.DataSource = dt;
+                }
+            }
+        }
         public static void LoadComboBox(string query, Guna2ComboBox combobox)
         {
             using (MySqlConnection conn = new MySqlConnection(connString))
@@ -78,8 +98,24 @@ namespace QCInventoryF2.Database
         }
 
 
+        public static object ExecuteScalar(string query, Dictionary<string, object> parameters = null)
+        {
+            using (var con = new MySqlConnection(connString))
+            using (var cmd = new MySqlCommand(query, con))
+            {
+                // Add parameters if provided
+                if (parameters != null)
+                {
+                    foreach (var param in parameters)
+                    {
+                        cmd.Parameters.AddWithValue(param.Key, param.Value);
+                    }
+                }
 
-
+                con.Open();
+                return cmd.ExecuteScalar();
+            }
+        }
 
 
 

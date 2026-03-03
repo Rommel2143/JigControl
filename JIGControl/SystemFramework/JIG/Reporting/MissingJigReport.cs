@@ -16,6 +16,7 @@ namespace QCInventoryF2.JIG.Reporting
         public MissingJigReport()
         {
             InitializeComponent();
+            cmbMonth.SelectedIndex = DateTime.Now.Month - 1;
         }
 
         private void MissingJigReport_Load(object sender, EventArgs e)
@@ -24,10 +25,10 @@ namespace QCInventoryF2.JIG.Reporting
             _report = new ReportDataset();
 
             // Load scanned JIGs
-            _report.LoadJIGData();
+            _report.LoadJIGData(cmbMonth.SelectedIndex + 1);
 
             // Load missing/unscanned JIGs
-            _report.LoadJIGMissing();
+            _report.LoadJIGMissing(cmbMonth.SelectedIndex + 1);
 
             // Clear any previous data sources
             reportViewer1.LocalReport.DataSources.Clear();
@@ -45,6 +46,11 @@ namespace QCInventoryF2.JIG.Reporting
 
             // Refresh the report
             reportViewer1.RefreshReport();
+        }
+
+        private void cmbMonth_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            MissingJigReport_Load(sender, e);
         }
     }
 }

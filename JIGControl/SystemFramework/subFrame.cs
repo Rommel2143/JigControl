@@ -35,16 +35,12 @@ namespace QCInventoryF2
         private void subFrame_Load(object sender, EventArgs e)
         {
 
-            btnFOrm.PerformClick();
-           
+            btnDashboard.PerformClick();
+          
+
         }
 
-
-        public static void getSectionLabel(Guna2Button lbl)
-        {
-            lbl.Text = "Section: " + User.userSection;
-        }
-
+      
 
 
         private void btnFOrm_Click(object sender, EventArgs e)
@@ -72,6 +68,11 @@ namespace QCInventoryF2
         private void guna2Button1_Click(object sender, EventArgs e)
         {
             displayForm(new JIG.JIGInventory());
+        }
+
+        private void btnDashboard_Click(object sender, EventArgs e)
+        {
+            displayForm(new Dashboard());
         }
     }
 }

@@ -16,6 +16,7 @@ namespace QCInventoryF2.JIG.Reporting
         public printGraph()
         {
             InitializeComponent();
+            cmbMonth.SelectedIndex = DateTime.Now.Month - 1; 
         }
 
         private void printGraph_Load(object sender, EventArgs e)
@@ -24,9 +25,9 @@ namespace QCInventoryF2.JIG.Reporting
             _report = new ReportDataset();
 
             // Load datasets
-            _report.LoadJIGData();      // scanned
-            _report.LoadJIGMissing();   // missing / unscanned
-            _report.LoadJIGSummary();   // summary per section
+            _report.LoadJIGData(cmbMonth.SelectedIndex+1);      // scanned
+            _report.LoadJIGMissing(cmbMonth.SelectedIndex + 1);   // missing / unscanned
+            _report.LoadJIGSummary(cmbMonth.SelectedIndex + 1);   // summary per section
 
             // Clear any previous data sources
             reportViewer1.LocalReport.DataSources.Clear();
@@ -51,8 +52,9 @@ namespace QCInventoryF2.JIG.Reporting
             reportViewer1.RefreshReport();
         }
 
-
-
-
+        private void cmbMonth_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            printGraph_Load(sender, e);
+        }
     }
 }

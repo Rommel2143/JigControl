@@ -28,13 +28,22 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.FlowCard = new System.Windows.Forms.FlowLayoutPanel();
             this.SuspendLayout();
+            // 
+            // FlowCard
+            // 
+            this.FlowCard.Location = new System.Drawing.Point(27, 23);
+            this.FlowCard.Name = "FlowCard";
+            this.FlowCard.Size = new System.Drawing.Size(1032, 509);
+            this.FlowCard.TabIndex = 0;
             // 
             // Dashboard
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1090, 630);
+            this.ClientSize = new System.Drawing.Size(1090, 698);
+            this.Controls.Add(this.FlowCard);
             this.Name = "Dashboard";
             this.Text = "Dashboard";
             this.ResumeLayout(false);
@@ -42,5 +51,7 @@
         }
 
         #endregion
+
+        private System.Windows.Forms.FlowLayoutPanel FlowCard;
     }
 }
