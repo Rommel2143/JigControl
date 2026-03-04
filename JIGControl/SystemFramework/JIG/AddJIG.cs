@@ -37,11 +37,16 @@ namespace QCInventoryF2.JIG
 
 
             datagrid1.Columns["jig_id"].Visible = false;
+            if (!User.isAdmin)
+            {
+                datagrid1.Columns["delete"].Visible = false;
+            }
         }
 
         private void AddJIG_Load(object sender, EventArgs e)
         {
             cmbsection.Text = Properties.Settings.Default.Section;
+            reloadJIG();
         }
 
         private void cmbsection_SelectedIndexChanged(object sender, EventArgs e)
