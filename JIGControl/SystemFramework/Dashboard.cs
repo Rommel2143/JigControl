@@ -35,41 +35,60 @@ namespace QCInventoryF2
             {
                 con.Open();
 
-                // 1️⃣ Get total expected jigs from masterlist
-                int totalMaster = 0;
-
-                using (MySqlCommand cmdMaster = new MySqlCommand(
-                    "SELECT COUNT(jig_id) FROM jig_masterlist", con))
-                {
-                    totalMaster = Convert.ToInt32(cmdMaster.ExecuteScalar());
-                }
-
-                // 2️⃣ Get monthly scanned totals
                 string query = @"
-            SELECT scan_year, scan_month,
-                   COUNT(DISTINCT jig_id) AS TotalScanned
-            FROM jig_inventory
-            GROUP BY scan_year, scan_month
-            ORDER BY scan_year, scan_month";
+           SELECT 
+    ji.scan_year,
+    ji.scan_month,
+    COUNT(DISTINCT ji.jig_id) AS TotalScanned
+
+FROM jig_inventory ji
+INNER JOIN jig_masterlist jm
+    ON jm.jig_id = ji.jig_id
+
+GROUP BY ji.scan_year, ji.scan_month
+ORDER BY ji.scan_year, ji.scan_month;
+        ";
 
                 using (MySqlCommand cmd = new MySqlCommand(query, con))
                 using (MySqlDataReader reader = cmd.ExecuteReader())
                 {
+                    var results = new List<(int year, int month, int scanned)>();
+
                     while (reader.Read())
                     {
-                        int year = Convert.ToInt32(reader["scan_year"]);
-                        int month = Convert.ToInt32(reader["scan_month"]);
-                        int scanned = Convert.ToInt32(reader["TotalScanned"]);
+                        results.Add((
+                            Convert.ToInt32(reader["scan_year"]),
+                            Convert.ToInt32(reader["scan_month"]),
+                            Convert.ToInt32(reader["TotalScanned"])
+                        ));
+                    }
 
-                      
+                    reader.Close();
 
-                        DashboardCards card = new DashboardCards(
-                           month,year,
-                            totalMaster,  // Expected
-                            scanned       // Actual
-                        );
+                    foreach (var r in results)
+                    {
+                        var startDate = new DateTime(r.year, r.month, 1);
+                        var endDate = startDate.AddMonths(1);
 
-                        FlowCard.Controls.Add(card);
+                        using (MySqlCommand cmdTotal = new MySqlCommand(@"
+                   SELECT COUNT(jig_id)
+                    FROM jig_masterlist
+                    WHERE timestamp < @endDate;
+                     ", con))
+                        {
+                            cmdTotal.Parameters.AddWithValue("@endDate", endDate);
+
+                            int totalMaster = Convert.ToInt32(cmdTotal.ExecuteScalar());
+
+                            DashboardCards card = new DashboardCards(
+                                r.month,
+                                r.year,
+                                totalMaster,
+                                r.scanned
+                            );
+
+                            FlowCard.Controls.Add(card);
+                        }
                     }
                 }
             }

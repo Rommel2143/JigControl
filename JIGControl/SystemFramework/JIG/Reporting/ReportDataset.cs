@@ -107,27 +107,51 @@ namespace QCInventoryF2.JIG.Reporting
         public void LoadJIGSummary(int monthselect)
         {
             string query = @"
-        SELECT
-            jm.section,
-            COUNT(jm.jig_id) AS total_jig,
-            SUM(CASE WHEN ji.jig_id IS NULL THEN 1 ELSE 0 END) AS total_missing,
-            ROUND(
-                (COUNT(jm.jig_id) - SUM(CASE WHEN ji.jig_id IS NULL THEN 1 ELSE 0 END))
-                / COUNT(jm.jig_id) * 100, 2
-            ) AS percentage
-        FROM jig_masterlist jm
-        LEFT JOIN jig_inventory ji 
-            ON ji.jig_id = jm.jig_id 
-           AND ji.scan_month = @month
-           AND ji.scan_year = YEAR(CURRENT_DATE())
-        GROUP BY jm.section
-        ORDER BY jm.section;
+    SELECT
+        jm.section,
+
+        COUNT(DISTINCT jm.jig_id) AS total_jig,
+
+        SUM(
+            CASE 
+                WHEN ji.jig_id IS NULL THEN 1 
+                ELSE 0 
+            END
+        ) AS total_missing,
+
+        ROUND(
+            (
+                COUNT(DISTINCT jm.jig_id) -
+                SUM(CASE WHEN ji.jig_id IS NULL THEN 1 ELSE 0 END)
+            ) 
+            / NULLIF(COUNT(DISTINCT jm.jig_id), 0) * 100,
+            2
+        ) AS percentage
+
+    FROM jig_masterlist jm
+
+    LEFT JOIN (
+        SELECT DISTINCT jig_id, scan_month, scan_year
+        FROM jig_inventory
+    ) ji
+        ON ji.jig_id = jm.jig_id
+       AND ji.scan_month = @month
+       AND ji.scan_year = YEAR(CURRENT_DATE())
+
+    WHERE jm.timestamp < DATE_ADD(
+        STR_TO_DATE(CONCAT(YEAR(CURRENT_DATE()), '-', @month, '-01'), '%Y-%m-%d'),
+        INTERVAL 1 MONTH
+    )
+
+    GROUP BY jm.section
+    ORDER BY jm.section;
     ";
 
             using (var con = new MySqlConnection(conString.ConnectionString))
             using (var cmd = new MySqlCommand(query, con))
             {
                 cmd.Parameters.AddWithValue("@month", monthselect);
+
                 con.Open();
 
                 using (var dr = cmd.ExecuteReader())

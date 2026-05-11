@@ -33,9 +33,11 @@
             // 
             // FlowCard
             // 
-            this.FlowCard.Location = new System.Drawing.Point(27, 23);
+            this.FlowCard.AutoScroll = true;
+            this.FlowCard.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.FlowCard.Location = new System.Drawing.Point(0, 0);
             this.FlowCard.Name = "FlowCard";
-            this.FlowCard.Size = new System.Drawing.Size(1032, 509);
+            this.FlowCard.Size = new System.Drawing.Size(1090, 698);
             this.FlowCard.TabIndex = 0;
             // 
             // Dashboard
