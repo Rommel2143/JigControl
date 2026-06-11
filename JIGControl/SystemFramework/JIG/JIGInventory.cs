@@ -1,4 +1,5 @@
-﻿using MySql.Data.MySqlClient;
+﻿using DocumentFormat.OpenXml.Bibliography;
+using MySql.Data.MySqlClient;
 using Org.BouncyCastle.Asn1.Cmp;
 using QCInventoryF2.Database;
 using QCInventoryF2.JIG.Reporting;
@@ -149,31 +150,7 @@ namespace QCInventoryF2.JIG
         }
 
 
-        private void LoadMissingCount()
-        {
-            string query = @"
-        SELECT COUNT(jm.jig_id)
-        FROM jig_masterlist jm
-        LEFT JOIN jig_inventory ji 
-            ON ji.jig_id = jm.jig_id
-            AND ji.scan_month = @month
-            AND ji.scan_year = YEAR(CURRENT_DATE())
-        WHERE jm.section = @section
-        AND ji.jig_id IS NULL";
-
-            using (var con = new MySqlConnection(conString.ConnectionString))
-            using (var cmd = new MySqlCommand(query, con))
-            {
-                cmd.Parameters.AddWithValue("@month", cmbMonth.SelectedIndex + 1);
-                cmd.Parameters.AddWithValue("@section", Properties.Settings.Default.Section);
-
-                con.Open();
-                object result = cmd.ExecuteScalar();
-
-                lblMissing.Text = "Missing (" + result + ")";
-            }
-        }
-
+     
 
 
         private void guna2Button3_Click(object sender, EventArgs e)
@@ -255,7 +232,6 @@ namespace QCInventoryF2.JIG
             }
         }
 
-
         public void LoadMissing()
         {
             string query = @"
@@ -266,15 +242,60 @@ namespace QCInventoryF2.JIG
         LEFT JOIN jig_inventory ji 
             ON ji.jig_id = jm.jig_id 
             AND ji.scan_month = @month
-            AND ji.scan_year = YEAR(CURRENT_DATE())
-        WHERE ji.record_id IS NULL
+            AND ji.scan_year = @year
+        WHERE ji.record_id IS NULL 
           AND jm.section = @section
+          AND DATE(jm.timestamp) <= @fromDate
     ";
 
+            int month = cmbMonth.SelectedIndex + 1;
+            int year = DateTime.Now.Year;
+
+            DateTime fromDate = new DateTime(year, month, 1);
+
             dbQueries.LoadGrid(query, dtMissing,
-                new MySqlParameter("@month", cmbMonth.SelectedIndex+1),
-                new MySqlParameter("@section", Properties.Settings.Default.Section)
+                new MySqlParameter("@month", month),
+                new MySqlParameter("@year", year),
+                new MySqlParameter("@section", Properties.Settings.Default.Section),
+                new MySqlParameter("@fromDate", fromDate)
             );
         }
+
+
+        private void LoadMissingCount()
+        {
+            string query = @"
+        SELECT COUNT(jm.jig_id)
+        FROM jig_masterlist jm
+        LEFT JOIN jig_inventory ji 
+            ON ji.jig_id = jm.jig_id
+            AND ji.scan_month = @month
+            AND ji.scan_year = @year
+        WHERE jm.section = @section
+          AND ji.jig_id IS NULL
+          AND DATE(jm.timestamp) <= @fromDate
+    ";
+
+            int month = cmbMonth.SelectedIndex + 1;
+            int year = DateTime.Now.Year;
+            DateTime fromDate = new DateTime(year, month, 1);
+
+            using (var con = new MySqlConnection(conString.ConnectionString))
+            using (var cmd = new MySqlCommand(query, con))
+            {
+                cmd.Parameters.Add("@month", MySqlDbType.Int32).Value = month;
+                cmd.Parameters.Add("@year", MySqlDbType.Int32).Value = year;
+                cmd.Parameters.Add("@section", MySqlDbType.VarChar).Value = Properties.Settings.Default.Section;
+                cmd.Parameters.Add("@fromDate", MySqlDbType.Date).Value = fromDate;
+
+                con.Open();
+
+                object result = cmd.ExecuteScalar();
+                int count = Convert.ToInt32(result ?? 0);
+
+                lblMissing.Text = $"Missing ({count})";
+            }
+        }
+
     }
 }

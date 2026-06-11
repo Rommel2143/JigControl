@@ -26,6 +26,42 @@ namespace QCInventoryF2.usercontrol
 
         }
 
+        //    public void LoadSummary(int monthselect)
+        //    {
+        //        var year = DateTime.Now.Year;
+
+        //        var startDate = new DateTime(year, monthselect, 1);
+        //        var endDate = startDate.AddMonths(1);
+
+        //        string query = @"
+        //    SELECT
+        //        jm.section AS Section,
+        //         SUM(CASE WHEN ji.jig_id IS NOT NULL THEN 1 ELSE 0 END) AS Scanned,
+
+        //        SUM(CASE WHEN ji.jig_id IS NULL  AND DATE(jm.timestamp) <= @fromDate THEN 1 ELSE 0 END) AS Missing,
+        //        COUNT(jm.jig_id) AS Total
+
+
+
+        //    FROM jig_masterlist jm
+        //    LEFT JOIN jig_inventory ji 
+        //        ON ji.jig_id = jm.jig_id 
+        //       AND ji.scan_month = @month
+        //       AND ji.scan_year = @year
+
+        //    WHERE jm.timestamp < @endDate
+
+        //    GROUP BY jm.section
+        //    ORDER BY jm.section;
+        //";
+
+        //        dbQueries.LoadGrid(query, dtSummary,
+        //            new MySqlParameter("@month", monthselect),
+        //            new MySqlParameter("@year", year),
+        //             new MySqlParameter("@fromDate", startDate),
+        //            new MySqlParameter("@endDate", endDate)
+        //        );
+        //    }
         public void LoadSummary(int monthselect)
         {
             var year = DateTime.Now.Year;
@@ -36,20 +72,30 @@ namespace QCInventoryF2.usercontrol
             string query = @"
         SELECT
             jm.section AS Section,
-             SUM(CASE WHEN ji.jig_id IS NOT NULL THEN 1 ELSE 0 END) AS Scanned,
 
-            SUM(CASE WHEN ji.jig_id IS NULL THEN 1 ELSE 0 END) AS Missing,
-            COUNT(jm.jig_id) AS Total
+            -- Total jigs existing BEFORE the month
+            COUNT(jm.jig_id) AS Total,
 
-       
+            -- Scanned only within the selected month
+            SUM(CASE 
+                    WHEN ji.jig_id IS NOT NULL THEN 1 
+                    ELSE 0 
+                END) AS Scanned,
+
+            -- Missing = existed before month but not scanned in that month
+            SUM(CASE 
+                    WHEN ji.jig_id IS NULL THEN 1 
+                    ELSE 0 
+                END) AS Missing
 
         FROM jig_masterlist jm
-        LEFT JOIN jig_inventory ji 
-            ON ji.jig_id = jm.jig_id 
-           AND ji.scan_month = @month
-           AND ji.scan_year = @year
 
-        WHERE jm.timestamp < @endDate
+        LEFT JOIN jig_inventory ji 
+            ON ji.jig_id = jm.jig_id
+            AND ji.scan_month = @month
+            AND ji.scan_year = @year
+
+        WHERE jm.timestamp < @startDate
 
         GROUP BY jm.section
         ORDER BY jm.section;
@@ -58,10 +104,8 @@ namespace QCInventoryF2.usercontrol
             dbQueries.LoadGrid(query, dtSummary,
                 new MySqlParameter("@month", monthselect),
                 new MySqlParameter("@year", year),
-                new MySqlParameter("@endDate", endDate)
+                new MySqlParameter("@startDate", startDate)
             );
         }
-
-
     }
 }
