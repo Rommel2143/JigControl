@@ -1,0 +1,92 @@
+@page "/login"
+@layout EmptyLayout
+@attribute [AllowAnonymous]
+@attribute [ExcludeFromInteractiveRouting]
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+@inject LoginHandler Login
+@inject NavigationManager Nav
+
+<PageTitle>Sign in · JIG Control</PageTitle>
+
+<div class="login-shell">
+    <div class="login-card">
+        <div class="login-brand">
+            <span class="brand-tile">J</span>
+            <div>
+                <div class="login-title">JIG Control</div>
+                <div class="login-sub">QC JIG inventory</div>
+            </div>
+        </div>
+        <h1>Sign in</h1>
+
+        @if (error is not null)
+        {
+            <div class="login-error" role="alert">@error</div>
+        }
+
+        <EditForm Model="Input!" FormName="login" OnValidSubmit="SignInAsync" method="post">
+            <DataAnnotationsValidator />
+            <label for="username">Username</label>
+            <InputText id="username" @bind-Value="Input!.Username" autocomplete="username" autofocus />
+            <ValidationMessage For="() => Input!.Username" />
+
+            <label for="password">Password</label>
+            <InputText id="password" type="password" @bind-Value="Input!.Password" autocomplete="current-password" />
+
+            <label for="section">Section</label>
+            <InputSelect id="section" @bind-Value="Input!.Section">
+                @foreach (var s in Lookups.Sections)
+                {
+                    <option value="@s">@s</option>
+                }
+            </InputSelect>
+
+            <button type="submit" class="login-btn">Sign in</button>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    [CascadingParameter] private HttpContext HttpContext { get; set; } = default!;
+    [SupplyParameterFromQuery] private string? ReturnUrl { get; set; }
+    [SupplyParameterFromForm] private LoginInput? Input { get; set; }
+
+    protected override void OnInitialized() => Input ??= new();
+
+    private string? error;
+
+    private async Task SignInAsync()
+    {
+        LoginUser? user;
+        try
+        {
+            user = await Login.Handle(Input!.Username, Input.Password ?? "");
+        }
+        catch (MySqlConnector.MySqlException ex)
+        {
+            error = "Cannot reach the database: " + ex.Message;
+            return;
+        }
+        if (user is null)
+        {
+            error = "Wrong username or password.";
+            return;
+        }
+        var section = Lookups.Sections.Contains(Input.Section) ? Input.Section : Lookups.Sections[0];
+        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+            AuthEndpoints.BuildPrincipal(user, section),
+            new AuthenticationProperties { IsPersistent = true });
+
+        var target = !string.IsNullOrEmpty(ReturnUrl) && ReturnUrl.StartsWith('/') && !ReturnUrl.StartsWith("//") ? ReturnUrl : "/";
+        Nav.NavigateTo(target);
+    }
+
+    private sealed class LoginInput
+    {
+        [Required] public string Username { get; set; } = "";
+        public string? Password { get; set; }
+        public string Section { get; set; } = Lookups.Sections[0];
+    }
+}

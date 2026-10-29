@@ -1,0 +1,58 @@
+﻿@inherits LayoutComponentBase
+
+<FluentDesignTheme StorageName="jig-theme" OfficeColor="OfficeColor.Excel" />
+
+<div class="app-shell">
+    <header class="app-header">
+        <div class="app-brand">
+            <span class="waffle"><FluentIcon Value="@(new Icons.Regular.Size20.Grid())" Color="Color.Custom" CustomColor="#fff" /></span>
+            <span class="app-name">JIG Control</span>
+        </div>
+        <AuthorizeView>
+            <div class="app-user">
+                <span class="section-chip">@context.User.Section()</span>
+                <FluentPersona Name="@context.User.DisplayName()" ImageSize="28px" Initials="@Initials(context.User.DisplayName())" />
+                <form method="post" action="/logout">
+                    <AntiforgeryToken />
+                    <FluentButton Type="ButtonType.Submit" Appearance="Appearance.Stealth" Title="Sign out"
+                                  IconStart="@(new Icons.Regular.Size20.SignOut().WithColor("#fff"))" />
+                </form>
+            </div>
+        </AuthorizeView>
+    </header>
+
+    <div class="app-body">
+        <nav class="app-nav">
+            <FluentNavMenu Width="220" Collapsible="true" Title="Navigation">
+                <FluentNavLink Href="/" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.Home())">Dashboard</FluentNavLink>
+                <FluentNavLink Href="/scan" Icon="@(new Icons.Regular.Size20.BarcodeScanner())">Scan JIG</FluentNavLink>
+                <FluentNavLink Href="/jigs" Icon="@(new Icons.Regular.Size20.Wrench())">JIG Master List</FluentNavLink>
+                <FluentNavLink Href="/inventory" Icon="@(new Icons.Regular.Size20.ClipboardTaskListLtr())">Inventory</FluentNavLink>
+                <FluentNavLink Href="/reports" Icon="@(new Icons.Regular.Size20.DataBarHorizontal())">Reports</FluentNavLink>
+                <AuthorizeView Roles="@AppClaims.AdminRole">
+                    <FluentNavLink Href="/users" Icon="@(new Icons.Regular.Size20.People())">Users</FluentNavLink>
+                </AuthorizeView>
+                <FluentNavLink Href="/account" Icon="@(new Icons.Regular.Size20.PersonSettings())">Account</FluentNavLink>
+            </FluentNavMenu>
+        </nav>
+        <main class="app-content">
+            @Body
+        </main>
+    </div>
+</div>
+
+<FluentToastProvider />
+<FluentDialogProvider />
+<FluentTooltipProvider />
+<FluentMessageBarProvider />
+
+<div id="blazor-error-ui" data-nosnippet>
+    An unhandled error has occurred.
+    <a href="." class="reload">Reload</a>
+    <span class="dismiss">🗙</span>
+</div>
+
+@code {
+    private static string Initials(string name) =>
+        string.Concat(name.Split(' ', StringSplitOptions.RemoveEmptyEntries).Take(2).Select(p => char.ToUpperInvariant(p[0])));
+}

@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "jigcontrol-web",
+      "runtimeExecutable": "dotnet",
+      "runtimeArgs": ["run", "--project", "JIGControl.Web", "--launch-profile", "http"],
+      "port": 5183
+    }
+  ]
+}

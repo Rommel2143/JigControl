@@ -1,0 +1,76 @@
+@page "/jigs"
+@attribute [Authorize]
+@inject ListJigsHandler ListJigs
+@inject NavigationManager Nav
+
+<PageTitle>JIG Master List</PageTitle>
+
+<div class="ribbon">
+    <FluentButton Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size20.Add())" OnClick="@(() => Nav.NavigateTo("/jigs/new"))">New JIG</FluentButton>
+    <FluentButton Appearance="Appearance.Stealth" IconStart="@(new Icons.Regular.Size20.ArrowClockwise())" OnClick="LoadAsync">Refresh</FluentButton>
+    <FluentDivider Orientation="Orientation.Vertical" Style="height:24px" />
+    <FluentSearch @bind-Value="search" @bind-Value:after="StateHasChanged" Immediate="true" Placeholder="Search control no, part code, part name" Style="width:320px" />
+    <FluentSelect TOption="string" Items="statusFilter" @bind-Value="status" Style="min-width:170px" />
+</div>
+
+<h1 class="page-title">JIG Master List <span class="muted">· @section</span></h1>
+
+@if (jigs is null)
+{
+    <FluentProgressRing />
+}
+else
+{
+    <FluentDataGrid TGridItem="JigItem" Items="Filtered" Pagination="pagination" ResizableColumns="true" ShowHover="true"
+                    OnRowClick="OpenRow" Style="cursor:pointer">
+        <TemplateColumn Title="" Width="64px">
+            @if (context.PhotoSrc is string src)
+            {
+                <img class="thumb" src="@src" alt="" loading="lazy" />
+            }
+            else
+            {
+                <FluentIcon Value="@(new Icons.Regular.Size24.Image())" Color="Color.Disabled" />
+            }
+        </TemplateColumn>
+        <PropertyColumn Property="@(j => j.ControlNo)" Title="Control No" Sortable="true" />
+        <PropertyColumn Property="@(j => j.Partcode)" Title="Part Code" Sortable="true" />
+        <PropertyColumn Property="@(j => j.Partname)" Title="Part Name" Sortable="true" />
+        <TemplateColumn Title="Status" SortBy="@(GridSort<JigItem>.ByAscending(j => j.Status))">
+            <StatusBadge Status="@context.Status" />
+        </TemplateColumn>
+        <PropertyColumn Property="@(j => j.Updatestamp)" Title="Updated" Format="yyyy-MM-dd HH:mm" Sortable="true" />
+    </FluentDataGrid>
+    <FluentPaginator State="pagination" />
+}
+
+@code {
+    private List<JigItem>? jigs;
+    private string search = "";
+    private string status = "All statuses";
+    private string section = "";
+    private readonly PaginationState pagination = new() { ItemsPerPage = 15 };
+    private static readonly string[] statusFilter = ["All statuses", .. Lookups.JigStatuses];
+
+    [CascadingParameter] private Task<AuthenticationState> Auth { get; set; } = default!;
+
+    private IQueryable<JigItem> Filtered => (jigs ?? []).AsQueryable()
+        .Where(j => status == "All statuses" || j.Status == status)
+        .Where(j => search.Length == 0
+                    || j.ControlNo.Contains(search, StringComparison.OrdinalIgnoreCase)
+                    || j.Partcode.Contains(search, StringComparison.OrdinalIgnoreCase)
+                    || j.Partname.Contains(search, StringComparison.OrdinalIgnoreCase));
+
+    protected override async Task OnInitializedAsync()
+    {
+        section = (await Auth).User.Section();
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync() => jigs = await ListJigs.Handle(section);
+
+    private void OpenRow(FluentDataGridRow<JigItem> row)
+    {
+        if (row.Item is not null) Nav.NavigateTo($"/jigs/{row.Item.JigId}");
+    }
+}

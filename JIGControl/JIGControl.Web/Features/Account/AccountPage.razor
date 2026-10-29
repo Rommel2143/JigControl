@@ -1,0 +1,93 @@
+@page "/account"
+@attribute [Authorize]
+@inject ChangePasswordHandler ChangePassword
+@inject UpdateProfileHandler UpdateProfile
+@inject IToastService Toast
+
+<PageTitle>Account</PageTitle>
+
+<h1 class="page-title">Account settings</h1>
+
+@if (Saved == "section")
+{
+    <FluentMessageBar Intent="MessageIntent.Success" Style="margin-bottom:12px">Section changed to @section.</FluentMessageBar>
+}
+
+<div class="three-col">
+    <FluentCard>
+        <h2 class="card-title">Section</h2>
+        <p class="muted">Pages show JIGs for this section.</p>
+        @* Plain form post: the section is stored in the sign-in cookie, which only a full request can rewrite. *@
+        <form method="post" action="/account/section">
+            <AntiforgeryToken />
+            <select name="section" class="native-select">
+                @foreach (var s in Lookups.Sections)
+                {
+                    <option value="@s" selected="@(s == section)">@s</option>
+                }
+            </select>
+            <FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent" Style="margin-top:12px">Switch section</FluentButton>
+        </form>
+    </FluentCard>
+
+    <FluentCard>
+        <h2 class="card-title">Name</h2>
+        <FluentStack Orientation="Orientation.Vertical" VerticalGap="12">
+            <FluentTextField @bind-Value="firstname" Label="First name" Style="width:100%" />
+            <FluentTextField @bind-Value="lastname" Label="Last name" Style="width:100%" />
+            <FluentButton Appearance="Appearance.Accent" OnClick="SaveNameAsync">Save name</FluentButton>
+            <span class="muted">Your name in the header updates the next time you sign in.</span>
+        </FluentStack>
+    </FluentCard>
+
+    <FluentCard>
+        <h2 class="card-title">Change password</h2>
+        <FluentStack Orientation="Orientation.Vertical" VerticalGap="12">
+            <FluentTextField @bind-Value="current" Label="Current password" TextFieldType="TextFieldType.Password" Style="width:100%" />
+            <FluentTextField @bind-Value="next" Label="New password" TextFieldType="TextFieldType.Password" Style="width:100%" />
+            <FluentTextField @bind-Value="confirm" Label="Confirm new password" TextFieldType="TextFieldType.Password" Style="width:100%" />
+            <FluentButton Appearance="Appearance.Accent" OnClick="ChangePasswordAsync">Change password</FluentButton>
+        </FluentStack>
+    </FluentCard>
+</div>
+
+@code {
+    [CascadingParameter] private Task<AuthenticationState> Auth { get; set; } = default!;
+    [SupplyParameterFromQuery] public string? Saved { get; set; }
+
+    private int userId;
+    private string section = "";
+    private string firstname = "", lastname = "";
+    private string current = "", next = "", confirm = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = (await Auth).User;
+        userId = user.UserId();
+        section = user.Section();
+        var parts = user.DisplayName().Split(' ', 2);
+        firstname = parts[0];
+        lastname = parts.Length > 1 ? parts[1] : "";
+    }
+
+    private async Task SaveNameAsync()
+    {
+        await UpdateProfile.Handle(userId, firstname.Trim(), lastname.Trim());
+        Toast.ShowSuccess("Name saved.");
+    }
+
+    private async Task ChangePasswordAsync()
+    {
+        if (string.IsNullOrEmpty(next) || next != confirm)
+        {
+            Toast.ShowWarning("New passwords are empty or do not match.");
+            return;
+        }
+        if (await ChangePassword.Handle(userId, current, next))
+        {
+            Toast.ShowSuccess("Password changed.");
+            current = next = confirm = "";
+        }
+        else Toast.ShowError("Current password is wrong.");
+    }
+}

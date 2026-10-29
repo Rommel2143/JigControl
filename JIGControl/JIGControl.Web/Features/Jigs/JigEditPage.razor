@@ -1,0 +1,180 @@
+@page "/jigs/new"
+@page "/jigs/{JigId:int}"
+@attribute [Authorize]
+@inject GetJigHandler GetJig
+@inject CreateJigHandler CreateJig
+@inject UpdateJigHandler UpdateJig
+@inject DeleteJigHandler DeleteJig
+@inject UploadJigPhotoHandler UploadPhoto
+@inject RemoveJigPhotoHandler RemovePhoto
+@inject NavigationManager Nav
+@inject IToastService Toast
+@inject IDialogService Dialogs
+
+<PageTitle>@(IsNew ? "New JIG" : jig?.ControlNo)</PageTitle>
+
+<div class="ribbon">
+    <FluentButton Appearance="Appearance.Stealth" IconStart="@(new Icons.Regular.Size20.ArrowLeft())" OnClick="@(() => Nav.NavigateTo("/jigs"))">Back</FluentButton>
+    <FluentButton Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size20.Save())" OnClick="SaveAsync" Disabled="saving">Save</FluentButton>
+    @if (!IsNew)
+    {
+        <FluentButton Appearance="Appearance.Stealth" IconStart="@(new Icons.Regular.Size20.Delete())" OnClick="DeleteAsync">Delete</FluentButton>
+    }
+</div>
+
+<h1 class="page-title">@(IsNew ? "New JIG" : $"JIG {jig?.ControlNo}")</h1>
+
+@if (jig is null)
+{
+    <FluentProgressRing />
+}
+else
+{
+    <div class="two-col">
+        <FluentCard>
+            <h2 class="card-title">Details</h2>
+            <FluentStack Orientation="Orientation.Vertical" VerticalGap="12">
+                <FluentTextField @bind-Value="jig.ControlNo" Label="Control No" Required="true" Style="width:100%" />
+                <FluentTextField @bind-Value="jig.Partcode" Label="Part Code" Required="true" Style="width:100%" />
+                <FluentTextField @bind-Value="jig.Partname" Label="Part Name" Required="true" Style="width:100%" />
+                <FluentTextField Value="@jig.Section" Label="Section" ReadOnly="true" Style="width:100%" />
+                @if (!IsNew)
+                {
+                    <FluentSelect TOption="string" Label="Status" Items="Lookups.JigStatuses" @bind-Value="jig.Status" Style="width:100%" />
+                    <div class="muted">QR code: <code>TRCJIG|@jig.JigId</code></div>
+                }
+            </FluentStack>
+        </FluentCard>
+
+        <FluentCard>
+            <h2 class="card-title">Photo</h2>
+            @if (IsNew)
+            {
+                <p class="muted">Save the JIG first, then add a photo.</p>
+            }
+            else
+            {
+                @if (jig.PhotoSrc is string src)
+                {
+                    <div class="photo-tile photo-single">
+                        <a href="@src" target="_blank"><img src="@src" alt="Photo of @jig.ControlNo" /></a>
+                        <div class="photo-meta">
+                            <span title="@jig.ImageUrl">@jig.ImageUrl</span>
+                            <FluentButton Appearance="Appearance.Stealth" Title="Remove photo" IconStart="@(new Icons.Regular.Size16.Delete())" OnClick="RemovePhotoAsync" />
+                        </div>
+                    </div>
+                }
+
+                <FluentInputFile Id="jig-photo-upload"
+                                 Mode="InputFileMode.SaveToTemporaryFolder"
+                                 Multiple="false"
+                                 MaximumFileCount="1"
+                                 MaximumFileSize="@PhotoStorage.MaxBytes"
+                                 Accept="image/*"
+                                 @bind-ProgressPercent="progress"
+                                 OnCompleted="OnPhotoUploadedAsync"
+                                 Class="drop-zone"
+                                 Style="margin-top:12px">
+                    <ChildContent>
+                        <label for="jig-photo-upload" class="drop-label">
+                            <FluentIcon Value="@(new Icons.Regular.Size32.ImageAdd())" Color="Color.Accent" />
+                            <span>Drop a photo here or <strong>browse</strong>@(jig.ImageUrl is null ? "" : " to replace it")</span>
+                            <span class="muted">JPG, PNG, WEBP, GIF · up to 10 MB</span>
+                        </label>
+                        @if (progress is > 0 and < 100)
+                        {
+                            <FluentProgress Value="progress" Style="width:100%" />
+                        }
+                    </ChildContent>
+                </FluentInputFile>
+            }
+        </FluentCard>
+    </div>
+}
+
+@code {
+    [Parameter] public int? JigId { get; set; }
+    [CascadingParameter] private Task<AuthenticationState> Auth { get; set; } = default!;
+
+    private bool IsNew => JigId is null;
+    private JigItem? jig;
+    private int progress;
+    private bool saving;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var user = (await Auth).User;
+        if (IsNew)
+        {
+            jig = new JigItem { Section = user.Section() };
+            return;
+        }
+        jig = await GetJig.Handle(JigId!.Value);
+        if (jig is null) { Nav.NavigateTo("/jigs"); return; }
+    }
+
+    private async Task SaveAsync()
+    {
+        if (jig is null) return;
+        if (string.IsNullOrWhiteSpace(jig.ControlNo) || string.IsNullOrWhiteSpace(jig.Partcode) || string.IsNullOrWhiteSpace(jig.Partname))
+        {
+            Toast.ShowWarning("Control No, Part Code and Part Name are required.");
+            return;
+        }
+        saving = true;
+        try
+        {
+            if (IsNew)
+            {
+                var id = await CreateJig.Handle(jig.ControlNo.Trim(), jig.Partcode.Trim(), jig.Partname.Trim(), jig.Section);
+                Toast.ShowSuccess("JIG added. You can now add a photo.");
+                Nav.NavigateTo($"/jigs/{id}");
+            }
+            else
+            {
+                await UpdateJig.Handle(jig);
+                Toast.ShowSuccess("JIG saved.");
+            }
+        }
+        catch (Exception ex) { Toast.ShowError("Save failed: " + ex.Message); }
+        finally { saving = false; }
+    }
+
+    private async Task DeleteAsync()
+    {
+        var dialog = await Dialogs.ShowConfirmationAsync($"Delete JIG {jig?.ControlNo} and its photo? This cannot be undone.", "Delete", "Cancel", "Delete JIG");
+        if ((await dialog.Result).Cancelled) return;
+        await DeleteJig.Handle(jig!.JigId);
+        Toast.ShowSuccess("JIG deleted.");
+        Nav.NavigateTo("/jigs");
+    }
+
+    private async Task OnPhotoUploadedAsync(IEnumerable<FluentInputFileEventArgs> files)
+    {
+        var f = files.FirstOrDefault();
+        progress = 0;
+        if (f is null) return;
+        if (!string.IsNullOrEmpty(f.ErrorMessage)) { Toast.ShowError($"{f.Name}: {f.ErrorMessage}"); return; }
+        if (f.LocalFile is null) return;
+        try
+        {
+            await using (var stream = f.LocalFile.OpenRead())
+            {
+                var (imageUrl, error) = await UploadPhoto.Handle(jig!.JigId, stream, f.Name, f.ContentType, f.Size);
+                if (error is not null) { Toast.ShowError(error); return; }
+                jig.ImageUrl = imageUrl;
+                Toast.ShowSuccess("Photo saved.");
+            }
+        }
+        catch (Exception ex) { Toast.ShowError("Upload failed: " + ex.Message); }
+        finally { f.LocalFile.Delete(); }
+    }
+
+    private async Task RemovePhotoAsync()
+    {
+        var dialog = await Dialogs.ShowConfirmationAsync($"Remove the photo of {jig!.ControlNo}? The file is deleted from the share.", "Remove", "Cancel", "Remove photo");
+        if ((await dialog.Result).Cancelled) return;
+        await RemovePhoto.Handle(jig.JigId);
+        jig.ImageUrl = null;
+    }
+}

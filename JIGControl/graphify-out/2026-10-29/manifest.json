@@ -1,0 +1,290 @@
+{
+  "JIGControl.slnx": {
+    "mtime": 1778491906.4218495,
+    "seen": 1793235458.2813003,
+    "ast_hash": "2ed4ef14c061e7227bab8e39cc7d2e15",
+    "semantic_hash": "2ed4ef14c061e7227bab8e39cc7d2e15"
+  },
+  "SystemFramework/Account/AddUser.Designer.cs": {
+    "mtime": 1778491906.4218495,
+    "seen": 1793235458.2813003,
+    "ast_hash": "8a44430eb7842bc1a8d61f54097a4509",
+    "semantic_hash": "8a44430eb7842bc1a8d61f54097a4509"
+  },
+  "SystemFramework/Account/AddUser.cs": {
+    "mtime": 1778491906.4218495,
+    "seen": 1793235458.2813003,
+    "ast_hash": "be51245c10af2a933623e7a37938e7b1",
+    "semantic_hash": "be51245c10af2a933623e7a37938e7b1"
+  },
+  "SystemFramework/Account/accountSettings.Designer.cs": {
+    "mtime": 1778491906.4218495,
+    "seen": 1793235458.2813003,
+    "ast_hash": "fbd53553f13605e29e7c6ae591476cbc",
+    "semantic_hash": "fbd53553f13605e29e7c6ae591476cbc"
+  },
+  "SystemFramework/Account/accountSettings.cs": {
+    "mtime": 1778491906.4218495,
+    "seen": 1793235458.2813003,
+    "ast_hash": "19bd673146e4879808f7c9dcfd3b9a54",
+    "semantic_hash": "19bd673146e4879808f7c9dcfd3b9a54"
+  },
+  "SystemFramework/Account/changeCredentials.Designer.cs": {
+    "mtime": 1778491906.4218495,
+    "seen": 1793235458.2813003,
+    "ast_hash": "f795b144a7f0cc4c52dc48bcdac06d51",
+    "semantic_hash": "f795b144a7f0cc4c52dc48bcdac06d51"
+  },
+  "SystemFramework/Account/changeCredentials.cs": {
+    "mtime": 1778491906.4218495,
+    "seen": 1793235458.2813003,
+    "ast_hash": "f2692cfc8f00442030a35394d745dd31",
+    "semantic_hash": "f2692cfc8f00442030a35394d745dd31"
+  },
+  "SystemFramework/Account/changePassword.Designer.cs": {
+    "mtime": 1778491906.4218495,
+    "seen": 1793235458.2813003,
+    "ast_hash": "8ebcce8a8a2b803f507277fac26d4a91",
+    "semantic_hash": "8ebcce8a8a2b803f507277fac26d4a91"
+  },
+  "SystemFramework/Account/changePassword.cs": {
+    "mtime": 1778491906.4218495,
+    "seen": 1793235458.2813003,
+    "ast_hash": "6e58353e181c5af42c46caf08f5ad533",
+    "semantic_hash": "6e58353e181c5af42c46caf08f5ad533"
+  },
+  "SystemFramework/Account/manageOtherUser.Designer.cs": {
+    "mtime": 1778491906.4218495,
+    "seen": 1793235458.2813003,
+    "ast_hash": "d0b90247a967d6dd268715623178d2c5",
+    "semantic_hash": "d0b90247a967d6dd268715623178d2c5"
+  },
+  "SystemFramework/Account/manageOtherUser.cs": {
+    "mtime": 1778491906.4218495,
+    "seen": 1793235458.2813003,
+    "ast_hash": "22fdb77e195e073c120cfddd7d4cdd61",
+    "semantic_hash": "22fdb77e195e073c120cfddd7d4cdd61"
+  },
+  "SystemFramework/Account/setSection.Designer.cs": {
+    "mtime": 1778491906.4218495,
+    "seen": 1793235458.2813003,
+    "ast_hash": "18fae327e08f38463d3a3383890b55b7",
+    "semantic_hash": "18fae327e08f38463d3a3383890b55b7"
+  },
+  "SystemFramework/Account/setSection.cs": {
+    "mtime": 1778491906.4218495,
+    "seen": 1793235458.2813003,
+    "ast_hash": "1f812772c50e372afc4823d59651bf66",
+    "semantic_hash": "1f812772c50e372afc4823d59651bf66"
+  },
+  "SystemFramework/Dashboard.Designer.cs": {
+    "mtime": 1778494518.7682583,
+    "seen": 1793235458.2813003,
+    "ast_hash": "26c787c0c3e0fe88d6bcc845b773b4ae",
+    "semantic_hash": "26c787c0c3e0fe88d6bcc845b773b4ae"
+  },
+  "SystemFramework/Dashboard.cs": {
+    "mtime": 1778496203.2350786,
+    "seen": 1793235458.2813003,
+    "ast_hash": "f41ffed72a2ca9eaf7c4f3ab786d889d",
+    "semantic_hash": "f41ffed72a2ca9eaf7c4f3ab786d889d"
+  },
+  "SystemFramework/Database/conString.cs": {
+    "mtime": 1778491906.4218495,
+    "seen": 1793235458.2813003,
+    "ast_hash": "2b016efc5c2273542f3483e11033db47",
+    "semantic_hash": "2b016efc5c2273542f3483e11033db47"
+  },
+  "SystemFramework/Database/dbQueries.cs": {
+    "mtime": 1778491906.4218495,
+    "seen": 1793235458.2813003,
+    "ast_hash": "3353dbc7d1c58c0fb4d25f763bad3b4b",
+    "semantic_hash": "3353dbc7d1c58c0fb4d25f763bad3b4b"
+  },
+  "SystemFramework/JIGControl.csproj": {
+    "mtime": 1781000146.9664967,
+    "seen": 1793235458.2813003,
+    "ast_hash": "da48f450c4d521e206600144f83c30b7",
+    "semantic_hash": "da48f450c4d521e206600144f83c30b7"
+  },
+  "SystemFramework/JIG/AddJIG.Designer.cs": {
+    "mtime": 1778491906.4218495,
+    "seen": 1793235458.2813003,
+    "ast_hash": "98d083395ce4a518042da1ba784d5dd4",
+    "semantic_hash": "98d083395ce4a518042da1ba784d5dd4"
+  },
+  "SystemFramework/JIG/AddJIG.cs": {
+    "mtime": 1778491906.4218495,
+    "seen": 1793235458.2813003,
+    "ast_hash": "cf3dbdda24237a689e0b063c5dfd7fd5",
+    "semantic_hash": "cf3dbdda24237a689e0b063c5dfd7fd5"
+  },
+  "SystemFramework/JIG/JIGInventory.Designer.cs": {
+    "mtime": 1778491906.4218495,
+    "seen": 1793235458.2813003,
+    "ast_hash": "f324bdbdebcf70aeae8f8a71d4d0ca50",
+    "semantic_hash": "f324bdbdebcf70aeae8f8a71d4d0ca50"
+  },
+  "SystemFramework/JIG/JIGInventory.cs": {
+    "mtime": 1780998486.02982,
+    "seen": 1793235458.2813003,
+    "ast_hash": "db456acad9b6752ae78c84986797dc9a",
+    "semantic_hash": "db456acad9b6752ae78c84986797dc9a"
+  },
+  "SystemFramework/JIG/JIGQueries.cs": {
+    "mtime": 1778491906.4218495,
+    "seen": 1793235458.2813003,
+    "ast_hash": "1f1601228ccb5261708206822a77723e",
+    "semantic_hash": "1f1601228ccb5261708206822a77723e"
+  },
+  "SystemFramework/JIG/ManageJIG.Designer.cs": {
+    "mtime": 1778491906.4218495,
+    "seen": 1793235458.2813003,
+    "ast_hash": "ff1bf11ad509ffd7750b3fbaece67940",
+    "semantic_hash": "ff1bf11ad509ffd7750b3fbaece67940"
+  },
+  "SystemFramework/JIG/ManageJIG.cs": {
+    "mtime": 1778491906.4218495,
+    "seen": 1793235458.2813003,
+    "ast_hash": "ae9a8e479fbc6aed1315082ab37523c2",
+    "semantic_hash": "ae9a8e479fbc6aed1315082ab37523c2"
+  },
+  "SystemFramework/JIG/Reporting/MissingJigReport.Designer.cs": {
+    "mtime": 1778491906.4218495,
+    "seen": 1793235458.2813003,
+    "ast_hash": "6a14bc85a35fc1ab3ca59e7b694435ae",
+    "semantic_hash": "6a14bc85a35fc1ab3ca59e7b694435ae"
+  },
+  "SystemFramework/JIG/Reporting/MissingJigReport.cs": {
+    "mtime": 1778491906.4218495,
+    "seen": 1793235458.2813003,
+    "ast_hash": "13e6a9c2a13d5f97f8fb615b12844748",
+    "semantic_hash": "13e6a9c2a13d5f97f8fb615b12844748"
+  },
+  "SystemFramework/JIG/Reporting/ReportDataset.Designer.cs": {
+    "mtime": 1778491906.4218495,
+    "seen": 1793235458.2813003,
+    "ast_hash": "d39cab5438a151e73a2b46dd175692b0",
+    "semantic_hash": "d39cab5438a151e73a2b46dd175692b0"
+  },
+  "SystemFramework/JIG/Reporting/ReportDataset.cs": {
+    "mtime": 1778496585.6538124,
+    "seen": 1793235458.2813003,
+    "ast_hash": "35a1733551282197b7f2ec0b467d60df",
+    "semantic_hash": "35a1733551282197b7f2ec0b467d60df"
+  },
+  "SystemFramework/JIG/Reporting/printData.Designer.cs": {
+    "mtime": 1778491906.437754,
+    "seen": 1793235458.2813003,
+    "ast_hash": "96a7228b2b00a9a305fff200ae77f4f5",
+    "semantic_hash": "96a7228b2b00a9a305fff200ae77f4f5"
+  },
+  "SystemFramework/JIG/Reporting/printData.cs": {
+    "mtime": 1778491906.437754,
+    "seen": 1793235458.2813003,
+    "ast_hash": "efda5272fbf5865ebb6ec7c6c4a906e0",
+    "semantic_hash": "efda5272fbf5865ebb6ec7c6c4a906e0"
+  },
+  "SystemFramework/JIG/Reporting/printGraph.Designer.cs": {
+    "mtime": 1778491906.437754,
+    "seen": 1793235458.2813003,
+    "ast_hash": "3a9a875f5f9837d4c10c5a6c49473abc",
+    "semantic_hash": "3a9a875f5f9837d4c10c5a6c49473abc"
+  },
+  "SystemFramework/JIG/Reporting/printGraph.cs": {
+    "mtime": 1778491906.437754,
+    "seen": 1793235458.2813003,
+    "ast_hash": "eaa1098c54e49bc4294b9133f5bcbdaf",
+    "semantic_hash": "eaa1098c54e49bc4294b9133f5bcbdaf"
+  },
+  "SystemFramework/Login.Designer.cs": {
+    "mtime": 1778491906.437754,
+    "seen": 1793235458.2813003,
+    "ast_hash": "aa06c63f50abae7a63d38977f4f87a7c",
+    "semantic_hash": "aa06c63f50abae7a63d38977f4f87a7c"
+  },
+  "SystemFramework/Login.cs": {
+    "mtime": 1778491906.437754,
+    "seen": 1793235458.2813003,
+    "ast_hash": "ef8e088a0747f16427aa995206a1ce6a",
+    "semantic_hash": "ef8e088a0747f16427aa995206a1ce6a"
+  },
+  "SystemFramework/MainFrame.Designer.cs": {
+    "mtime": 1778491906.437754,
+    "seen": 1793235458.2813003,
+    "ast_hash": "3ac395457e3f89dee444c8d433e4358f",
+    "semantic_hash": "3ac395457e3f89dee444c8d433e4358f"
+  },
+  "SystemFramework/MainFrame.cs": {
+    "mtime": 1778491906.437754,
+    "seen": 1793235458.2813003,
+    "ast_hash": "8492c349e93559424c80369bd1b6e6c4",
+    "semantic_hash": "8492c349e93559424c80369bd1b6e6c4"
+  },
+  "SystemFramework/Model/JIG.cs": {
+    "mtime": 1778491906.437754,
+    "seen": 1793235458.2813003,
+    "ast_hash": "3c43bfc74ac2745c01b8e534c11beeed",
+    "semantic_hash": "3c43bfc74ac2745c01b8e534c11beeed"
+  },
+  "SystemFramework/Program.cs": {
+    "mtime": 1778491906.437754,
+    "seen": 1793235458.2813003,
+    "ast_hash": "548b6343c74bb551a5e5672850f075a9",
+    "semantic_hash": "548b6343c74bb551a5e5672850f075a9"
+  },
+  "SystemFramework/Properties/AssemblyInfo.cs": {
+    "mtime": 1778491906.437754,
+    "seen": 1793235458.2813003,
+    "ast_hash": "d7698e75bbf5acbde59eb9fabf3ced90",
+    "semantic_hash": "d7698e75bbf5acbde59eb9fabf3ced90"
+  },
+  "SystemFramework/Properties/Resources.Designer.cs": {
+    "mtime": 1778491906.437754,
+    "seen": 1793235458.2813003,
+    "ast_hash": "0de2fd709dea437daffcd81dd5e06d2b",
+    "semantic_hash": "0de2fd709dea437daffcd81dd5e06d2b"
+  },
+  "SystemFramework/Properties/Settings.Designer.cs": {
+    "mtime": 1778491906.437754,
+    "seen": 1793235458.2813003,
+    "ast_hash": "f0e761f83311275dbca31991c2cd8378",
+    "semantic_hash": "f0e761f83311275dbca31991c2cd8378"
+  },
+  "SystemFramework/Reports/ExportData.cs": {
+    "mtime": 1778491906.437754,
+    "seen": 1793235458.2813003,
+    "ast_hash": "a31002602fef572f790b17fd18814b3f",
+    "semantic_hash": "a31002602fef572f790b17fd18814b3f"
+  },
+  "SystemFramework/User/User.cs": {
+    "mtime": 1778491906.437754,
+    "seen": 1793235458.2813003,
+    "ast_hash": "9522dffb06cc7af9b275639ccd27e64d",
+    "semantic_hash": "9522dffb06cc7af9b275639ccd27e64d"
+  },
+  "SystemFramework/subFrame.Designer.cs": {
+    "mtime": 1778491906.437754,
+    "seen": 1793235458.2813003,
+    "ast_hash": "48beae7a0857bf4530851039afb3d858",
+    "semantic_hash": "48beae7a0857bf4530851039afb3d858"
+  },
+  "SystemFramework/subFrame.cs": {
+    "mtime": 1778491906.437754,
+    "seen": 1793235458.2813003,
+    "ast_hash": "e7b217c343d8cd9707073af5aeb0a0aa",
+    "semantic_hash": "e7b217c343d8cd9707073af5aeb0a0aa"
+  },
+  "SystemFramework/usercontrol/DashboardCards.Designer.cs": {
+    "mtime": 1778494545.465069,
+    "seen": 1793235458.2813003,
+    "ast_hash": "4e7a561bafc0fa568e4af8269c62f08e",
+    "semantic_hash": "4e7a561bafc0fa568e4af8269c62f08e"
+  },
+  "SystemFramework/usercontrol/DashboardCards.cs": {
+    "mtime": 1780999745.4839656,
+    "seen": 1793235458.2813003,
+    "ast_hash": "bc7b680e90a0bbe86b23131f701a9bdd",
+    "semantic_hash": "bc7b680e90a0bbe86b23131f701a9bdd"
+  }
+}

@@ -1,0 +1,14 @@
+<FluentBadge Appearance="Appearance.Accent" BackgroundColor="@Bg" Color="#fff">@(Status ?? "-")</FluentBadge>
+
+@code {
+    [Parameter] public string? Status { get; set; }
+
+    private string Bg => Status switch
+    {
+        "Available" => "#107C10",
+        "In-Use" or "InUse" => "#0F6CBD",
+        "Under Repair" => "#C50F1F",
+        "For Modification" => "#BC4B09",
+        _ => "#616161"
+    };
+}

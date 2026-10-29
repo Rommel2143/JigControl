@@ -1,0 +1,55 @@
+@page "/reports"
+@attribute [Authorize]
+@inject SectionSummaryHandler Summary
+
+<PageTitle>Reports</PageTitle>
+
+<div class="ribbon">
+    <FluentSelect TOption="int" Items="months" OptionText="@(m => Lookups.Months[m - 1])" OptionValue="@(m => m.ToString())"
+                  @bind-SelectedOption="month" @bind-SelectedOption:after="LoadAsync" Style="min-width:150px" />
+    <FluentNumberField TValue="int" @bind-Value="year" @bind-Value:after="LoadAsync" Min="2020" Max="2100" Style="width:110px" />
+    <FluentDivider Orientation="Orientation.Vertical" Style="height:24px" />
+    <FluentAnchor Appearance="Appearance.Stealth" IconStart="@(new Icons.Regular.Size20.ArrowDownload())"
+                  Href="@($"/reports/export?kind=summary&year={year}&month={month}")" Target="_blank">Export to Excel</FluentAnchor>
+</div>
+
+<h1 class="page-title">Scan coverage by section <span class="muted">· @Lookups.Months[month - 1] @year</span></h1>
+
+@if (rows is null)
+{
+    <FluentProgressRing />
+}
+else
+{
+    <FluentCard>
+        @foreach (var r in rows)
+        {
+            <div class="bar-row">
+                <span class="bar-label">@r.Section</span>
+                <div class="bar-track" title="@($"{r.Scanned} of {r.TotalJig} scanned")">
+                    <div class="bar-fill" style="width:@(r.Percentage.ToString(System.Globalization.CultureInfo.InvariantCulture))%"></div>
+                </div>
+                <span class="bar-value">@r.Percentage%</span>
+            </div>
+        }
+    </FluentCard>
+
+    <FluentDataGrid Items="rows.AsQueryable()" ShowHover="true" Style="margin-top:16px">
+        <PropertyColumn Property="@(r => r.Section)" Sortable="true" />
+        <PropertyColumn Property="@(r => r.TotalJig)" Title="Total" Sortable="true" Align="Align.End" />
+        <PropertyColumn Property="@(r => r.Scanned)" Sortable="true" Align="Align.End" />
+        <PropertyColumn Property="@(r => r.TotalMissing)" Title="Missing" Sortable="true" Align="Align.End" />
+        <PropertyColumn Property="@(r => r.Percentage)" Title="% scanned" Sortable="true" Align="Align.End" />
+    </FluentDataGrid>
+}
+
+@code {
+    private static readonly int[] months = Enumerable.Range(1, 12).ToArray();
+    private int month = DateTime.Now.Month;
+    private int year = DateTime.Now.Year;
+    private List<SectionSummary>? rows;
+
+    protected override Task OnInitializedAsync() => LoadAsync();
+
+    private async Task LoadAsync() => rows = await Summary.Handle(year, month);
+}

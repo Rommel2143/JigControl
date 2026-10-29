@@ -1,0 +1,96 @@
+@page "/scan"
+@attribute [Authorize]
+@using JIGControl.Web.Features.Inventory
+@inject ScanJigHandler ScanJig
+@inject ListScannedHandler ListScanned
+
+<PageTitle>Scan JIG</PageTitle>
+
+<h1 class="page-title">Monthly JIG Scan <span class="muted">· @section · @Lookups.Months[DateTime.Now.Month - 1] @DateTime.Now.Year</span></h1>
+
+<FluentCard Class="scan-card">
+    <FluentStack HorizontalGap="12" VerticalAlignment="VerticalAlignment.Bottom" Wrap="true">
+        <div class="scan-input">
+            <label for="qr">Scan or type the JIG QR code, then press Enter</label>
+            <input id="qr" @ref="qrInput" @bind="qr" @bind:event="oninput" @onkeydown="OnKeyDownAsync"
+                   placeholder="TRCJIG|123" autocomplete="off" disabled="@busy" />
+        </div>
+        <FluentSelect TOption="string" Label="Status" Items="Lookups.JigStatuses" @bind-Value="status" Style="min-width:180px" />
+        <FluentButton Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size20.BarcodeScanner())" OnClick="SubmitAsync" Disabled="busy">Record scan</FluentButton>
+    </FluentStack>
+
+    @if (last is not null)
+    {
+        <FluentMessageBar Intent="@(last.Ok ? MessageIntent.Success : MessageIntent.Error)" AllowDismiss="false" Style="margin-top:12px">
+            @last.Message
+        </FluentMessageBar>
+    }
+</FluentCard>
+
+<h2 class="section-title">Scanned this month (@(scanned?.Count ?? 0))</h2>
+@if (scanned is null)
+{
+    <FluentProgressRing />
+}
+else
+{
+    <FluentDataGrid Items="scanned.AsQueryable()" Pagination="pagination" ShowHover="true">
+        <PropertyColumn Property="@(r => r.ControlNo)" Title="Control No" Sortable="true" />
+        <PropertyColumn Property="@(r => r.Partname)" Title="Part Name" Sortable="true" />
+        <PropertyColumn Property="@(r => r.InventoryStatus)" Title="Status" Sortable="true" />
+        <PropertyColumn Property="@(r => r.User)" Title="Scanned by" />
+        <PropertyColumn Property="@(r => r.Timestamp)" Title="Time" Format="yyyy-MM-dd HH:mm" Sortable="true" />
+    </FluentDataGrid>
+    <FluentPaginator State="pagination" />
+}
+
+@code {
+    [CascadingParameter] private Task<AuthenticationState> Auth { get; set; } = default!;
+
+    private ElementReference qrInput;
+    private string qr = "";
+    private string status = Lookups.JigStatuses[0];
+    private ScanResult? last;
+    private bool busy;
+    private int userId;
+    private string section = "";
+    private List<ScannedRow>? scanned;
+    private readonly PaginationState pagination = new() { ItemsPerPage = 10 };
+
+    protected override async Task OnInitializedAsync()
+    {
+        var user = (await Auth).User;
+        userId = user.UserId();
+        section = user.Section();
+        await LoadAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!busy) await qrInput.FocusAsync();
+    }
+
+    private async Task LoadAsync() => scanned = await ListScanned.Handle(section, DateTime.Now.Year, DateTime.Now.Month);
+
+    private async Task OnKeyDownAsync(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter") await SubmitAsync();
+    }
+
+    private async Task SubmitAsync()
+    {
+        if (string.IsNullOrWhiteSpace(qr) || busy) return;
+        busy = true;
+        try
+        {
+            last = await ScanJig.Handle(qr, status, userId);
+            if (last.Ok) await LoadAsync();
+        }
+        catch (Exception ex) { last = new(false, "Database error: " + ex.Message); }
+        finally
+        {
+            qr = "";
+            busy = false;
+        }
+    }
+}

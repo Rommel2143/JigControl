@@ -1,0 +1,83 @@
+@page "/users"
+@attribute [Authorize(Roles = AppClaims.AdminRole)]
+@inject ListUsersHandler ListUsers
+@inject AddUserHandler AddUser
+@inject ResetPasswordHandler ResetPassword
+@inject IToastService Toast
+@inject IDialogService Dialogs
+
+<PageTitle>Users</PageTitle>
+
+<h1 class="page-title">Users</h1>
+
+<div class="two-col">
+    <div>
+        @if (users is null)
+        {
+            <FluentProgressRing />
+        }
+        else
+        {
+            <FluentDataGrid Items="users.AsQueryable()" ShowHover="true">
+                <PropertyColumn Property="@(u => u.Username)" Sortable="true" />
+                <PropertyColumn Property="@(u => u.Firstname)" Title="First name" Sortable="true" />
+                <PropertyColumn Property="@(u => u.Lastname)" Title="Last name" Sortable="true" />
+                <TemplateColumn Title="Role">@(context.Admin ? "Admin" : "User")</TemplateColumn>
+                <TemplateColumn Title="" Align="Align.End">
+                    <FluentButton Appearance="Appearance.Stealth" IconStart="@(new Icons.Regular.Size16.Key())"
+                                  OnClick="@(() => ResetAsync(context))">Reset password</FluentButton>
+                </TemplateColumn>
+            </FluentDataGrid>
+        }
+    </div>
+
+    <FluentCard>
+        <h2 class="card-title">Add user</h2>
+        <FluentStack Orientation="Orientation.Vertical" VerticalGap="12">
+            <FluentTextField @bind-Value="nu.Username" Label="Username" Required="true" Style="width:100%" />
+            <FluentTextField @bind-Value="nu.Password" Label="Password" TextFieldType="TextFieldType.Password" Required="true" Style="width:100%" />
+            <FluentTextField @bind-Value="nu.Firstname" Label="First name" Style="width:100%" />
+            <FluentTextField @bind-Value="nu.Lastname" Label="Last name" Style="width:100%" />
+            <FluentButton Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size20.PersonAdd())" OnClick="AddAsync">Add user</FluentButton>
+        </FluentStack>
+    </FluentCard>
+</div>
+
+@code {
+    private List<UserRow>? users;
+    private NewUser nu = new();
+
+    protected override async Task OnInitializedAsync() => users = await ListUsers.Handle();
+
+    private async Task AddAsync()
+    {
+        if (string.IsNullOrWhiteSpace(nu.Username) || string.IsNullOrEmpty(nu.Password))
+        {
+            Toast.ShowWarning("Username and password are required.");
+            return;
+        }
+        var error = await AddUser.Handle(nu.Username.Trim(), nu.Password, nu.Firstname.Trim(), nu.Lastname.Trim());
+        if (error is not null) { Toast.ShowError(error); return; }
+        Toast.ShowSuccess($"User {nu.Username} added.");
+        nu = new();
+        users = await ListUsers.Handle();
+    }
+
+    private async Task ResetAsync(UserRow u)
+    {
+        var dialog = await Dialogs.ShowConfirmationAsync(
+            $"Clear the password for {u.Username}? They will sign in with an empty password and should set a new one.",
+            "Reset", "Cancel", "Reset password");
+        if ((await dialog.Result).Cancelled) return;
+        await ResetPassword.Handle(u.UserId);
+        Toast.ShowSuccess($"Password for {u.Username} was reset.");
+    }
+
+    private sealed class NewUser
+    {
+        public string Username { get; set; } = "";
+        public string Password { get; set; } = "";
+        public string Firstname { get; set; } = "";
+        public string Lastname { get; set; } = "";
+    }
+}

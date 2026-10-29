@@ -1,0 +1,75 @@
+@page "/inventory"
+@attribute [Authorize]
+@inject ListScannedHandler ListScanned
+@inject ListMissingHandler ListMissing
+
+<PageTitle>Inventory</PageTitle>
+
+<div class="ribbon">
+    <FluentSelect TOption="int" Items="months" OptionText="@(m => Lookups.Months[m - 1])" OptionValue="@(m => m.ToString())"
+                  @bind-SelectedOption="month" @bind-SelectedOption:after="LoadAsync" Style="min-width:150px" />
+    <FluentNumberField TValue="int" @bind-Value="year" @bind-Value:after="LoadAsync" Min="2020" Max="2100" Style="width:110px" />
+    <FluentDivider Orientation="Orientation.Vertical" Style="height:24px" />
+    <FluentAnchor Appearance="Appearance.Stealth" IconStart="@(new Icons.Regular.Size20.ArrowDownload())" Href="@ExportUrl("scanned")" Target="_blank">Export scanned</FluentAnchor>
+    <FluentAnchor Appearance="Appearance.Stealth" IconStart="@(new Icons.Regular.Size20.ArrowDownload())" Href="@ExportUrl("missing")" Target="_blank">Export missing</FluentAnchor>
+</div>
+
+<h1 class="page-title">Inventory <span class="muted">· @section · @Lookups.Months[month - 1] @year</span></h1>
+
+<FluentTabs ActiveTabId="@tab" OnTabChange="@(t => tab = t.Id!)">
+    <FluentTab Id="scanned" Label="@($"Scanned ({scanned?.Count ?? 0})")">
+        @if (scanned is not null)
+        {
+            <FluentDataGrid Items="scanned.AsQueryable()" Pagination="pScanned" ShowHover="true">
+                <PropertyColumn Property="@(r => r.ControlNo)" Title="Control No" Sortable="true" />
+                <PropertyColumn Property="@(r => r.Partname)" Title="Part Name" Sortable="true" />
+                <PropertyColumn Property="@(r => r.InventoryStatus)" Title="Status" Sortable="true" />
+                <PropertyColumn Property="@(r => r.User)" Title="Scanned by" Sortable="true" />
+                <PropertyColumn Property="@(r => r.Timestamp)" Title="Time" Format="yyyy-MM-dd HH:mm" Sortable="true" />
+            </FluentDataGrid>
+            <FluentPaginator State="pScanned" />
+        }
+    </FluentTab>
+    <FluentTab Id="missing" Label="@($"Missing ({missing?.Count ?? 0})")">
+        @if (missing is not null)
+        {
+            <FluentDataGrid Items="missing.AsQueryable()" Pagination="pMissing" ShowHover="true">
+                <PropertyColumn Property="@(r => r.ControlNo)" Title="Control No" Sortable="true" />
+                <PropertyColumn Property="@(r => r.Partcode)" Title="Part Code" Sortable="true" />
+                <PropertyColumn Property="@(r => r.Partname)" Title="Part Name" Sortable="true" />
+                <TemplateColumn Title="">
+                    <FluentAnchor Appearance="Appearance.Hypertext" Href="@($"/jigs/{context.JigId}")">Open</FluentAnchor>
+                </TemplateColumn>
+            </FluentDataGrid>
+            <FluentPaginator State="pMissing" />
+        }
+    </FluentTab>
+</FluentTabs>
+
+@code {
+    [CascadingParameter] private Task<AuthenticationState> Auth { get; set; } = default!;
+
+    private static readonly int[] months = Enumerable.Range(1, 12).ToArray();
+    private int month = DateTime.Now.Month;
+    private int year = DateTime.Now.Year;
+    private string tab = "scanned";
+    private string section = "";
+    private List<ScannedRow>? scanned;
+    private List<MissingRow>? missing;
+    private readonly PaginationState pScanned = new() { ItemsPerPage = 15 };
+    private readonly PaginationState pMissing = new() { ItemsPerPage = 15 };
+
+    private string ExportUrl(string kind) => $"/reports/export?kind={kind}&year={year}&month={month}";
+
+    protected override async Task OnInitializedAsync()
+    {
+        section = (await Auth).User.Section();
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        scanned = await ListScanned.Handle(section, year, month);
+        missing = await ListMissing.Handle(section, year, month);
+    }
+}
