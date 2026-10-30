@@ -85,6 +85,22 @@ fluent-card, .fluent-card { padding: 16px; border-radius: 8px; }
 .month-pick { cursor: pointer; }
 .month-active { outline: 2px solid var(--accent-fill-rest); }
 
+/* Section x month matrix (New JIGs) */
+.matrix-wrap { overflow-x: auto; border: 1px solid var(--card-border); border-radius: 8px; background: var(--neutral-layer-1); }
+.matrix { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; font-size: 13px; }
+.matrix th, .matrix td { padding: 6px 8px; text-align: center; border-bottom: 1px solid var(--card-border); white-space: nowrap; }
+.matrix thead th { font-weight: 600; background: var(--neutral-layer-2); position: sticky; top: 0; }
+.matrix .matrix-section { text-align: left; font-weight: 600; position: sticky; left: 0; background: var(--neutral-layer-1); }
+.matrix thead .matrix-section { background: var(--neutral-layer-2); }
+.matrix-start, .matrix-sum { color: var(--text-muted); }
+.matrix-cell { cursor: pointer; min-width: 52px; }
+.matrix-cell:hover { background: var(--neutral-layer-2); }
+.matrix-added { color: var(--text-muted); }
+.matrix-cell.has-new .matrix-added { font-weight: 600; font-size: 15px; color: var(--accent-fill-rest); }
+.matrix-total-small { font-size: 11px; color: var(--text-muted); }
+.matrix-active { outline: 2px solid var(--accent-fill-rest); outline-offset: -2px; }
+.matrix-total th, .matrix-total td { border-top: 2px solid var(--card-border); font-weight: 600; }
+
 /* Bars */
 .bar-row { display: grid; grid-template-columns: 140px 1fr 60px; align-items: center; gap: 12px; padding: 6px 0; }
 .bar-label { font-weight: 600; font-size: 13px; }

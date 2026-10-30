@@ -1,44 +1,69 @@
 @page "/new-jigs"
-@attribute [Authorize]
+@attribute [Authorize(Roles = AppClaims.AdminRole)]
 @using JIGControl.Web.Features.Jigs
-@inject NewJigCountsHandler Counts
+@inject NewJigDashboardHandler Dashboard
 @inject ListNewJigsHandler ListNew
 
 <PageTitle>New JIGs</PageTitle>
 
 <div class="ribbon">
     <FluentNumberField TValue="int" @bind-Value="year" @bind-Value:after="LoadYearAsync" Min="2020" Max="2100" Style="width:110px" />
-    <FluentCheckbox @bind-Value="allSections" @bind-Value:after="LoadYearAsync" Label="All sections" />
     <FluentDivider Orientation="Orientation.Vertical" Style="height:24px" />
-    <FluentAnchor Appearance="Appearance.Stealth" IconStart="@(new Icons.Regular.Size20.ArrowDownload())" Href="@ExportUrl" Target="_blank">Export @Lookups.Months[month - 1]</FluentAnchor>
+    <FluentAnchor Appearance="Appearance.Stealth" IconStart="@(new Icons.Regular.Size20.ArrowDownload())" Href="@ExportUrl" Target="_blank">Export selection</FluentAnchor>
 </div>
 
-<h1 class="page-title">New JIGs <span class="muted">· @(allSections ? "All sections" : section) · @year</span></h1>
+<h1 class="page-title">New JIGs <span class="muted">· all sections · @year</span></h1>
 
-@if (counts is null)
+@if (data is null)
 {
     <FluentProgressRing />
 }
 else
 {
-    <div class="muted" style="margin-bottom:8px">
-        Master list: @counts.StartTotal at the start of @year → @counts.Totals[11] at year end (+@counts.Added.Sum()). Pick a month to see the JIGs that made the difference.
+    <div class="kpi-row">
+        <FluentCard Class="kpi">
+            <div class="kpi-label">Master list on Jan 1, @year</div>
+            <div class="kpi-value">@data.All.StartTotal</div>
+        </FluentCard>
+        <FluentCard Class="kpi">
+            <div class="kpi-label">Added in @year</div>
+            <div class="kpi-value">+@data.All.Added.Sum()</div>
+        </FluentCard>
+        <FluentCard Class="kpi">
+            <div class="kpi-label">Master list at end of @year</div>
+            <div class="kpi-value">@data.All.Totals[11]</div>
+        </FluentCard>
     </div>
-    <div class="month-grid">
-        @for (var m = 1; m <= 12; m++)
-        {
-            var mm = m;
-            <FluentCard Class="@($"month-card month-pick{(mm == month ? " month-active" : "")}")" @onclick="@(() => SelectMonthAsync(mm))">
-                <div class="month-name">@Lookups.Months[mm - 1]</div>
-                <div class="month-pct">+@counts.Added[mm - 1]</div>
-                <div class="muted">@counts.Totals[mm - 1] total</div>
-            </FluentCard>
-        }
+
+    <h2 class="section-title">Added per section and month <span class="muted">· big number = added, small = total at month end · click a cell</span></h2>
+    <div class="matrix-wrap">
+        <table class="matrix">
+            <thead>
+                <tr>
+                    <th class="matrix-section">Section</th>
+                    <th>Jan 1</th>
+                    @for (var m = 1; m <= 12; m++)
+                    {
+                        <th>@Lookups.Months[m - 1][..3]</th>
+                    }
+                    <th>Added</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var s in data.Sections)
+                {
+                    @Row(s.Section, s.Section, s.Year)
+                }
+            </tbody>
+            <tfoot>
+                @Row(null, "All sections", data.All)
+            </tfoot>
+        </table>
     </div>
 
     <h2 class="section-title">
-        @(rows?.Count ?? 0) new in @Lookups.Months[month - 1] @year
-        <span class="muted">· @PrevMonthName @PrevTotal → @Lookups.Months[month - 1] @counts.Totals[month - 1]</span>
+        @(rows?.Count ?? 0) new in @Lookups.Months[month - 1] @year · @(selSection ?? "All sections")
+        <span class="muted">· @PrevMonthName @PrevTotal → @Lookups.Months[month - 1] @Selected.Totals[month - 1]</span>
     </h2>
     @if (rows is null)
     {
@@ -46,19 +71,16 @@ else
     }
     else if (rows.Count == 0)
     {
-        <p class="muted">No JIGs were added this month.</p>
+        <p class="muted">No JIGs were added here this month.</p>
     }
     else
     {
         <FluentDataGrid Items="rows.AsQueryable()" Pagination="pager" ShowHover="true">
             <PropertyColumn Property="@(r => r.DateAdded)" Title="Date Added" Format="yyyy-MM-dd HH:mm" Sortable="true" IsDefaultSortColumn="true" InitialSortDirection="SortDirection.Descending" />
+            <PropertyColumn Property="@(r => r.Section)" Title="Section" Sortable="true" />
             <PropertyColumn Property="@(r => r.ControlNo)" Title="Control No" Sortable="true" />
             <PropertyColumn Property="@(r => r.Partcode)" Title="Part Code" Sortable="true" />
             <PropertyColumn Property="@(r => r.Partname)" Title="Part Name" Sortable="true" />
-            @if (allSections)
-            {
-                <PropertyColumn Property="@(r => r.Section)" Title="Section" Sortable="true" />
-            }
             <TemplateColumn Title="Status">
                 <StatusBadge Status="@context.Status" />
             </TemplateColumn>
@@ -71,39 +93,54 @@ else
 }
 
 @code {
-    [CascadingParameter] private Task<AuthenticationState> Auth { get; set; } = default!;
-
     private int year = DateTime.Now.Year;
     private int month = DateTime.Now.Month;
-    private bool allSections;
-    private string section = "";
-    private NewJigYear? counts;
+    private string? selSection; // null = all sections
+    private NewJigDashboard? data;
     private List<NewJigRow>? rows;
     private readonly PaginationState pager = new() { ItemsPerPage = 15 };
 
-    private string? SectionFilter => allSections ? null : section;
-    // January compares against December of the previous year (the total before Jan 1).
+    private NewJigYear Selected => selSection is null ? data!.All : data!.Sections.First(s => s.Section == selSection).Year;
+    // January compares against the total before Jan 1.
     private string PrevMonthName => month == 1 ? $"{Lookups.Months[11]} {year - 1}" : Lookups.Months[month - 2];
-    private int PrevTotal => month == 1 ? counts!.StartTotal : counts!.Totals[month - 2];
-    private string ExportUrl => $"/reports/export?kind=new&year={year}&month={month}{(allSections ? "&all=true" : "")}";
+    private int PrevTotal => month == 1 ? Selected.StartTotal : Selected.Totals[month - 2];
+    private string ExportUrl => $"/reports/export?kind=new&year={year}&month={month}&section={Uri.EscapeDataString(selSection ?? "")}";
 
-    protected override async Task OnInitializedAsync()
-    {
-        section = (await Auth).User.Section();
-        await LoadYearAsync();
-    }
+    protected override Task OnInitializedAsync() => LoadYearAsync();
 
     private async Task LoadYearAsync()
     {
-        counts = await Counts.Handle(SectionFilter, year);
-        rows = await ListNew.Handle(SectionFilter, year, month);
+        data = await Dashboard.Handle(year);
+        if (selSection is not null && data.Sections.All(s => s.Section != selSection)) selSection = null;
+        rows = await ListNew.Handle(selSection, year, month);
     }
 
-    private async Task SelectMonthAsync(int m)
+    private async Task SelectAsync(string? section, int m)
     {
+        selSection = section;
         month = m;
         rows = null;
-        rows = await ListNew.Handle(SectionFilter, year, month);
+        rows = await ListNew.Handle(selSection, year, month);
         await pager.SetCurrentPageIndexAsync(0);
     }
+
+    private RenderFragment Row(string? section, string label, NewJigYear y) => __builder =>
+    {
+        <tr class="@(section is null ? "matrix-total" : "")">
+            <th class="matrix-section">@label</th>
+            <td class="matrix-start">@y.StartTotal</td>
+            @for (var m = 1; m <= 12; m++)
+            {
+                var mm = m;
+                var active = selSection == section && month == mm;
+                <td class="@($"matrix-cell{(y.Added[mm - 1] > 0 ? " has-new" : "")}{(active ? " matrix-active" : "")}")"
+                    title="@($"{label}, {Lookups.Months[mm - 1]}: +{y.Added[mm - 1]} → {y.Totals[mm - 1]}")"
+                    @onclick="@(() => SelectAsync(section, mm))">
+                    <div class="matrix-added">@(y.Added[mm - 1] > 0 ? $"+{y.Added[mm - 1]}" : "–")</div>
+                    <div class="matrix-total-small">@y.Totals[mm - 1]</div>
+                </td>
+            }
+            <td class="matrix-sum">+@y.Added.Sum()</td>
+        </tr>
+    };
 }

@@ -68,7 +68,7 @@ public static class ReportEndpoints
 {
     public static void MapReportEndpoints(this WebApplication app)
     {
-        app.MapGet("/reports/export", async (string kind, int year, int month, bool? all, HttpContext ctx,
+        app.MapGet("/reports/export", async (string kind, int year, int month, HttpContext ctx,
             ListScannedHandler scanned, ListMissingHandler missing, SectionSummaryHandler summary, ListNewJigsHandler newJigs) =>
         {
             if (month is < 1 or > 12) return Results.BadRequest();
@@ -91,8 +91,11 @@ public static class ReportEndpoints
                     section = "all";
                     break;
                 case "new":
-                    if (all == true) section = "all";
-                    var added = (await newJigs.Handle(all == true ? null : section, year, month))
+                    // Admin dashboard export: ?section= (empty = all sections).
+                    if (!ctx.User.IsAdmin()) return Results.Forbid();
+                    var filter = ctx.Request.Query["section"].ToString();
+                    section = filter == "" ? "all" : filter;
+                    var added = (await newJigs.Handle(filter == "" ? null : filter, year, month))
                         .Select(r => new { r.DateAdded, r.ControlNo, r.Partcode, r.Partname, r.Section, r.Status });
                     wb.Worksheets.Add("New JIGs").Cell(1, 1).InsertTable(added);
                     break;

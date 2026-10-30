@@ -27,10 +27,10 @@
                 <FluentNavLink Href="/" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.Home())">Dashboard</FluentNavLink>
                 <FluentNavLink Href="/scan" Icon="@(new Icons.Regular.Size20.BarcodeScanner())">Scan JIG</FluentNavLink>
                 <FluentNavLink Href="/jigs" Icon="@(new Icons.Regular.Size20.Wrench())">JIG Master List</FluentNavLink>
-                <FluentNavLink Href="/new-jigs" Icon="@(new Icons.Regular.Size20.CalendarAdd())">New JIGs</FluentNavLink>
                 <FluentNavLink Href="/inventory" Icon="@(new Icons.Regular.Size20.ClipboardTaskListLtr())">Inventory</FluentNavLink>
                 <FluentNavLink Href="/reports" Icon="@(new Icons.Regular.Size20.DataBarHorizontal())">Reports</FluentNavLink>
                 <AuthorizeView Roles="@AppClaims.AdminRole">
+                    <FluentNavLink Href="/new-jigs" Icon="@(new Icons.Regular.Size20.CalendarAdd())">New JIGs</FluentNavLink>
                     <FluentNavLink Href="/users" Icon="@(new Icons.Regular.Size20.People())">Users</FluentNavLink>
                 </AuthorizeView>
                 <FluentNavLink Href="/account" Icon="@(new Icons.Regular.Size20.PersonSettings())">Account</FluentNavLink>

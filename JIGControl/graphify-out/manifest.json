@@ -336,9 +336,9 @@
     "semantic_hash": "d0efbe4336d2f7b43fd9520c665e1316"
   },
   "JIGControl.Web/Components/Layout/MainLayout.razor": {
-    "mtime": 1793323830.5258584,
-    "seen": 1793327161.6674404,
-    "ast_hash": "d5c4e9fc86cb527d532e030052318997",
+    "mtime": 1793327521.9175944,
+    "seen": 1793327548.0192418,
+    "ast_hash": "01a57cdd83acbb01b681a96855a74138",
     "semantic_hash": ""
   },
   "JIGControl.Web/Components/Layout/ReconnectModal.razor": {
@@ -474,9 +474,9 @@
     "semantic_hash": "64eae6be3a0e04c1a5ec33eb0f5e38cb"
   },
   "JIGControl.Web/Features/Reports/Reports.cs": {
-    "mtime": 1793323830.5325773,
-    "seen": 1793327161.6674404,
-    "ast_hash": "f637b5e057b551b652bd2e7e51fef1ee",
+    "mtime": 1793327521.9332728,
+    "seen": 1793327548.0192418,
+    "ast_hash": "8cf10de4588089677168fcb3598ac9b0",
     "semantic_hash": ""
   },
   "JIGControl.Web/Features/Reports/ReportsPage.razor": {
@@ -558,9 +558,9 @@
     "semantic_hash": ""
   },
   "docs/Flows.md": {
-    "mtime": 1793327155.8258686,
-    "seen": 1793327161.6674404,
-    "ast_hash": "e34decc9c73eb94a37bf3a7b4646b4fa",
+    "mtime": 1793327541.9713585,
+    "seen": 1793327548.0199819,
+    "ast_hash": "73d05a7c3fe049e1323011f69fc18077",
     "semantic_hash": ""
   },
   "docs/Graphify.md": {
@@ -582,9 +582,9 @@
     "semantic_hash": ""
   },
   "docs/Web-App.md": {
-    "mtime": 1793323830.5455706,
-    "seen": 1793327161.6674404,
-    "ast_hash": "0c9da7532f5ad03611b78fd913400876",
+    "mtime": 1793327541.9713585,
+    "seen": 1793327548.0199819,
+    "ast_hash": "90e96b0def98f38d979c2a1fdbd928c2",
     "semantic_hash": ""
   },
   "docs/modules/Account.md": {
@@ -624,15 +624,15 @@
     "semantic_hash": "f0d8241103b075d18880de82cc45b3ce"
   },
   "JIGControl.Web/Features/NewJigs/NewJigs.cs": {
-    "mtime": 1793327141.4634864,
-    "seen": 1793327161.6674404,
-    "ast_hash": "cee960f86aadb6eece1da57df02e1de2",
+    "mtime": 1793327505.6177487,
+    "seen": 1793327548.0192418,
+    "ast_hash": "295c9c5a629a29ae11218e281a63399b",
     "semantic_hash": ""
   },
   "JIGControl.Web/Features/NewJigs/NewJigsPage.razor": {
-    "mtime": 1793327141.81208,
-    "seen": 1793327161.6674404,
-    "ast_hash": "4707d2bbdd8aca4441ff41dc5cb2bfac",
+    "mtime": 1793327505.7625535,
+    "seen": 1793327548.0192418,
+    "ast_hash": "d81e4bfda69d463720aea90b5ba6779f",
     "semantic_hash": ""
   }
 }

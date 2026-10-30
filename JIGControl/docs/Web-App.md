@@ -16,8 +16,8 @@ JIGControl.Web/
     Jigs       master list grid, add/edit/delete, **photo upload**, one per JIG (/jig-photos/{jig_id})
     Scan       QR scan → jig_inventory (same rules as JIGQueries.InsertJIG)
     Inventory  scanned / missing per month + section
-    NewJigs    JIGs added per month (count cards + list with date added), own section or all
-    Reports    section coverage, Excel export (/reports/export?kind=scanned|missing|summary|new, `&all=true` for every section on `new`)
+    NewJigs    admin dashboard: section x month grid of JIGs added + running totals, click a cell for the list
+    Reports    section coverage, Excel export (/reports/export?kind=scanned|missing|summary|new; `new` is admin-only and takes `&section=` (empty = all))
     Users      admin: list, add, reset password
     Account    section switch, name, change password
 ```
@@ -32,7 +32,7 @@ JIGControl.Web/
 | `/` | Dashboard (`MonthCardsHandler`) | signed in |
 | `/jigs`, `/jigs/new`, `/jigs/{id}` | Jigs | signed in; Delete / Remove photo admin-only ([[Risks]] #6) |
 | `/scan` | Scan (`ScanJigHandler`) | signed in |
-| `/new-jigs` | NewJigs (`NewJigCountsHandler`, `ListNewJigsHandler`) | signed in |
+| `/new-jigs` | NewJigs (`NewJigDashboardHandler`, `ListNewJigsHandler`) | **Admin role** |
 | `/inventory` | Inventory (`ListScannedHandler`, `ListMissingHandler`) | signed in |
 | `/reports`, `/reports/export` | Reports (`SectionSummaryHandler`, ClosedXML) | signed in |
 | `/users` | Users | **Admin role** |
