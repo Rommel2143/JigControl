@@ -17,6 +17,8 @@ Back: [[INDEX]]
 - **Login**: `/login` (static SSR form) → `LoginHandler` → `AuthEndpoints.BuildPrincipal` → cookie `jigcontrol.auth`; the chosen section becomes the `section` claim.
 - **Scan**: `/scan` → `ScanJigHandler.Handle(qr, status, User.UserId())` — same validation as WinForms; duplicate-month scan caught as `MySqlErrorCode.DuplicateKeyEntry`.
 - **Photo**: `JigEditPage` upload → `UploadJigPhotoHandler` writes `{Root}/{jig_id}/{guid}.ext`, updates `imageUrl`, deletes the old file; the `<img>` src is `/jig-photos/{jig_id}`.
+- **Missing JIGs**: `/missing` → pick month/year → `MissingBySectionHandler` (expected / scanned / missing / coverage per section) → click a section or *All sections* → `MissingJigsHandler` list with each JIG's last scan before that month (or *Never*). Defaults to the user's section.
+- **Dashboard**: own-section KPIs (expected, scanned + coverage, missing + days left, new this month), scan results by status, master list by JIG status, recent scans, coverage bars for all sections, month cards.
 - **New JIGs per month (admin)**: `/new-jigs` → `NewJigDashboardHandler` builds a section × month grid (each cell `+added` and the month-end total, e.g. Feb 659 → Mar 680 = +21) with an *All sections* row → click a cell → `ListNewJigsHandler` lists those JIGs by date added.
 - **Export**: `/reports/export?kind=scanned|missing|summary` → ClosedXML workbook.
 See [[Web-App]].

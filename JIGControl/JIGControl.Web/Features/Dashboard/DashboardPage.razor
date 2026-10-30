@@ -2,70 +2,173 @@
 @attribute [Authorize]
 @using JIGControl.Web.Features.Reports
 @using JIGControl.Web.Features.Inventory
+@using JIGControl.Web.Features.Missing
+@using JIGControl.Web.Features.NewJigs
 @inject MonthCardsHandler MonthCards
-@inject ListMissingHandler ListMissing
 @inject ListScannedHandler ListScanned
+@inject MissingBySectionHandler MissingBySection
+@inject ListNewJigsHandler ListNewJigs
+@inject JigStatusCountsHandler JigStatusCounts
 @inject NavigationManager Nav
 
 <PageTitle>Dashboard</PageTitle>
 
-<h1 class="page-title">Welcome, @name</h1>
+<h1 class="page-title">Welcome, @name <span class="muted">· @section · @Lookups.Months[now.Month - 1] @now.Year inventory</span></h1>
 
-<div class="kpi-row">
-    <FluentCard Class="kpi">
-        <div class="kpi-label">Scanned this month · @section</div>
-        <div class="kpi-value">@(scannedNow?.ToString() ?? "…")</div>
-    </FluentCard>
-    <FluentCard Class="kpi kpi-warn">
-        <div class="kpi-label">Missing this month · @section</div>
-        <div class="kpi-value">@(missingNow?.ToString() ?? "…")</div>
-    </FluentCard>
-    <FluentCard Class="kpi kpi-action" @onclick="@(() => Nav.NavigateTo("/scan"))">
-        <FluentIcon Value="@(new Icons.Regular.Size32.BarcodeScanner())" Color="Color.Accent" />
-        <div class="kpi-label">Start scanning</div>
-    </FluentCard>
-</div>
-
-<h2 class="section-title">@DateTime.Now.Year by month (all sections)</h2>
-@if (cards is null)
+@if (mine is null)
 {
     <FluentProgressRing />
 }
-else if (cards.Count == 0)
-{
-    <p class="muted">No scans recorded this year yet.</p>
-}
 else
 {
-    <div class="month-grid">
-        @foreach (var c in cards)
-        {
-            <FluentCard Class="month-card">
-                <div class="month-name">@Lookups.Months[c.ScanMonth - 1]</div>
-                <div class="month-pct">@c.Percentage%</div>
-                <div class="bar-track"><div class="bar-fill" style="width:@(Math.Min(100, c.Percentage).ToString(System.Globalization.CultureInfo.InvariantCulture))%"></div></div>
-                <div class="muted">@c.TotalScanned of @c.TotalMaster JIGs</div>
-            </FluentCard>
-        }
+    <div class="kpi-row">
+        <FluentCard Class="kpi">
+            <div class="kpi-label">Expected this month · @section</div>
+            <div class="kpi-value">@mine.Total</div>
+        </FluentCard>
+        <FluentCard Class="kpi">
+            <div class="kpi-label">Scanned · @mine.Percentage% coverage</div>
+            <div class="kpi-value">@mine.Scanned</div>
+            <div class="bar-track"><div class="bar-fill" style="width:@Pct(mine.Percentage)%"></div></div>
+        </FluentCard>
+        <FluentCard Class="kpi kpi-warn kpi-action" @onclick="@(() => Nav.NavigateTo("/missing"))">
+            <div class="kpi-label">Missing · @DaysLeft day@(DaysLeft == 1 ? "" : "s") left</div>
+            <div class="kpi-value">@mine.Missing</div>
+            <div class="muted">View missing JIGs →</div>
+        </FluentCard>
+        <FluentCard Class="kpi">
+            <div class="kpi-label">New JIGs this month · @section</div>
+            <div class="kpi-value">+@newThisMonth</div>
+        </FluentCard>
+        <FluentCard Class="kpi kpi-action" @onclick="@(() => Nav.NavigateTo("/scan"))">
+            <FluentIcon Value="@(new Icons.Regular.Size32.BarcodeScanner())" Color="Color.Accent" />
+            <div class="kpi-label">Start scanning</div>
+        </FluentCard>
     </div>
+
+    <div class="three-col" style="margin-top:16px">
+        <FluentCard>
+            <h2 class="card-title">Scan results this month <span class="muted">· @section</span></h2>
+            @if (scanStatus!.Count == 0)
+            {
+                <p class="muted">No scans yet this month.</p>
+            }
+            else
+            {
+                @StatusBars(scanStatus, mine.Scanned)
+            }
+        </FluentCard>
+        <FluentCard>
+            <h2 class="card-title">Master list by JIG status <span class="muted">· @section</span></h2>
+            @if (jigStatus!.Count == 0)
+            {
+                <p class="muted">No JIGs in this section.</p>
+            }
+            else
+            {
+                @StatusBars(jigStatus, jigStatus.Sum(s => s.Count))
+            }
+        </FluentCard>
+        <FluentCard>
+            <h2 class="card-title">Recent scans <span class="muted">· @section</span></h2>
+            @if (recent!.Count == 0)
+            {
+                <p class="muted">No scans yet this month.</p>
+            }
+            else
+            {
+                <ul class="recent-list">
+                    @foreach (var r in recent)
+                    {
+                        <li>
+                            <span><strong>@r.ControlNo</strong> <span class="muted">@r.Partname</span></span>
+                            <span class="muted">@r.InventoryStatus · @r.User · @r.Timestamp.ToString("MMM d HH:mm")</span>
+                        </li>
+                    }
+                </ul>
+                <FluentAnchor Appearance="Appearance.Hypertext" Href="/inventory">All scans →</FluentAnchor>
+            }
+        </FluentCard>
+    </div>
+
+    <h2 class="section-title">Coverage by section · @Lookups.Months[now.Month - 1] <span class="muted">· all sections · @allSections?.Sum(s => s.Missing) missing</span></h2>
+    <FluentCard>
+        @foreach (var s in allSections!.Where(s => s.Total > 0))
+        {
+            <div class="bar-row @(s.Section == section ? "bar-mine" : "")" title="@($"{s.Scanned} of {s.Total} scanned, {s.Missing} missing")">
+                <span class="bar-label">@s.Section</span>
+                <div class="bar-track"><div class="bar-fill" style="width:@Pct(s.Percentage)%"></div></div>
+                <span class="bar-value">@s.Percentage%</span>
+            </div>
+        }
+    </FluentCard>
+
+    <h2 class="section-title">@now.Year by month (all sections)</h2>
+    @if (cards!.Count == 0)
+    {
+        <p class="muted">No scans recorded this year yet.</p>
+    }
+    else
+    {
+        <div class="month-grid">
+            @foreach (var c in cards)
+            {
+                <FluentCard Class="month-card">
+                    <div class="month-name">@Lookups.Months[c.ScanMonth - 1]</div>
+                    <div class="month-pct">@c.Percentage%</div>
+                    <div class="bar-track"><div class="bar-fill" style="width:@Pct(c.Percentage)%"></div></div>
+                    <div class="muted">@c.TotalScanned of @c.TotalMaster JIGs</div>
+                </FluentCard>
+            }
+        </div>
+    }
 }
 
 @code {
     [CascadingParameter] private Task<AuthenticationState> Auth { get; set; } = default!;
 
+    private readonly DateTime now = DateTime.Now;
     private string name = "";
     private string section = "";
-    private int? scannedNow, missingNow;
+    private SectionMissing? mine;
+    private List<SectionMissing>? allSections;
+    private int newThisMonth;
+    private List<StatusCount>? scanStatus, jigStatus;
+    private List<ScannedRow>? recent;
     private List<MonthCard>? cards;
+
+    private int DaysLeft => DateTime.DaysInMonth(now.Year, now.Month) - now.Day;
 
     protected override async Task OnInitializedAsync()
     {
         var user = (await Auth).User;
         name = user.DisplayName();
         section = user.Section();
-        var now = DateTime.Now;
-        scannedNow = (await ListScanned.Handle(section, now.Year, now.Month)).Count;
-        missingNow = (await ListMissing.Handle(section, now.Year, now.Month)).Count;
+
+        var scanned = await ListScanned.Handle(section, now.Year, now.Month);
+        scanStatus = scanned.GroupBy(r => string.IsNullOrWhiteSpace(r.InventoryStatus) ? "No status" : r.InventoryStatus)
+            .Select(g => new StatusCount(g.Key, g.Count())).OrderByDescending(s => s.Count).ToList();
+        recent = scanned.Take(8).ToList(); // already newest first
+        jigStatus = await JigStatusCounts.Handle(section);
+        newThisMonth = (await ListNewJigs.Handle(section, now.Year, now.Month)).Count;
         cards = await MonthCards.Handle(now.Year);
+
+        allSections = await MissingBySection.Handle(now.Year, now.Month);
+        mine = allSections.FirstOrDefault(s => s.Section == section) ?? new SectionMissing(section, 0, 0);
     }
+
+    private static string Pct(double p) => Math.Min(100, p).ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+    private static RenderFragment StatusBars(List<StatusCount> items, int total) => __builder =>
+    {
+        @foreach (var s in items)
+        {
+            var pct = total == 0 ? 0 : Math.Round(s.Count * 100.0 / total, 1);
+            <div class="bar-row bar-row-compact">
+                <span class="bar-label">@s.Status</span>
+                <div class="bar-track"><div class="bar-fill" style="width:@Pct(pct)%"></div></div>
+                <span class="bar-value">@s.Count</span>
+            </div>
+        }
+    };
 }

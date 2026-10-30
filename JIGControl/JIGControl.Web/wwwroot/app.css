@@ -99,6 +99,20 @@ fluent-card, .fluent-card { padding: 16px; border-radius: 8px; }
 .matrix-cell.has-new .matrix-added { font-weight: 600; font-size: 15px; color: var(--accent-fill-rest); }
 .matrix-total-small { font-size: 11px; color: var(--text-muted); }
 .matrix-active { outline: 2px solid var(--accent-fill-rest); outline-offset: -2px; }
+.pick-row { cursor: pointer; }
+.pick-row:hover th, .pick-row:hover td { background: var(--neutral-layer-2); }
+.section-table td { text-align: right; }
+.bar-inline { display: grid; grid-template-columns: 1fr 52px; align-items: center; gap: 8px; }
+.warn-text { color: #C50F1F; font-weight: 600; }
+.bar-row-compact { grid-template-columns: 110px 1fr 40px; padding: 4px 0; }
+.bar-mine .bar-label { color: var(--accent-fill-rest); }
+.recent-list { list-style: none; margin: 0 0 8px; padding: 0; }
+.recent-list li { display: flex; flex-direction: column; padding: 6px 0; border-bottom: 1px solid var(--card-border); font-size: 13px; }
+.recent-list li:last-child { border-bottom: 0; }
+.day-chart { display: flex; align-items: flex-end; gap: 2px; height: 160px; }
+.day-col { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; min-width: 0; }
+.day-bar { background: var(--accent-fill-rest); border-radius: 2px 2px 0 0; min-height: 0; }
+.day-label { font-size: 10px; color: var(--text-muted); text-align: center; height: 14px; }
 .matrix-total th, .matrix-total td { border-top: 2px solid var(--card-border); font-weight: 600; }
 
 /* Bars */

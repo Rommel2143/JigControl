@@ -16,8 +16,10 @@ JIGControl.Web/
     Jigs       master list grid, add/edit/delete, **photo upload**, one per JIG (/jig-photos/{jig_id})
     Scan       QR scan → jig_inventory (same rules as JIGQueries.InsertJIG)
     Inventory  scanned / missing per month + section
-    NewJigs    admin dashboard: section x month grid of JIGs added + running totals, click a cell for the list
-    Reports    section coverage, Excel export (/reports/export?kind=scanned|missing|summary|new; `new` is admin-only and takes `&section=` (empty = all))
+    Missing    unscanned JIGs for an inventory month, per section or all, with last scan date
+    Admin      admin dashboard: plant KPIs, section table (links to /missing), scans per day, scanners, status breakdowns
+    NewJigs    admin page: section x month grid of JIGs added + running totals, click a cell for the list
+    Reports    section coverage, Excel export (/reports/export?kind=scanned|missing|summary|new|missing-all; `missing-all` takes `&section=` (empty = all); `new` is admin-only and takes `&section=` (empty = all))
     Users      admin: list, add, reset password
     Account    section switch, name, change password
 ```
@@ -29,9 +31,11 @@ JIGControl.Web/
 | Route | Slice | Access |
 |---|---|---|
 | `/login` | Auth (static SSR, `ExcludeFromInteractiveRouting`) | anonymous |
-| `/` | Dashboard (`MonthCardsHandler`) | signed in |
+| `/` | Dashboard (`MissingBySectionHandler`, `ListScannedHandler`, `JigStatusCountsHandler`, `ListNewJigsHandler`, `MonthCardsHandler`) | signed in |
+| `/missing` | Missing (`MissingJigsHandler`, `MissingBySectionHandler`); accepts `?year=&month=&section=` | signed in |
 | `/jigs`, `/jigs/new`, `/jigs/{id}` | Jigs | signed in; Delete / Remove photo admin-only ([[Risks]] #6) |
 | `/scan` | Scan (`ScanJigHandler`) | signed in |
+| `/admin` | Admin (`AdminDashboardHandler` + `MissingBySectionHandler`) | **Admin role** |
 | `/new-jigs` | NewJigs (`NewJigDashboardHandler`, `ListNewJigsHandler`) | **Admin role** |
 | `/inventory` | Inventory (`ListScannedHandler`, `ListMissingHandler`) | signed in |
 | `/reports`, `/reports/export` | Reports (`SectionSummaryHandler`, ClosedXML) | signed in |

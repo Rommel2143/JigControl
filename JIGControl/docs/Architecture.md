@@ -1,7 +1,7 @@
 # Architecture
 Back: [[INDEX]]
 
-Two front ends share one MySQL database ([[Database]]): the WinForms desktop app (`SystemFramework/`, below) and the Blazor web app ([[Web-App]]).
+Three front ends share one MySQL database ([[Database]]): the WinForms desktop app (`SystemFramework/`, below), the Blazor web app ([[Web-App]]) and the section scanning station ([[Scanner]]).
 
 ## WinForms
 

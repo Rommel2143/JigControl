@@ -1,0 +1,186 @@
+@page "/missing"
+@attribute [Authorize]
+@using JIGControl.Web.Features.Jigs
+@inject MissingJigsHandler ListMissing
+@inject MissingBySectionHandler BySection
+
+<PageTitle>Missing JIGs</PageTitle>
+
+<div class="ribbon">
+    <FluentSelect TOption="int" Items="months" OptionText="@(m => Lookups.Months[m - 1])" OptionValue="@(m => m.ToString())"
+                  @bind-SelectedOption="month" @bind-SelectedOption:after="LoadAsync" Style="min-width:150px" />
+    <FluentNumberField TValue="int" @bind-Value="year" @bind-Value:after="LoadAsync" Min="2020" Max="2100" Style="width:110px" />
+    <FluentDivider Orientation="Orientation.Vertical" Style="height:24px" />
+    <FluentSearch @bind-Value="search" @bind-Value:after="ResetPageAsync" Placeholder="Control no, part code or name" Style="min-width:260px" />
+    <FluentAnchor Appearance="Appearance.Stealth" IconStart="@(new Icons.Regular.Size20.ArrowDownload())" Href="@ExportUrl" Target="_blank">Export</FluentAnchor>
+</div>
+
+<h1 class="page-title">Missing JIGs <span class="muted">· not scanned in @Lookups.Months[month - 1] @year</span></h1>
+
+@if (sections is null)
+{
+    <FluentProgressRing />
+}
+else
+{
+    <div class="kpi-row">
+        <FluentCard Class="kpi">
+            <div class="kpi-label">Expected this inventory · all sections</div>
+            <div class="kpi-value">@sections.Sum(s => s.Total)</div>
+        </FluentCard>
+        <FluentCard Class="kpi">
+            <div class="kpi-label">Scanned</div>
+            <div class="kpi-value">@sections.Sum(s => s.Scanned)</div>
+        </FluentCard>
+        <FluentCard Class="kpi kpi-warn">
+            <div class="kpi-label">Missing</div>
+            <div class="kpi-value">@sections.Sum(s => s.Missing)</div>
+        </FluentCard>
+        @if (IsCurrentMonth)
+        {
+            <FluentCard Class="kpi">
+                <div class="kpi-label">Inventory still open</div>
+                <div class="kpi-value" style="font-size:20px">@DaysLeft day@(DaysLeft == 1 ? "" : "s") left</div>
+            </FluentCard>
+        }
+    </div>
+
+    <h2 class="section-title">By section <span class="muted">· click a row</span></h2>
+    <div class="matrix-wrap">
+        <table class="matrix section-table">
+            <thead>
+                <tr><th class="matrix-section">Section</th><th>Expected</th><th>Scanned</th><th>Missing</th><th style="width:40%">Coverage</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var s in sections)
+                {
+                    var name = s.Section;
+                    <tr class="@($"pick-row{(selSection == name ? " matrix-active" : "")}")" @onclick="@(() => SelectAsync(name))">
+                        <th class="matrix-section">@name</th>
+                        <td>@s.Total</td>
+                        <td>@s.Scanned</td>
+                        <td class="@(s.Missing > 0 ? "warn-text" : "")">@s.Missing</td>
+                        <td>@Bar(s.Percentage)</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                @{ var all = new SectionMissing("", sections.Sum(s => s.Total), sections.Sum(s => s.Missing)); }
+                <tr class="@($"pick-row matrix-total{(selSection is null ? " matrix-active" : "")}")" @onclick="@(() => SelectAsync(null))">
+                    <th class="matrix-section">All sections</th>
+                    <td>@all.Total</td>
+                    <td>@all.Scanned</td>
+                    <td class="@(all.Missing > 0 ? "warn-text" : "")">@all.Missing</td>
+                    <td>@Bar(all.Percentage)</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <h2 class="section-title">@(Filtered?.Count() ?? 0) missing · @(selSection ?? "All sections")</h2>
+    @if (rows is null)
+    {
+        <FluentProgressRing />
+    }
+    else if (rows.Count == 0)
+    {
+        <p class="muted">Every expected JIG here was scanned this month.</p>
+    }
+    else
+    {
+        <FluentDataGrid Items="Filtered" Pagination="pager" ShowHover="true">
+            <PropertyColumn Property="@(r => r.Section)" Title="Section" Sortable="true" />
+            <PropertyColumn Property="@(r => r.ControlNo)" Title="Control No" Sortable="true" IsDefaultSortColumn="true" />
+            <PropertyColumn Property="@(r => r.Partcode)" Title="Part Code" Sortable="true" />
+            <PropertyColumn Property="@(r => r.Partname)" Title="Part Name" Sortable="true" />
+            <TemplateColumn Title="JIG Status">
+                <StatusBadge Status="@context.Status" />
+            </TemplateColumn>
+            <TemplateColumn Title="Last scanned" SortBy="@lastScannedSort">
+                @if (context.LastScanned is DateTime d)
+                {
+                    <span>@d.ToString("yyyy-MM-dd")</span>
+                    <span class="muted"> · @context.LastScanStatus</span>
+                }
+                else
+                {
+                    <span class="warn-text">Never</span>
+                }
+            </TemplateColumn>
+            <PropertyColumn Property="@(r => r.DateAdded)" Title="Date Added" Format="yyyy-MM-dd" Sortable="true" />
+            <TemplateColumn Title="">
+                <FluentAnchor Appearance="Appearance.Hypertext" Href="@($"/jigs/{context.JigId}")">Open</FluentAnchor>
+            </TemplateColumn>
+        </FluentDataGrid>
+        <FluentPaginator State="pager" />
+    }
+}
+
+@code {
+    [CascadingParameter] private Task<AuthenticationState> Auth { get; set; } = default!;
+
+    private static readonly int[] months = Enumerable.Range(1, 12).ToArray();
+    private readonly GridSort<MissingJigRow> lastScannedSort = GridSort<MissingJigRow>.ByAscending(r => r.LastScanned);
+    private int month = DateTime.Now.Month;
+    private int year = DateTime.Now.Year;
+    private string? selSection; // null = all sections
+    private string search = "";
+    private List<SectionMissing>? sections;
+    private List<MissingJigRow>? rows;
+    private readonly PaginationState pager = new() { ItemsPerPage = 20 };
+
+    private bool IsCurrentMonth => year == DateTime.Now.Year && month == DateTime.Now.Month;
+    private int DaysLeft => DateTime.DaysInMonth(year, month) - DateTime.Now.Day;
+    private string ExportUrl => $"/reports/export?kind=missing-all&year={year}&month={month}&section={Uri.EscapeDataString(selSection ?? "")}";
+
+    private IQueryable<MissingJigRow>? Filtered => rows?.Where(r => search.Length == 0
+        || r.ControlNo.Contains(search, StringComparison.OrdinalIgnoreCase)
+        || r.Partcode.Contains(search, StringComparison.OrdinalIgnoreCase)
+        || r.Partname.Contains(search, StringComparison.OrdinalIgnoreCase)).AsQueryable();
+
+    // Links from the admin dashboard: /missing?year=&month=&section= (empty section = all sections).
+    [SupplyParameterFromQuery(Name = "year")] private int? QueryYear { get; set; }
+    [SupplyParameterFromQuery(Name = "month")] private int? QueryMonth { get; set; }
+    [SupplyParameterFromQuery(Name = "section")] private string? QuerySection { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (QueryYear is >= 2020 and <= 2100) year = QueryYear.Value;
+        if (QueryMonth is >= 1 and <= 12) month = QueryMonth.Value;
+        if (QuerySection is not null)
+        {
+            selSection = QuerySection == "" ? null : QuerySection;
+        }
+        else
+        {
+            var mine = (await Auth).User.Section();
+            selSection = string.IsNullOrEmpty(mine) ? null : mine;
+        }
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        sections = await BySection.Handle(year, month);
+        rows = await ListMissing.Handle(selSection, year, month);
+        await pager.SetCurrentPageIndexAsync(0);
+    }
+
+    private async Task SelectAsync(string? section)
+    {
+        selSection = section;
+        rows = null;
+        rows = await ListMissing.Handle(selSection, year, month);
+        await pager.SetCurrentPageIndexAsync(0);
+    }
+
+    private Task ResetPageAsync() => pager.SetCurrentPageIndexAsync(0);
+
+    private static RenderFragment Bar(double pct) => __builder =>
+    {
+        <div class="bar-inline">
+            <div class="bar-track"><div class="bar-fill" style="width:@(Math.Min(100, pct).ToString(System.Globalization.CultureInfo.InvariantCulture))%"></div></div>
+            <span class="bar-value">@pct%</span>
+        </div>
+    };
+}

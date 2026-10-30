@@ -1,0 +1,4 @@
+bin/
+obj/
+# Per-PC settings (connection string with password)
+station.json

@@ -28,8 +28,10 @@
                 <FluentNavLink Href="/scan" Icon="@(new Icons.Regular.Size20.BarcodeScanner())">Scan JIG</FluentNavLink>
                 <FluentNavLink Href="/jigs" Icon="@(new Icons.Regular.Size20.Wrench())">JIG Master List</FluentNavLink>
                 <FluentNavLink Href="/inventory" Icon="@(new Icons.Regular.Size20.ClipboardTaskListLtr())">Inventory</FluentNavLink>
+                <FluentNavLink Href="/missing" Icon="@(new Icons.Regular.Size20.ErrorCircle())">Missing JIGs</FluentNavLink>
                 <FluentNavLink Href="/reports" Icon="@(new Icons.Regular.Size20.DataBarHorizontal())">Reports</FluentNavLink>
                 <AuthorizeView Roles="@AppClaims.AdminRole">
+                    <FluentNavLink Href="/admin" Icon="@(new Icons.Regular.Size20.ShieldPerson())">Admin Dashboard</FluentNavLink>
                     <FluentNavLink Href="/new-jigs" Icon="@(new Icons.Regular.Size20.CalendarAdd())">New JIGs</FluentNavLink>
                     <FluentNavLink Href="/users" Icon="@(new Icons.Regular.Size20.People())">Users</FluentNavLink>
                 </AuthorizeView>
