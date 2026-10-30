@@ -44,6 +44,21 @@ JIGControl.Web/
 | GET `/jig-photos/{jigId}` | Jigs (`JigPhotoEndpoints`) | signed in |
 | POST `/logout` | Auth | signed in |
 
+## JSON API (`/api`, `Features/Api/ApiEndpoints.cs`)
+For desktop clients ([[Scanner]]); reuses the same handlers as the pages. Auth = ASP.NET Core bearer tokens (`AddBearerToken`, 12 h, no extra package); the site keeps cookie auth. HTML status-code pages are skipped for `/api`, so clients get plain 401/404.
+
+| Method & route | Auth | Purpose |
+|---|---|---|
+| `GET /api/lookups` | none | sections + JIG statuses |
+| `POST /api/auth/login` `{username, password, section?}` | none | returns `{accessToken, expiresIn, refreshToken}`; a token with a section is a **station token** |
+| `GET /api/me` | bearer | user id, name, station section, admin |
+| `POST /api/scans` `{qrCode, status}` | bearer | `ScanJigHandler`; station tokens can only scan their section |
+| `GET /api/sections/{s}/progress?year&month` | bearer | expected / scanned / missing (`MissingBySectionHandler`) |
+| `GET /api/sections/{s}/scans?year&month&limit` | bearer | latest scans (`ListScannedHandler`) |
+| `GET /api/sections/{s}/missing?year&month` | bearer | unscanned JIGs + last scan (`MissingJigsHandler`) |
+
+Call with `Authorization: Bearer <accessToken>`. Serve the site over HTTPS outside the LAN — tokens and passwords travel in the request ([[Risks]] #10).
+
 ## WinForms ↔ Web map
 | WinForms | Web slice / handler |
 |---|---|

@@ -5,7 +5,7 @@ namespace JIGControl.Scanner.Forms;
 /// Main station screen. The barcode scanner types the QR code and sends Enter, which scans it.
 public sealed class ScanForm : Form
 {
-    private readonly ScannerDb _db;
+    private readonly ScannerApi _api;
     private readonly string _section;
     private readonly Operator _operator;
 
@@ -29,9 +29,9 @@ public sealed class ScanForm : Form
 
     public bool SignedOut { get; private set; }
 
-    public ScanForm(ScannerDb db, string section, Operator op)
+    public ScanForm(ScannerApi api, string section, Operator op)
     {
-        _db = db;
+        _api = api;
         _section = section;
         _operator = op;
 
@@ -143,13 +143,17 @@ public sealed class ScanForm : Form
         _busy = true;
         try
         {
-            var result = await _db.ScanAsync(qr, (string)_status.SelectedItem!, _operator.UserId);
+            var result = await _api.ScanAsync(qr, (string)_status.SelectedItem!);
             ShowResult(result.Ok, result.Message);
             if (result.Ok) await RefreshAsync();
         }
+        catch (SessionExpiredException ex)
+        {
+            Expire(ex);
+        }
         catch (Exception ex)
         {
-            ShowResult(false, "Database error: " + ex.Message);
+            ShowResult(false, "Server error: " + ex.Message);
         }
         finally
         {
@@ -172,19 +176,23 @@ public sealed class ScanForm : Form
         var now = DateTime.Now;
         try
         {
-            var p = await _db.ProgressAsync(now);
+            var p = await _api.ProgressAsync(now);
             _month.Text = $"{now:MMMM yyyy} inventory · {_section}";
             _scanned.Text = $"{p.Scanned} / {p.Expected} scanned  ({p.Percentage}%)";
             _missing.Text = $"{p.Missing} missing";
             _bar.Maximum = Math.Max(1, p.Expected);
             _bar.Value = Math.Min(_bar.Maximum, p.Scanned);
 
-            var rows = await _db.RecentScansAsync(now);
+            var rows = await _api.RecentScansAsync(now);
             _recent.BeginUpdate();
             _recent.Items.Clear();
             foreach (var r in rows)
                 _recent.Items.Add(new ListViewItem([r.Timestamp.ToString("MMM d HH:mm"), r.ControlNo, r.Partname, r.InventoryStatus, r.User]));
             _recent.EndUpdate();
+        }
+        catch (SessionExpiredException ex)
+        {
+            Expire(ex);
         }
         catch (Exception ex)
         {
@@ -196,14 +204,27 @@ public sealed class ScanForm : Form
     {
         try
         {
-            var rows = await _db.MissingAsync(DateTime.Now);
+            var rows = await _api.MissingAsync(DateTime.Now);
             using var dlg = new MissingForm(_section, DateTime.Now, rows);
             dlg.ShowDialog(this);
+        }
+        catch (SessionExpiredException ex)
+        {
+            Expire(ex);
+            return;
         }
         catch (Exception ex)
         {
             ShowResult(false, "Cannot load missing JIGs: " + ex.Message);
         }
         _qr.Focus();
+    }
+
+    /// Token expired (12 h): back to the login screen.
+    private void Expire(SessionExpiredException ex)
+    {
+        MessageBox.Show(this, ex.Message, "JIG Scanner", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        SignedOut = true;
+        Close();
     }
 }

@@ -13,4 +13,5 @@ Back: [[INDEX]]
 8. Photo upload trusts the browser's `contentType` + extension only (no magic-byte check); files are served back only from inside `PhotoStorage.Root` (`IsInside`), which limits the impact.
 
 9. **Two definitions of "expected this month"** — **fixed in the web app 2026-10-30**: every web count (Reports `SectionSummaryHandler`, Dashboard `MonthCardsHandler`, Inventory, Missing) now uses *existed by the 1st*; month cards count only scans of those JIGs. **Still open in WinForms**: `printGraph` (`ReportDataset` JIG_Summary) counts JIGs that existed by the *end* of the month, so desktop and web coverage can differ for months where JIGs were added. See [[Database]] month logic.
+10. **API over plain HTTP**: `/api/auth/login` sends the password and returns a 12 h bearer token; on `http://` both are readable on the network. Use HTTPS (the `https` launch profile or a reverse proxy) before exposing the API beyond a trusted LAN. Tokens can't be revoked early (rotate the Data Protection keys to invalidate all).
 See [[Web-App]].

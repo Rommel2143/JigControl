@@ -3,7 +3,7 @@ namespace JIGControl.Scanner.Forms;
 /// Sign-in with the same jig_users accounts as the other apps. The section is fixed by station.json.
 public sealed class LoginForm : Form
 {
-    private readonly ScannerDb _db;
+    private readonly ScannerApi _api;
     private readonly TextBox _username = new() { Dock = DockStyle.Top, Font = new Font("Segoe UI", 12f) };
     private readonly TextBox _password = new() { Dock = DockStyle.Top, Font = new Font("Segoe UI", 12f), UseSystemPasswordChar = true };
     private readonly Label _error = new() { Dock = DockStyle.Top, ForeColor = Theme.ErrorText, AutoSize = false, Height = 40 };
@@ -11,9 +11,9 @@ public sealed class LoginForm : Form
 
     public Operator? Operator { get; private set; }
 
-    public LoginForm(ScannerDb db, string section)
+    public LoginForm(ScannerApi api, string section)
     {
-        _db = db;
+        _api = api;
         Text = "JIG Scanner";
         Font = Theme.Base;
         FormBorderStyle = FormBorderStyle.FixedDialog;
@@ -70,7 +70,7 @@ public sealed class LoginForm : Form
         UseWaitCursor = true;
         try
         {
-            Operator = await _db.LoginAsync(_username.Text.Trim(), _password.Text);
+            Operator = await _api.LoginAsync(_username.Text.Trim(), _password.Text);
             if (Operator is null)
             {
                 _error.Text = "Wrong username or password.";
@@ -82,7 +82,7 @@ public sealed class LoginForm : Form
         }
         catch (Exception ex)
         {
-            _error.Text = "Cannot reach the database: " + ex.Message;
+            _error.Text = "Cannot reach the server: " + ex.Message;
         }
         finally
         {

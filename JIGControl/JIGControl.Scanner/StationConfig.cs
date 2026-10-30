@@ -6,7 +6,8 @@ namespace JIGControl.Scanner;
 /// The section is locked here: operators cannot change it, and JIGs of other sections are rejected.
 public sealed class StationConfig
 {
-    public string ConnectionString { get; set; } = "";
+    /// Base URL of JIGControl.Web, e.g. http://server:5183
+    public string ApiUrl { get; set; } = "";
     public string Section { get; set; } = "";
 
     public const string FileName = "station.json";
@@ -16,7 +17,7 @@ public sealed class StationConfig
     {
         var path = Path.Combine(AppContext.BaseDirectory, FileName);
         if (!File.Exists(path))
-            return (null, $"{FileName} was not found next to the app.\n\nCopy station.example.json to {FileName} in\n{AppContext.BaseDirectory}\nand set the connection string and this station's section.");
+            return (null, $"{FileName} was not found next to the app.\n\nCopy station.example.json to {FileName} in\n{AppContext.BaseDirectory}\nand set the web app address and this station's section.");
 
         StationConfig? cfg;
         try
@@ -28,8 +29,8 @@ public sealed class StationConfig
             return (null, $"{FileName} is not valid JSON: {ex.Message}");
         }
 
-        if (cfg is null || string.IsNullOrWhiteSpace(cfg.ConnectionString))
-            return (null, $"Set \"ConnectionString\" in {FileName}.");
+        if (cfg is null || !Uri.TryCreate(cfg.ApiUrl, UriKind.Absolute, out var url) || url.Scheme is not ("http" or "https"))
+            return (null, $"Set \"ApiUrl\" in {FileName} to the web app address, e.g. http://server:5183");
         if (!Lookups.Sections.Contains(cfg.Section))
             return (null, $"\"Section\" in {FileName} must be one of:\n{string.Join(", ", Lookups.Sections)}");
         return (cfg, null);

@@ -1,4 +1,4 @@
 {
-  "ConnectionString": "server=PTI-027s;user id=...;password=...;database=trcsystem",
+  "ApiUrl": "http://localhost:5183",
   "Section": "MOLDING"
 }

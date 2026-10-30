@@ -396,9 +396,9 @@
     "semantic_hash": "09f87f7457f24293b5fee637e0fdfa50"
   },
   "JIGControl.Web/Features/Auth/AuthEndpoints.cs": {
-    "mtime": 1793323830.5273178,
-    "seen": 1793327161.6674404,
-    "ast_hash": "2080c4e1f1716ee752022d4d8e09fe59",
+    "mtime": 1793330857.3251128,
+    "seen": 1793331019.8272831,
+    "ast_hash": "70d62beb79d1b12e9dcf0cb20c9fa5ad",
     "semantic_hash": ""
   },
   "JIGControl.Web/Features/Auth/Login.cs": {
@@ -486,10 +486,10 @@
     "semantic_hash": "a7dae58a95cc1b9fd7bed5302d336fe2"
   },
   "JIGControl.Web/Features/Scan/ScanJig.cs": {
-    "mtime": 1793236064.562852,
-    "seen": 1793323373.4862616,
-    "ast_hash": "c9c8f53cc987d39e6d9dfc3ee9f89cff",
-    "semantic_hash": "c9c8f53cc987d39e6d9dfc3ee9f89cff"
+    "mtime": 1793330834.249255,
+    "seen": 1793331019.8272831,
+    "ast_hash": "7cf5e81160987feb7f7b86e3db4d30de",
+    "semantic_hash": ""
   },
   "JIGControl.Web/Features/Scan/ScanPage.razor": {
     "mtime": 1793236064.8334098,
@@ -522,10 +522,10 @@
     "semantic_hash": "dd96aa9230f980df41e6de9ccb737cd2"
   },
   "JIGControl.Web/Program.cs": {
-    "mtime": 1793236157.4144843,
-    "seen": 1793323373.4862616,
-    "ast_hash": "5f23682cca5857b5ad39d6f935dbbcfb",
-    "semantic_hash": "5f23682cca5857b5ad39d6f935dbbcfb"
+    "mtime": 1793330966.516346,
+    "seen": 1793331019.8272831,
+    "ast_hash": "d9cb61a7154f419ba49ec31ea3bca768",
+    "semantic_hash": ""
   },
   "JIGControl.Web/Properties/launchSettings.json": {
     "mtime": 1793235748.1379619,
@@ -570,21 +570,21 @@
     "semantic_hash": ""
   },
   "docs/INDEX.md": {
-    "mtime": 1793330351.2635136,
-    "seen": 1793330357.7106178,
-    "ast_hash": "c758027d07f00108aebce6e1e6cdf95c",
+    "mtime": 1793331013.6872294,
+    "seen": 1793331019.8272831,
+    "ast_hash": "bb369c2853ddf221ea325e3ccc4ba0fe",
     "semantic_hash": ""
   },
   "docs/Risks.md": {
-    "mtime": 1793328940.6833172,
-    "seen": 1793328947.578672,
-    "ast_hash": "2515b661ff5ed17fa52e3361b9b14ae3",
+    "mtime": 1793331013.6862402,
+    "seen": 1793331019.8272831,
+    "ast_hash": "71e42cfb4973add34e37e24f6579f956",
     "semantic_hash": ""
   },
   "docs/Web-App.md": {
-    "mtime": 1793330351.2635136,
-    "seen": 1793330357.7106178,
-    "ast_hash": "b38280999e346ae10135b4b89e93ee28",
+    "mtime": 1793331013.6862402,
+    "seen": 1793331019.8272831,
+    "ast_hash": "b039c2015a601ffacb656dcfb44f9f7c",
     "semantic_hash": ""
   },
   "docs/modules/Account.md": {
@@ -654,9 +654,9 @@
     "semantic_hash": ""
   },
   "JIGControl.Scanner/Forms/LoginForm.cs": {
-    "mtime": 1793330183.4164724,
-    "seen": 1793330357.7106178,
-    "ast_hash": "41dd7a8088d4d18224855657cca9e62e",
+    "mtime": 1793330903.24924,
+    "seen": 1793331019.8272831,
+    "ast_hash": "52950e4182a1af82db36a176020928c6",
     "semantic_hash": ""
   },
   "JIGControl.Scanner/Forms/MissingForm.cs": {
@@ -666,9 +666,9 @@
     "semantic_hash": ""
   },
   "JIGControl.Scanner/Forms/ScanForm.cs": {
-    "mtime": 1793330303.8116286,
-    "seen": 1793330357.7106178,
-    "ast_hash": "74730816c27ad597184c3cb4d15a2f23",
+    "mtime": 1793330903.257151,
+    "seen": 1793331019.8272831,
+    "ast_hash": "2c4627756d2a490a6e5678fd6d7e3c9e",
     "semantic_hash": ""
   },
   "JIGControl.Scanner/Forms/Theme.cs": {
@@ -678,33 +678,27 @@
     "semantic_hash": ""
   },
   "JIGControl.Scanner/JIGControl.Scanner.csproj": {
-    "mtime": 1793330137.870049,
-    "seen": 1793330357.7106178,
-    "ast_hash": "bceadf30c48adbf1bafb8daebf57c67a",
+    "mtime": 1793330903.2328038,
+    "seen": 1793331019.8272831,
+    "ast_hash": "a45b318b724acba301b21c84a93f53b8",
     "semantic_hash": ""
   },
   "JIGControl.Scanner/Program.cs": {
-    "mtime": 1793330183.177704,
-    "seen": 1793330357.7106178,
-    "ast_hash": "dc4dae084dd11bafa27407433e524a3b",
-    "semantic_hash": ""
-  },
-  "JIGControl.Scanner/ScannerDb.cs": {
-    "mtime": 1793330182.9946675,
-    "seen": 1793330357.7106178,
-    "ast_hash": "8b1446eabb9a76180c6ea0b5cb238b71",
+    "mtime": 1793330903.2389123,
+    "seen": 1793331019.8272831,
+    "ast_hash": "52f986dc8633312a887eb5c59ebdd291",
     "semantic_hash": ""
   },
   "JIGControl.Scanner/StationConfig.cs": {
-    "mtime": 1793330182.7719572,
-    "seen": 1793330357.7106178,
-    "ast_hash": "47fdc901cebeca6508d54b7909c35a58",
+    "mtime": 1793330903.2349036,
+    "seen": 1793331019.8272831,
+    "ast_hash": "a8cb313654cf8e332ee1d9d9940bba79",
     "semantic_hash": ""
   },
   "JIGControl.Scanner/station.example.json": {
-    "mtime": 1793330137.9388812,
-    "seen": 1793330357.7106178,
-    "ast_hash": "14c8cf39cf0bfc16f22fcaeaf008dabb",
+    "mtime": 1793330903.237022,
+    "seen": 1793331019.8272831,
+    "ast_hash": "e2daa3d9705dad4332ff818985e05eaf",
     "semantic_hash": ""
   },
   "JIGControl.Web/Features/Admin/AdminDashboard.cs": {
@@ -720,9 +714,21 @@
     "semantic_hash": ""
   },
   "docs/Scanner.md": {
-    "mtime": 1793330350.9364278,
-    "seen": 1793330357.7106178,
-    "ast_hash": "f192312654af786642083c4204d0499c",
+    "mtime": 1793331013.6862402,
+    "seen": 1793331019.8272831,
+    "ast_hash": "e57cc1f5064d9a50591fde7ecd008166",
+    "semantic_hash": ""
+  },
+  "JIGControl.Scanner/ScannerApi.cs": {
+    "mtime": 1793330901.377684,
+    "seen": 1793331019.8272831,
+    "ast_hash": "a9384d9d1c957e40f1f40b0774d0b444",
+    "semantic_hash": ""
+  },
+  "JIGControl.Web/Features/Api/ApiEndpoints.cs": {
+    "mtime": 1793330857.0035217,
+    "seen": 1793331019.8272831,
+    "ast_hash": "af102bb4216f89aac18e23e0aad34449",
     "semantic_hash": ""
   }
 }

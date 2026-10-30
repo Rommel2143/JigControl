@@ -11,11 +11,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Dapper" Version="2.1.89" />
-    <PackageReference Include="MySqlConnector" Version="2.6.2" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="station.example.json" CopyToOutputDirectory="PreserveNewest" />
     <None Update="station.json" CopyToOutputDirectory="PreserveNewest" Condition="Exists('station.json')" />
   </ItemGroup>

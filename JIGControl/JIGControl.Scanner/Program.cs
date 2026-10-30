@@ -16,15 +16,16 @@ internal static class Program
             return;
         }
 
-        var db = new ScannerDb(config);
+        var api = new ScannerApi(config);
         // Sign out returns to the login screen; closing the login screen exits.
         while (true)
         {
-            using var login = new LoginForm(db, config.Section);
+            using var login = new LoginForm(api, config.Section);
             if (login.ShowDialog() != DialogResult.OK || login.Operator is null) return;
 
-            using var scan = new ScanForm(db, config.Section, login.Operator);
+            using var scan = new ScanForm(api, config.Section, login.Operator);
             Application.Run(scan);
+            api.SignOut();
             if (!scan.SignedOut) return;
         }
     }

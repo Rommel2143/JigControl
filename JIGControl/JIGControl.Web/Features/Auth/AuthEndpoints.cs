@@ -8,7 +8,7 @@ namespace JIGControl.Web.Features.Auth;
 
 public static class AuthEndpoints
 {
-    public static ClaimsPrincipal BuildPrincipal(LoginUser u, string section)
+    public static ClaimsPrincipal BuildPrincipal(LoginUser u, string section, string authenticationType = CookieAuthenticationDefaults.AuthenticationScheme)
     {
         var claims = new List<Claim>
         {
@@ -18,7 +18,7 @@ public static class AuthEndpoints
             new(AppClaims.Section, section),
         };
         if (u.Admin) claims.Add(new(ClaimTypes.Role, AppClaims.AdminRole));
-        return new ClaimsPrincipal(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme));
+        return new ClaimsPrincipal(new ClaimsIdentity(claims, authenticationType));
     }
 
     public static void MapAuthEndpoints(this WebApplication app)
