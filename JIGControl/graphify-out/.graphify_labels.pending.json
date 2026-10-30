@@ -1,15 +1,21 @@
 {
   "1": "ScanPage.razor",
+  "2": "JIG_SummaryRow",
   "3": ".OpenAsync",
+  "5": "GeneratedCodeAttribute",
+  "8": "ReportDataset",
   "9": ".Handle",
   "31": "Components/_Imports.razor",
   "32": "NewJigsPage.razor",
   "33": "DashboardPage.razor",
   "34": "NewJigRow",
+  "38": "Form",
+  "41": "Login",
   "44": "JIGControl.Web.Common",
-  "47": "PhotoStorage (share root, IsInside)",
+  "47": "Features/_Imports.razor",
   "56": "Reports.cs",
-  "57": "IContainer",
+  "57": "JIG module",
   "69": "ScannedRow",
-  "70": "MissingRow"
+  "70": "MissingRow",
+  "71": ".InitVars"
 }
