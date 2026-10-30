@@ -396,10 +396,10 @@
     "semantic_hash": "09f87f7457f24293b5fee637e0fdfa50"
   },
   "JIGControl.Web/Features/Auth/AuthEndpoints.cs": {
-    "mtime": 1793235903.5012774,
-    "seen": 1793323373.4862616,
-    "ast_hash": "35242c1a88dabb31507a16e469960886",
-    "semantic_hash": "35242c1a88dabb31507a16e469960886"
+    "mtime": 1793323528.4633706,
+    "seen": 1793323574.364398,
+    "ast_hash": "2080c4e1f1716ee752022d4d8e09fe59",
+    "semantic_hash": ""
   },
   "JIGControl.Web/Features/Auth/Login.cs": {
     "mtime": 1793235903.4202783,
@@ -438,10 +438,10 @@
     "semantic_hash": "9d73fd853048e7a83dc92cdf1c7e6338"
   },
   "JIGControl.Web/Features/Jigs/JigEditPage.razor": {
-    "mtime": 1793263904.276079,
-    "seen": 1793323373.4862616,
-    "ast_hash": "b1b5741ba91d14ec53ae0a2c946fbd5b",
-    "semantic_hash": "b1b5741ba91d14ec53ae0a2c946fbd5b"
+    "mtime": 1793323512.3967817,
+    "seen": 1793323574.364398,
+    "ast_hash": "bfa156fababd5d19549dac9af088893f",
+    "semantic_hash": ""
   },
   "JIGControl.Web/Features/Jigs/JigListPage.razor": {
     "mtime": 1793263872.3023207,
@@ -564,28 +564,28 @@
     "semantic_hash": "153d9dc7fdc72166069f549e44314f0e"
   },
   "docs/Graphify.md": {
-    "mtime": 1793235502.9092672,
-    "seen": 1793323373.4862616,
-    "ast_hash": "2f960d8fde98a11a09d1ccb35552bc79",
-    "semantic_hash": "2f960d8fde98a11a09d1ccb35552bc79"
+    "mtime": 1793323459.4144454,
+    "seen": 1793323574.364398,
+    "ast_hash": "ff8d16e8776aaf76a8eb60387095d363",
+    "semantic_hash": ""
   },
   "docs/INDEX.md": {
-    "mtime": 1793323149.8427582,
-    "seen": 1793323373.4862616,
-    "ast_hash": "77d61011464dcbf7b2aa0cfb4354d73f",
-    "semantic_hash": "77d61011464dcbf7b2aa0cfb4354d73f"
+    "mtime": 1793323567.5464194,
+    "seen": 1793323574.364398,
+    "ast_hash": "5be9d254292162ce4157c9b47ca285df",
+    "semantic_hash": ""
   },
   "docs/Risks.md": {
-    "mtime": 1793323129.6535215,
-    "seen": 1793323373.4862616,
-    "ast_hash": "ac1c441d7c14753f0c32e147cb3a4399",
-    "semantic_hash": "ac1c441d7c14753f0c32e147cb3a4399"
+    "mtime": 1793323567.5464194,
+    "seen": 1793323574.364398,
+    "ast_hash": "6d80a03ff1ba3cc6a40301ed0ee5ad5f",
+    "semantic_hash": ""
   },
   "docs/Web-App.md": {
-    "mtime": 1793323129.6535215,
-    "seen": 1793323373.4862616,
-    "ast_hash": "a9b5cf6a31191956e250b94a0dfa0bd3",
-    "semantic_hash": "a9b5cf6a31191956e250b94a0dfa0bd3"
+    "mtime": 1793323567.5464194,
+    "seen": 1793323574.364398,
+    "ast_hash": "de97c2b87c7d8741aa8f6233405580aa",
+    "semantic_hash": ""
   },
   "docs/modules/Account.md": {
     "mtime": 1793323149.836983,

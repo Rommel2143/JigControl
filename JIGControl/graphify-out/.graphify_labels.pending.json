@@ -1,8 +1,15 @@
 {
+  "1": "ScanPage.razor",
+  "3": ".OpenAsync",
+  "9": ".Handle",
   "31": "Components/_Imports.razor",
-  "32": "subFrame (nav shell)",
-  "33": "JIG module",
+  "32": "NewJigsPage.razor",
+  "33": "DashboardPage.razor",
+  "34": "NewJigRow",
+  "44": "JIGControl.Web.Common",
   "47": "PhotoStorage (share root, IsInside)",
-  "69": "ExportData.ToExcel(Guna2DataGridView)",
-  "70": "Graphify.md"
+  "56": "Reports.cs",
+  "57": "IContainer",
+  "69": "ScannedRow",
+  "70": "MissingRow"
 }

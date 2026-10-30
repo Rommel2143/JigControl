@@ -2,6 +2,7 @@ using ClosedXML.Excel;
 using Dapper;
 using JIGControl.Web.Common;
 using JIGControl.Web.Features.Inventory;
+using JIGControl.Web.Features.NewJigs;
 
 namespace JIGControl.Web.Features.Reports;
 
@@ -67,8 +68,8 @@ public static class ReportEndpoints
 {
     public static void MapReportEndpoints(this WebApplication app)
     {
-        app.MapGet("/reports/export", async (string kind, int year, int month, HttpContext ctx,
-            ListScannedHandler scanned, ListMissingHandler missing, SectionSummaryHandler summary) =>
+        app.MapGet("/reports/export", async (string kind, int year, int month, bool? all, HttpContext ctx,
+            ListScannedHandler scanned, ListMissingHandler missing, SectionSummaryHandler summary, ListNewJigsHandler newJigs) =>
         {
             if (month is < 1 or > 12) return Results.BadRequest();
             var section = ctx.User.Section();
@@ -88,6 +89,12 @@ public static class ReportEndpoints
                         .Select(r => new { r.Section, Total = r.TotalJig, r.Scanned, Missing = r.TotalMissing, Percent = r.Percentage });
                     wb.Worksheets.Add("Summary").Cell(1, 1).InsertTable(rows);
                     section = "all";
+                    break;
+                case "new":
+                    if (all == true) section = "all";
+                    var added = (await newJigs.Handle(all == true ? null : section, year, month))
+                        .Select(r => new { r.DateAdded, r.ControlNo, r.Partcode, r.Partname, r.Section, r.Status });
+                    wb.Worksheets.Add("New JIGs").Cell(1, 1).InsertTable(added);
                     break;
                 default:
                     return Results.BadRequest();

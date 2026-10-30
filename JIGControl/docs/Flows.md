@@ -17,5 +17,6 @@ Back: [[INDEX]]
 - **Login**: `/login` (static SSR form) → `LoginHandler` → `AuthEndpoints.BuildPrincipal` → cookie `jigcontrol.auth`; the chosen section becomes the `section` claim.
 - **Scan**: `/scan` → `ScanJigHandler.Handle(qr, status, User.UserId())` — same validation as WinForms; duplicate-month scan caught as `MySqlErrorCode.DuplicateKeyEntry`.
 - **Photo**: `JigEditPage` upload → `UploadJigPhotoHandler` writes `{Root}/{jig_id}/{guid}.ext`, updates `imageUrl`, deletes the old file; the `<img>` src is `/jig-photos/{jig_id}`.
+- **New JIGs per month**: `/new-jigs` → `NewJigCountsHandler` (12 month cards for the year) → click a month → `ListNewJigsHandler` grid sorted by date added; "All sections" drops the section filter.
 - **Export**: `/reports/export?kind=scanned|missing|summary` → ClosedXML workbook.
 See [[Web-App]].

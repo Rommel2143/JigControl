@@ -82,6 +82,8 @@ fluent-card, .fluent-card { padding: 16px; border-radius: 8px; }
 .month-card { display: flex; flex-direction: column; gap: 6px; }
 .month-name { font-weight: 600; }
 .month-pct { font-size: 24px; font-weight: 600; color: var(--accent-fill-rest); }
+.month-pick { cursor: pointer; }
+.month-active { outline: 2px solid var(--accent-fill-rest); }
 
 /* Bars */
 .bar-row { display: grid; grid-template-columns: 140px 1fr 60px; align-items: center; gap: 12px; padding: 6px 0; }
