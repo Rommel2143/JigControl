@@ -6,3 +6,4 @@ Back: [[INDEX]] · `SystemFramework/JIG/`, `Model/JIG.cs`
 - `ManageJIG` — edit/delete/status of master list; `reloadJIG`, search box.
 - `JIGInventory` — scan screen, month/status filters, `LoadCount`, menu to [[modules/Reporting]].
 - `Model.JIG` — POCO + `getDetails()` (injectable SQL, [[Risks]] #3).
+- Web counterpart: `Features/Jigs` + `Features/Scan` + `Features/Inventory` ([[Web-App]]).

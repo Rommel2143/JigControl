@@ -16,7 +16,7 @@
 <div class="ribbon">
     <FluentButton Appearance="Appearance.Stealth" IconStart="@(new Icons.Regular.Size20.ArrowLeft())" OnClick="@(() => Nav.NavigateTo("/jigs"))">Back</FluentButton>
     <FluentButton Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size20.Save())" OnClick="SaveAsync" Disabled="saving">Save</FluentButton>
-    @if (!IsNew)
+    @if (!IsNew && isAdmin)
     {
         <FluentButton Appearance="Appearance.Stealth" IconStart="@(new Icons.Regular.Size20.Delete())" OnClick="DeleteAsync">Delete</FluentButton>
     }
@@ -60,7 +60,10 @@ else
                         <a href="@src" target="_blank"><img src="@src" alt="Photo of @jig.ControlNo" /></a>
                         <div class="photo-meta">
                             <span title="@jig.ImageUrl">@jig.ImageUrl</span>
-                            <FluentButton Appearance="Appearance.Stealth" Title="Remove photo" IconStart="@(new Icons.Regular.Size16.Delete())" OnClick="RemovePhotoAsync" />
+                            @if (isAdmin)
+                            {
+                                <FluentButton Appearance="Appearance.Stealth" Title="Remove photo" IconStart="@(new Icons.Regular.Size16.Delete())" OnClick="RemovePhotoAsync" />
+                            }
                         </div>
                     </div>
                 }
@@ -100,10 +103,13 @@ else
     private JigItem? jig;
     private int progress;
     private bool saving;
+    // Only admins may delete, same as the WinForms AddJIG grid.
+    private bool isAdmin;
 
     protected override async Task OnParametersSetAsync()
     {
         var user = (await Auth).User;
+        isAdmin = user.IsAdmin();
         if (IsNew)
         {
             jig = new JigItem { Section = user.Section() };
@@ -142,6 +148,7 @@ else
 
     private async Task DeleteAsync()
     {
+        if (!isAdmin) return;
         var dialog = await Dialogs.ShowConfirmationAsync($"Delete JIG {jig?.ControlNo} and its photo? This cannot be undone.", "Delete", "Cancel", "Delete JIG");
         if ((await dialog.Result).Cancelled) return;
         await DeleteJig.Handle(jig!.JigId);
@@ -172,6 +179,7 @@ else
 
     private async Task RemovePhotoAsync()
     {
+        if (!isAdmin) return;
         var dialog = await Dialogs.ShowConfirmationAsync($"Remove the photo of {jig!.ControlNo}? The file is deleted from the share.", "Remove", "Cancel", "Remove photo");
         if ((await dialog.Result).Cancelled) return;
         await RemovePhoto.Handle(jig.JigId);

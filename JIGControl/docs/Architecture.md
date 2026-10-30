@@ -1,6 +1,10 @@
 # Architecture
 Back: [[INDEX]]
 
+Two front ends share one MySQL database ([[Database]]): the WinForms desktop app (`SystemFramework/`, below) and the Blazor web app ([[Web-App]]).
+
+## WinForms
+
 ```
 Program.Main ──> Login (dialog) ──OK──> MainFrame ──hosts──> subFrame (nav shell)
                                                          ├─ Dashboard (+ DashboardCards)
@@ -12,3 +16,11 @@ Program.Main ──> Login (dialog) ──OK──> MainFrame ──hosts──>
 - **No service layer**: forms call static helpers ([[modules/Data-Access]]) or write SQL inline.
 - **Session state**: static class `User` (UserID, UserName, isAdmin, userSection from `Settings.Default.Section`).
 - **Graph god nodes**: `ReportDataset` (49 edges, generated typed DataSet), `JIGInventory` (33), `subFrame` (24), `AddJIG`, `ManageJIG`, `manageOtherUser`.
+
+## Web (JIGControl.Web)
+```
+Program.cs ──> cookie auth ──> Routes (AuthorizeRouteView) ──> MainLayout ──> Features/<Slice>/*Page.razor
+                                                                              └─ @inject <X>Handler ──> IDbConnectionFactory ──> MySQL
+```
+- **Vertical slices**: one folder per feature; handlers auto-registered by `SliceRegistration.AddFeatureSlices`.
+- **Minimal-API endpoints** for things Blazor pages can't do: `MapAuthEndpoints`, `MapJigPhotoEndpoints`, `MapReportEndpoints`.

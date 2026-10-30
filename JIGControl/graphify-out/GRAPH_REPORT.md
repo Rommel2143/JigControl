@@ -1,79 +1,85 @@
-# Graph Report - JIGControl  (2026-10-29)
+# Graph Report - JIGControl  (2026-10-30)
 
 ## Corpus Check
-- 104 files · ~29,451 words
+- 104 files · ~30,255 words
 - Verdict: corpus is large enough that graph structure adds value.
-- Unclassified: 30 file(s) not represented in the graph (top: .resx 18, .rdlc 3, .css 2)
+- Unclassified: 31 file(s) not represented in the graph (top: .resx 18, .rdlc 3, (none) 2)
 
 ## Summary
-- 908 nodes · 1791 edges · 62 communities (43 shown, 19 thin omitted)
-- Extraction: 93% EXTRACTED · 7% INFERRED · 0% AMBIGUOUS · INFERRED: 132 edges (avg confidence: 0.9)
+- 991 nodes · 1900 edges · 71 communities (55 shown, 16 thin omitted)
+- Extraction: 90% EXTRACTED · 10% INFERRED · 0% AMBIGUOUS · INFERRED: 188 edges (avg confidence: 0.89)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `ea75b50b`
+- Built from commit: `4c700949`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- Namespaces & NuGet Deps
+- WinForms Namespaces & Deps
+- Web Dashboard Page
 - Missing-JIG Typed Rows
-- ReportDataset Core
+- Web Slice Namespaces
+- Add User & Account Forms
+- Report Viewers (RDLC)
 - JIG Data Typed Row
+- Web JIG Edit & Photo UI
+- ReportDataset Core
 - Row Change Events
-- Manage Other Users
-- JIG Summary Table
+- Web Inventory Page
+- Web JIG List Page
+- Web Users Admin Page
+- JIG Missing Table
+- WinForms Startup & Nav
 - JIG Inventory Screen
+- Photo Storage & Endpoints
 - subFrame Navigation Shell
 - JIG Data Table
-- Missing/Print Reports
-- Resources & Settings
+- Web Account Page
 - Add JIG Form
-- Add User & Credentials
-- Missing-JIG Table
+- DB Connection (Both Apps)
+- Launch Settings
+- Resources & Settings
 - Manage JIG Form
-- Account Settings & Section
-- JIG Model & Key Handlers
-- Dashboard & App Root
-- JigListPage.razor
-- .OpenAsync
-- JigEditPage.razor
-- Dashboard Cards
-- dbQueries Helpers
-- Form
-- DB Connection & JIG Inserts
-- JIGControl.Web
-- INDEX.md
-- Reports.cs
-- InventoryPage.razor
-- ScanPage.razor
-- UsersPage.razor
-- AccountPage.razor
-- http
-- ReportsPage.razor
-- MainLayout.razor
-- JigItem
-- JigPhotos.cs
+- jig_masterlist & Web Risks
+- JIG Summary Table
+- Web Reports Page
+- Web Main Layout
+- Shared Month Logic
 - Components/_Imports.razor
-- Features/_Imports.razor
-- JIGControl.Web.Common
-- DashboardPage.razor
-- LoginUser
-- JigPhoto
-- ReconnectModal.razor.js
-- ScannedRow
-- Routes.razor
-- dapper
-- ClaimsPrincipal
-- Account module
-- App.razor
-- MissingRow
-- UserRow
-- printData
-- Reporting
-- FluentBadge
-- EmptyLayout.razor
-- 001_jig_photos.sql
+- subFrame (nav shell)
+- JIG module
+- JIG Model & Scan Queries
+- Manage Other Users
+- Web Login Page
+- Vault Architecture Docs
+- Login & MainFrame
+- Monthly Scan Pipeline
+- Stack & Excel Export
+- WinForms Data Access
+- Web Project & Packages
+- JigItem Model
+- Web Scan Handler
+- Users & Passwords
+- Web Slice Registration
+- PhotoStorage (share root, IsInside)
+- Reconnect Modal JS
+- Auth Claims Builder
+- Web Routing
+- Claims Helpers
+- Login Flows (Both Apps)
+- Web App Root
+- Auth Imports
+- MonthCard Model
+- SectionSummary Model
+- UserRow Model
+- Vault Index
+- Minor Cluster 61
+- Minor Cluster 62
+- Minor Cluster 63
+- Minor Cluster 64
+- ExportData.ToExcel(Guna2DataGridView)
+- Graphify.md
 
 ## God Nodes (most connected - your core abstractions)
 1. `ReportDataset` - 52 edges
@@ -84,217 +90,270 @@
 6. `JIG_MissingDataTable` - 26 edges
 7. `JIG_SummaryDataTable` - 25 edges
 8. `AddJIG` - 24 edges
-9. `IDbConnectionFactory` - 22 edges
-10. `ManageJIG` - 22 edges
+9. `ManageJIG` - 22 edges
+10. `IDbConnectionFactory` - 21 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `Auto-update` --references--> `subFrame`  [INFERRED]
-  docs/Flows.md → SystemFramework/subFrame.Designer.cs
-- `Account module` --references--> `AddUser`  [INFERRED]
-  docs/modules/Account.md → SystemFramework/Account/AddUser.Designer.cs
-- `Account module` --references--> `accountSettings`  [INFERRED]
-  docs/modules/Account.md → SystemFramework/Account/accountSettings.Designer.cs
-- `Account module` --references--> `changeCredentials`  [INFERRED]
-  docs/modules/Account.md → SystemFramework/Account/changeCredentials.Designer.cs
-- `Account module` --references--> `changePassword`  [INFERRED]
-  docs/modules/Account.md → SystemFramework/Account/changePassword.Designer.cs
+- `Architecture` --references--> `manageOtherUser`  [INFERRED]
+  docs/Architecture.md → SystemFramework/Account/manageOtherUser.Designer.cs
+- `Account module` --references--> `manageOtherUser`  [INFERRED]
+  docs/modules/Account.md → SystemFramework/Account/manageOtherUser.Designer.cs
+- `Account module` --references--> `setSection`  [INFERRED]
+  docs/modules/Account.md → SystemFramework/Account/setSection.Designer.cs
+- `Architecture` --references--> `AddJIG`  [INFERRED]
+  docs/Architecture.md → SystemFramework/JIG/AddJIG.Designer.cs
+- `JIG module` --references--> `AddJIG`  [INFERRED]
+  docs/modules/JIG.md → SystemFramework/JIG/AddJIG.Designer.cs
 
 ## Import Cycles
 - None detected.
 
-## Communities (62 total, 19 thin omitted)
+## Hyperedges (group relationships)
+- **Shared per-month inventory logic** — docs_database_month_logic, docs_modules_jig_jiginventory, docs_modules_reporting_reportdataset, docs_modules_dashboard_dashboard, docs_web_app_listmissinghandler, docs_database_missing_jig_definition [EXTRACTED 1.00]
+- **Web JIG photo storage** — docs_web_app_uploadjigphotohandler, docs_web_app_photostorage, docs_web_app_jigphotoendpoints, docs_database_imageurl_column, docs_risks_photo_upload_content_trust [INFERRED 0.85]
+- **Monthly QR scan pipeline (both apps)** — docs_modules_jig_jiginventory, docs_modules_jig_jigqueries_insertjig, docs_web_app_scanjighandler, docs_database_qr_code_format, docs_database_unique_monthly_scan_constraint, docs_database_jig_inventory [INFERRED 0.95]
 
-### Community 0 - "Namespaces & NuGet Deps"
-Cohesion: 0.12
+## Communities (71 total, 16 thin omitted)
+
+### Community 0 - "WinForms Namespaces & Deps"
+Cohesion: 0.14
 Nodes (11): QCInventoryF2.Database, QCInventoryF2.Model, QCInventoryF2.usercontrol, QCInventoryF2.JIG.Reporting, QCInventoryF2.JIG, QCInventoryF2.Reports, QCInventoryF2, QCInventoryF2.Account (+3 more)
 
-### Community 1 - "Missing-JIG Typed Rows"
+### Community 1 - "Web Dashboard Page"
+Cohesion: 0.04
+Nodes (43): JIGControl.Web.Features.Inventory, OnInitializedAsync, AuthenticationState, FluentCard, FluentIcon, FluentProgressRing, PageTitle, ListMissingHandler (+35 more)
+
+### Community 2 - "Missing-JIG Typed Rows"
 Cohesion: 0.10
 Nodes (11): JIG_MissingRow, control_no, jig_id, partcode, partname, section, JIG_SummaryRow, percentage (+3 more)
 
-### Community 2 - "ReportDataset Core"
-Cohesion: 0.09
-Nodes (7): ReportDataset, JIG_Data, JIG_Missing, JIG_Summary, Relations, SchemaSerializationMode, Tables
+### Community 3 - "Web Slice Namespaces"
+Cohesion: 0.10
+Nodes (21): JIGControl.Web.Features.Auth, JIGControl.Web.Features.Reports, JIGControl.Web.Features.Jigs, JIGControl.Web.Features.Account, JIGControl.Web.Features.Users, JIGControl.Web.Common, IDbConnectionFactory, Lookups (+13 more)
 
-### Community 3 - "JIG Data Typed Row"
+### Community 4 - "Add User & Account Forms"
+Cohesion: 0.08
+Nodes (7): Account module, accountSettings, AddUser, changeCredentials, changePassword, Login, User
+
+### Community 5 - "Report Viewers (RDLC)"
+Cohesion: 0.08
+Nodes (4): setSection, MissingJigReport, printData, printGraph
+
+### Community 6 - "JIG Data Typed Row"
 Cohesion: 0.11
 Nodes (9): JIG_DataRow, control_no, inventory_status, jig_id, partcode, partname, section, timestamp (+1 more)
 
-### Community 4 - "Row Change Events"
+### Community 7 - "Web JIG Edit & Photo UI"
+Cohesion: 0.07
+Nodes (20): ChildContent, FluentInputFile, FluentInputFileEventArgs, FluentProgress, DeleteAsync, OnParametersSetAsync, OnPhotoUploadedAsync, AuthenticationState (+12 more)
+
+### Community 8 - "ReportDataset Core"
+Cohesion: 0.09
+Nodes (7): ReportDataset, JIG_Data, JIG_Missing, JIG_Summary, Relations, SchemaSerializationMode, Tables
+
+### Community 10 - "Row Change Events"
 Cohesion: 0.13
 Nodes (9): JIG_DataRowChangeEvent, Action, Row, JIG_MissingRowChangeEvent, Action, Row, JIG_SummaryRowChangeEvent, Action (+1 more)
 
-### Community 6 - "JIG Summary Table"
-Cohesion: 0.16
-Nodes (7): Reporting module, JIG_SummaryDataTable, Count, percentageColumn, sectionColumn, total_jigColumn, total_missingColumn
-
-### Community 9 - "JIG Data Table"
-Cohesion: 0.14
-Nodes (10): JIG_DataDataTable, control_noColumn, Count, inventory_statusColumn, jig_idColumn, partcodeColumn, partnameColumn, sectionColumn (+2 more)
-
-### Community 11 - "Resources & Settings"
-Cohesion: 0.13
-Nodes (9): QCInventoryF2.Properties, Resources, Culture, deleteKey, ResourceManager, trash_bin, Settings, Default (+1 more)
-
-### Community 13 - "Add User & Credentials"
-Cohesion: 0.12
-Nodes (4): AddUser, changeCredentials, changePassword, Login
-
-### Community 14 - "Missing-JIG Table"
-Cohesion: 0.13
-Nodes (7): JIG_MissingDataTable, control_noColumn, Count, jig_idColumn, partcodeColumn, partnameColumn, sectionColumn
-
-### Community 17 - "JIG Model & Key Handlers"
-Cohesion: 0.17
-Nodes (7): JIG, ControlNo, JigID, Partcode, Partname, Section, Status
-
-### Community 19 - "JigListPage.razor"
-Cohesion: 0.06
-Nodes (29): DataAnnotationsValidator, EditForm, FluentSearch, InputSelect, InputText, OnInitialized, OnInitialized, PageTitle (+21 more)
-
-### Community 20 - ".OpenAsync"
-Cohesion: 0.14
-Nodes (13): JIGControl.Web.Features.Account, JIGControl.Web.Features.Users, IDbConnectionFactory, MySqlConnectionFactory, ChangePasswordHandler, UpdateProfileHandler, CreateJigHandler, GetJigHandler (+5 more)
-
-### Community 21 - "JigEditPage.razor"
-Cohesion: 0.07
-Nodes (21): ChildContent, FluentInputFile, FluentInputFileEventArgs, FluentProgress, DeleteAsync, DeletePhotoAsync, OnParametersSetAsync, OnPhotosUploadedAsync (+13 more)
-
-### Community 23 - "dbQueries Helpers"
-Cohesion: 0.43
-Nodes (3): Data access, Risks & Findings, dbQueries
-
-### Community 24 - "Form"
-Cohesion: 0.21
-Nodes (3): Login, MainFrame, Program
-
-### Community 25 - "DB Connection & JIG Inserts"
-Cohesion: 0.32
-Nodes (4): Database, JIG module, conString, JIGQueries
-
-### Community 27 - "JIGControl.Web"
-Cohesion: 0.20
-Nodes (8): net10.0, JIGControl.Web, ClosedXML (0.105.1), Dapper (2.1.89), Microsoft.FluentUI.AspNetCore.Components (4.14.5), Microsoft.FluentUI.AspNetCore.Components.Icons (4.14.5), MySqlConnector (2.6.2), Microsoft.NET.Sdk.Web
-
-### Community 28 - "INDEX.md"
-Cohesion: 0.12
-Nodes (11): Graphify knowledge graph, JIGControl — Vault Index, Modules, Stack, Start here, Carried-over risks, JIG photos, JIGControl.Web (Blazor) (+3 more)
-
-### Community 29 - "Reports.cs"
-Cohesion: 0.11
-Nodes (16): JIGControl.Web.Features.Reports, MonthCard, Percentage, ScanMonth, ScanYear, TotalMaster, TotalScanned, MonthCardsHandler (+8 more)
-
-### Community 30 - "InventoryPage.razor"
+### Community 11 - "Web Inventory Page"
 Cohesion: 0.10
 Nodes (18): FluentTab, FluentTabs, ExportUrl, LoadAsync, OnInitializedAsync, AuthenticationState, FluentAnchor, FluentDataGrid (+10 more)
 
-### Community 31 - "ScanPage.razor"
+### Community 12 - "Web JIG List Page"
 Cohesion: 0.10
-Nodes (18): LoadAsync, OnAfterRenderAsync, OnInitializedAsync, OnKeyDownAsync, AuthenticationState, FluentButton, FluentCard, FluentDataGrid (+10 more)
+Nodes (18): FluentSearch, LoadAsync, OnInitializedAsync, OpenRow, AuthenticationState, FluentButton, FluentDataGrid, FluentDivider (+10 more)
 
-### Community 32 - "UsersPage.razor"
+### Community 13 - "Web Users Admin Page"
 Cohesion: 0.11
 Nodes (14): AddAsync, OnInitializedAsync, FluentButton, FluentCard, FluentDataGrid, FluentProgressRing, FluentStack, FluentTextField (+6 more)
 
-### Community 33 - "AccountPage.razor"
+### Community 14 - "JIG Missing Table"
+Cohesion: 0.13
+Nodes (7): JIG_MissingDataTable, control_noColumn, Count, jig_idColumn, partcodeColumn, partnameColumn, sectionColumn
+
+### Community 15 - "WinForms Startup & Nav"
+Cohesion: 0.12
+Nodes (5): Dashboard, DashboardCards (LoadSummary), MonthCardsHandler, Dashboard, DashboardCards
+
+### Community 16 - "JIG Inventory Screen"
+Cohesion: 0.12
+Nodes (3): Reporting, JIGInventory, ExportData
+
+### Community 17 - "Photo Storage & Endpoints"
+Cohesion: 0.14
+Nodes (6): PhotoStorage, Root, DeleteJigHandler, JigPhotoEndpoints, RemoveJigPhotoHandler, UploadJigPhotoHandler
+
+### Community 19 - "JIG Data Table"
+Cohesion: 0.14
+Nodes (10): JIG_DataDataTable, control_noColumn, Count, inventory_statusColumn, jig_idColumn, partcodeColumn, partnameColumn, sectionColumn (+2 more)
+
+### Community 20 - "Web Account Page"
 Cohesion: 0.12
 Nodes (12): ChangePasswordAsync, OnInitializedAsync, AntiforgeryToken, AuthenticationState, FluentButton, FluentCard, FluentMessageBar, FluentStack (+4 more)
 
-### Community 34 - "http"
+### Community 22 - "DB Connection (Both Apps)"
+Cohesion: 0.14
+Nodes (14): IDbConnectionFactory, MainLayout, Database/conString.cs (hard-coded connection string), MySQL server PTI-027s, DB trcsystem, Common/Db.cs (IDbConnectionFactory + Dapper), conString.ConnectionString / GetConnection(), dbQueries (LoadGrid, LoadComboBox, GetDataTable, ExecuteScalar), Risk #1: Hard-coded DB credentials (+6 more)
+
+### Community 23 - "Launch Settings"
 Cohesion: 0.13
 Nodes (15): ASPNETCORE_ENVIRONMENT, applicationUrl, commandName, dotnetRunMessages, environmentVariables, launchBrowser, applicationUrl, commandName (+7 more)
 
-### Community 35 - "ReportsPage.razor"
+### Community 24 - "Resources & Settings"
+Cohesion: 0.13
+Nodes (9): QCInventoryF2.Properties, Resources, Culture, deleteKey, ResourceManager, trash_bin, Settings, Default (+1 more)
+
+### Community 26 - "jig_masterlist & Web Risks"
+Cohesion: 0.25
+Nodes (8): jig_masterlist.imageUrl (001_jig_image_url.sql), jig_masterlist table, AddJIG, ManageJIG, Model.JIG (getDetails), Risk #6: Web JIG delete not admin-gated, Risk #3: SQL injection via string-interpolated queries, ListJigsHandler / GetJigHandler / Create/Update/DeleteJigHandler
+
+### Community 27 - "JIG Summary Table"
+Cohesion: 0.16
+Nodes (7): Reporting module, JIG_SummaryDataTable, Count, percentageColumn, sectionColumn, total_jigColumn, total_missingColumn
+
+### Community 28 - "Web Reports Page"
 Cohesion: 0.13
 Nodes (13): LoadAsync, OnInitializedAsync, FluentAnchor, FluentCard, FluentDataGrid, FluentDivider, FluentNumberField, FluentProgressRing (+5 more)
 
-### Community 36 - "MainLayout.razor"
+### Community 29 - "Web Main Layout"
 Cohesion: 0.14
 Nodes (13): AuthorizeView, FluentDesignTheme, FluentDialogProvider, FluentMessageBarProvider, FluentNavLink, FluentNavMenu, FluentPersona, FluentToastProvider (+5 more)
 
-### Community 37 - "JigItem"
-Cohesion: 0.15
-Nodes (11): JIGControl.Web.Features.Jigs, JigItem, ControlNo, JigId, Partcode, Partname, PhotoId, Section (+3 more)
-
-### Community 38 - "JigPhotos.cs"
-Cohesion: 0.20
-Nodes (6): PhotoStorage, Root, DeleteJigHandler, DeleteJigPhotoHandler, JigPhotoEndpoints, UploadJigPhotoHandler
-
-### Community 39 - "Components/_Imports.razor"
-Cohesion: 0.14
-Nodes (13): JIGControl.Web, JIGControl.Web.Components, JIGControl.Web.Components.Layout, Microsoft.AspNetCore.Authorization, Microsoft.AspNetCore.Components.Authorization, Microsoft.AspNetCore.Components.Forms, Microsoft.AspNetCore.Components.Routing, Microsoft.AspNetCore.Components.Web (+5 more)
-
-### Community 40 - "Features/_Imports.razor"
-Cohesion: 0.14
-Nodes (13): JIGControl.Web, JIGControl.Web.Components, JIGControl.Web.Components.Layout, Microsoft.AspNetCore.Authorization, Microsoft.AspNetCore.Components.Authorization, Microsoft.AspNetCore.Components.Forms, Microsoft.AspNetCore.Components.Routing, Microsoft.AspNetCore.Components.Web (+5 more)
-
-### Community 41 - "JIGControl.Web.Common"
-Cohesion: 0.19
-Nodes (6): JIGControl.Web.Features.Auth, JIGControl.Web.Common, AppClaims, Lookups, Microsoft.AspNetCore.Authentication, Microsoft.AspNetCore.Authentication.Cookies
-
-### Community 42 - "DashboardPage.razor"
-Cohesion: 0.18
-Nodes (11): JIGControl.Web.Features.Inventory, OnInitializedAsync, AuthenticationState, FluentCard, FluentIcon, FluentProgressRing, PageTitle, ListMissingHandler (+3 more)
-
-### Community 43 - "LoginUser"
-Cohesion: 0.17
-Nodes (8): AuthEndpoints, LoginHandler, LoginUser, Admin, Firstname, Lastname, UserId, Username
-
-### Community 44 - "JigPhoto"
+### Community 30 - "Shared Month Logic"
 Cohesion: 0.22
-Nodes (8): JigPhoto, ContentType, FileName, JigId, OriginalName, PhotoId, SizeBytes, UploadedAt
+Nodes (10): Missing JIG = existed by the 1st, no scan row that month, Microsoft.Reporting.WinForms (RDLC), JIGInventory, JIGQueries.InsertJIG / InserttoDB, Features/Reports (SectionSummaryHandler + Excel export endpoint), printData / MissingJigReport / printGraph, ReportDataset (JIG_Data, JIG_Missing, JIG_Summary), ListMissingHandler (+2 more)
 
-### Community 45 - "ReconnectModal.razor.js"
+### Community 31 - "Components/_Imports.razor"
+Cohesion: 0.07
+Nodes (26): JIGControl.Web, JIGControl.Web.Components, JIGControl.Web.Components.Layout, Microsoft.AspNetCore.Authorization, Microsoft.AspNetCore.Components.Authorization, Microsoft.AspNetCore.Components.Forms, Microsoft.AspNetCore.Components.Routing, Microsoft.AspNetCore.Components.Web (+18 more)
+
+### Community 32 - "subFrame (nav shell)"
+Cohesion: 0.33
+Nodes (6): Login (dialog), MainFrame, Program.Main, subFrame (nav shell), Auto-update, Risk #5: Update exe run from network share without signature check
+
+### Community 33 - "JIG module"
+Cohesion: 0.38
+Nodes (3): JIG module, conString, JIGQueries
+
+### Community 34 - "JIG Model & Scan Queries"
+Cohesion: 0.17
+Nodes (7): JIG, ControlNo, JigID, Partcode, Partname, Section, Status
+
+### Community 36 - "Web Login Page"
+Cohesion: 0.17
+Nodes (10): DataAnnotationsValidator, EditForm, InputSelect, InputText, OnInitialized, PageTitle, SignInAsync, route:/login (+2 more)
+
+### Community 37 - "Vault Architecture Docs"
+Cohesion: 0.28
+Nodes (6): Architecture, Database, Flows, Monthly JIG scan, Web JIG photo upload flow, Web scan flow (/scan)
+
+### Community 38 - "Login & MainFrame"
+Cohesion: 0.21
+Nodes (3): Login, MainFrame, Program
+
+### Community 39 - "Monthly Scan Pipeline"
+Cohesion: 0.47
+Nodes (5): jig_inventory table, QR code format TRCJIG|<jig_id>, InserttoDB, JIGQueries.InsertJIG, ScanJigHandler
+
+### Community 40 - "Stack & Excel Export"
+Cohesion: 0.22
+Nodes (9): Blazor Server web app (JIGControl.Web, .NET 10), ClosedXML (Excel export), Dapper 2.1.89, Fluent UI Blazor 4.14.5, Guna.UI2 2.0.4.7, JIGControl system (QC JIG tracking), MySql.Data 9.7, MySqlConnector 2.6.2 (+1 more)
+
+### Community 41 - "WinForms Data Access"
+Cohesion: 0.29
+Nodes (3): Data access, Risks & Findings, dbQueries
+
+### Community 42 - "Web Project & Packages"
+Cohesion: 0.20
+Nodes (8): net10.0, JIGControl.Web, ClosedXML (0.105.1), Dapper (2.1.89), Microsoft.FluentUI.AspNetCore.Components (4.14.5), Microsoft.FluentUI.AspNetCore.Components.Icons (4.14.5), MySqlConnector (2.6.2), Microsoft.NET.Sdk.Web
+
+### Community 43 - "JigItem Model"
+Cohesion: 0.20
+Nodes (10): JigItem, ControlNo, ImageUrl, JigId, Partcode, Partname, PhotoSrc, Section (+2 more)
+
+### Community 44 - "Web Scan Handler"
+Cohesion: 0.25
+Nodes (4): JIGControl.Web.Features.Scan, MySqlConnectionFactory, ScanJigHandler, ScanResult
+
+### Community 45 - "Users & Passwords"
+Cohesion: 0.25
+Nodes (9): User static session class (UserID, UserName, isAdmin, userSection), trc_user.jig_users table, accountSettings / changePassword / changeCredentials / setSection, AddUser, manageOtherUser, User (getUser, ChangePassword, ResetPassword, UpdateCredential), Risk #2: Plain-text passwords; ResetPassword sets empty, ChangePasswordHandler / UpdateProfileHandler (+1 more)
+
+### Community 46 - "Web Slice Registration"
+Cohesion: 0.22
+Nodes (6): Carried-over risks, JIG photos, JIGControl.Web (Blazor), Layout, Setup, SliceRegistration
+
+### Community 47 - "PhotoStorage (share root, IsInside)"
+Cohesion: 0.33
+Nodes (5): Risk #7: Antiforgery not enforced on minimal-API form posts, Risk #8: Photo upload trusts browser contentType/extension, JigPhotoEndpoints (/jig-photos/{jig_id}), PhotoStorage (share root, IsInside), UploadJigPhotoHandler
+
+### Community 48 - "Reconnect Modal JS"
 Cohesion: 0.32
 Nodes (6): handleReconnectStateChanged(), reconnectModal, resumeButton, retry(), retryButton, retryWhenDocumentBecomesVisible()
 
-### Community 46 - "ScannedRow"
+### Community 49 - "Auth Claims Builder"
 Cohesion: 0.25
-Nodes (8): ScannedRow, ControlNo, InventoryStatus, Partname, RecordId, Section, Timestamp, User
+Nodes (7): AuthEndpoints, LoginUser, Admin, Firstname, Lastname, UserId, Username
 
-### Community 48 - "Routes.razor"
+### Community 51 - "Web Routing"
 Cohesion: 0.29
 Nodes (6): AuthorizeRouteView, FocusOnNavigate, Found, NotAuthorized, RedirectToLogin, Router
 
-### Community 49 - "dapper"
+### Community 53 - "Login Flows (Both Apps)"
 Cohesion: 0.33
-Nodes (3): JIGControl.Web.Features.Scan, ScanJigHandler, ScanResult
+Nodes (5): Login flow (WinForms), User.getUser (plain-text compare), Web login flow (/login -> cookie jigcontrol.auth), AuthEndpoints.BuildPrincipal, LoginHandler
 
-### Community 52 - "App.razor"
+### Community 54 - "Web App Root"
 Cohesion: 0.33
 Nodes (5): HeadOutlet, ImportMap, ReconnectModal, ResourcePreloader, Routes
 
-### Community 53 - "MissingRow"
-Cohesion: 0.33
-Nodes (6): MissingRow, ControlNo, JigId, Partcode, Partname, Section
+### Community 55 - "Auth Imports"
+Cohesion: 0.29
+Nodes (3): AppClaims, Microsoft.AspNetCore.Authentication, Microsoft.AspNetCore.Authentication.Cookies
 
-### Community 54 - "UserRow"
+### Community 56 - "MonthCard Model"
+Cohesion: 0.33
+Nodes (6): MonthCard, Percentage, ScanMonth, ScanYear, TotalMaster, TotalScanned
+
+### Community 57 - "SectionSummary Model"
+Cohesion: 0.33
+Nodes (6): SectionSummary, Percentage, Scanned, Section, TotalJig, TotalMissing
+
+### Community 58 - "UserRow Model"
 Cohesion: 0.33
 Nodes (6): UserRow, Admin, Firstname, Lastname, UserId, Username
 
-### Community 56 - "Reporting"
+### Community 59 - "Vault Index"
 Cohesion: 0.50
-Nodes (4): Auto-update, Flows, Monthly JIG scan, Reporting
+Nodes (4): JIGControl — Vault Index, Modules, Stack, Start here
+
+### Community 61 - "Minor Cluster 61"
+Cohesion: 0.67
+Nodes (3): Graph god nodes (ReportDataset, JIGInventory, subFrame, AddJIG, ManageJIG, manageOtherUser), graphify query/path/explain/update commands, graphify-out outputs (graph.html, graph.json, GRAPH_REPORT.md)
+
+### Community 69 - "ExportData.ToExcel(Guna2DataGridView)"
+Cohesion: 0.50
+Nodes (4): Reporting flow (RDLC ReportViewer), Reports.ExportData.ToExcel, Web Excel export (/reports/export), ExportData.ToExcel(Guna2DataGridView)
 
 ## Knowledge Gaps
-- **273 isolated node(s):** `Root`, `ResourcePreloader`, `ImportMap`, `HeadOutlet`, `Routes` (+268 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 425 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **19 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **287 isolated node(s):** `Root`, `ResourcePreloader`, `ImportMap`, `HeadOutlet`, `Routes` (+282 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 446 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **16 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `ReportDataset` connect `ReportDataset Core` to `Namespaces & NuGet Deps`, `Missing-JIG Typed Rows`, `JIG Data Typed Row`, `Row Change Events`, `JIG Summary Table`, `subFrame Navigation Shell`, `JIG Data Table`, `Missing/Print Reports`, `Missing-JIG Table`, `.GetSchemaSerializable`, `printData`, `Reporting`?**
-  _High betweenness centrality (0.218) - this node is a cross-community bridge._
+- **Why does `ReportDataset` connect `ReportDataset Core` to `WinForms Namespaces & Deps`, `Missing-JIG Typed Rows`, `Report Viewers (RDLC)`, `Vault Architecture Docs`, `JIG Data Typed Row`, `Row Change Events`, `JIG Missing Table`, `JIG Inventory Screen`, `Typed Schema Serialization`, `JIG Data Table`, `JIG Summary Table`?**
+  _High betweenness centrality (0.206) - this node is a cross-community bridge._
 - **Are the 6 inferred relationships involving `ReportDataset` (e.g. with `Architecture` and `Reporting`) actually correct?**
   _`ReportDataset` has 6 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `Root`, `ResourcePreloader`, `ImportMap` to the rest of the system?**
-  _273 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `Namespaces & NuGet Deps` be split into smaller, more focused modules?**
-  _Cohesion score 0.12251984126984126 - nodes in this community are weakly interconnected._
-- **Why does `IDbConnectionFactory` connect `.OpenAsync` to `JigItem`, `JigPhotos.cs`, `DashboardPage.razor`, `LoginUser`, `dapper`, `Reports.cs`?**
-  _High betweenness centrality (0.195) - this node is a cross-community bridge._
+  _287 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `WinForms Namespaces & Deps` be split into smaller, more focused modules?**
+  _Cohesion score 0.14143775569842199 - nodes in this community are weakly interconnected._
+- **Why does `Dashboard` connect `WinForms Startup & Nav` to `subFrame (nav shell)`, `subFrame Navigation Shell`, `Vault Architecture Docs`, `Shared Month Logic`?**
+  _High betweenness centrality (0.157) - this node is a cross-community bridge._
 - **Are the 5 inferred relationships involving `JIGInventory` (e.g. with `Architecture` and `Monthly JIG scan`) actually correct?**
   _`JIGInventory` has 5 INFERRED edges - model-reasoned connections that need verification._
-- **Should `Missing-JIG Typed Rows` be split into smaller, more focused modules?**
-  _Cohesion score 0.09747899159663866 - nodes in this community are weakly interconnected._
+- **Should `Web Dashboard Page` be split into smaller, more focused modules?**
+  _Cohesion score 0.044326241134751775 - nodes in this community are weakly interconnected._

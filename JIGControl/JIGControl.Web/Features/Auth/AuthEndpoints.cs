@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using JIGControl.Web.Common;
+using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
@@ -22,15 +23,18 @@ public static class AuthEndpoints
 
     public static void MapAuthEndpoints(this WebApplication app)
     {
-        app.MapPost("/logout", async (HttpContext ctx) =>
+        // These read the form by hand, so UseAntiforgery alone would not reject a forged post.
+        app.MapPost("/logout", async (HttpContext ctx, IAntiforgery antiforgery) =>
         {
+            if (!await antiforgery.IsRequestValidAsync(ctx)) return Results.BadRequest();
             await ctx.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return Results.Redirect("/login");
         }).RequireAuthorization();
 
         // Section lives in the auth cookie, so switching it re-issues the cookie.
-        app.MapPost("/account/section", async (HttpContext ctx) =>
+        app.MapPost("/account/section", async (HttpContext ctx, IAntiforgery antiforgery) =>
         {
+            if (!await antiforgery.IsRequestValidAsync(ctx)) return Results.BadRequest();
             var form = await ctx.Request.ReadFormAsync();
             var section = form["section"].ToString();
             if (!Lookups.Sections.Contains(section)) return Results.BadRequest();
