@@ -9,19 +9,27 @@ internal static class Program
     {
         ApplicationConfiguration.Initialize();
 
+        // A new install (or broken settings) opens the settings screen first.
         var (config, error) = StationConfig.Load();
-        if (config is null)
+        if (error is not null)
         {
-            MessageBox.Show(error, "JIG Scanner setup", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            return;
+            using var setup = new SettingsForm(config, error);
+            if (setup.ShowDialog() != DialogResult.OK || setup.Config is null) return;
+            config = setup.Config;
         }
 
-        var api = new ScannerApi(config);
         // Sign out returns to the login screen; closing the login screen exits.
         while (true)
         {
-            using var login = new LoginForm(api, config.Section);
-            if (login.ShowDialog() != DialogResult.OK || login.Operator is null) return;
+            var api = new ScannerApi(config);
+            using var login = new LoginForm(api, config);
+            var result = login.ShowDialog();
+            if (result == DialogResult.Retry && login.NewConfig is not null)
+            {
+                config = login.NewConfig;
+                continue;
+            }
+            if (result != DialogResult.OK || login.Operator is null) return;
 
             using var scan = new ScanForm(api, config.Section, login.Operator);
             Application.Run(scan);

@@ -654,9 +654,9 @@
     "semantic_hash": ""
   },
   "JIGControl.Scanner/Forms/LoginForm.cs": {
-    "mtime": 1793330903.24924,
-    "seen": 1793331019.8272831,
-    "ast_hash": "52950e4182a1af82db36a176020928c6",
+    "mtime": 1793337619.4821892,
+    "seen": 1793337653.6564226,
+    "ast_hash": "893c2edb0b1961211fb3c6aa581c5ed5",
     "semantic_hash": ""
   },
   "JIGControl.Scanner/Forms/MissingForm.cs": {
@@ -684,15 +684,15 @@
     "semantic_hash": ""
   },
   "JIGControl.Scanner/Program.cs": {
-    "mtime": 1793330903.2389123,
-    "seen": 1793331019.8272831,
-    "ast_hash": "52f986dc8633312a887eb5c59ebdd291",
+    "mtime": 1793337610.5599213,
+    "seen": 1793337653.6564226,
+    "ast_hash": "6cee31b36bdaa7864b2e0de7c8f775eb",
     "semantic_hash": ""
   },
   "JIGControl.Scanner/StationConfig.cs": {
-    "mtime": 1793330903.2349036,
-    "seen": 1793331019.8272831,
-    "ast_hash": "a8cb313654cf8e332ee1d9d9940bba79",
+    "mtime": 1793337580.0695152,
+    "seen": 1793337653.6564226,
+    "ast_hash": "341753308a26452ffa32af16a3732cfe",
     "semantic_hash": ""
   },
   "JIGControl.Scanner/station.example.json": {
@@ -714,21 +714,27 @@
     "semantic_hash": ""
   },
   "docs/Scanner.md": {
-    "mtime": 1793331013.6862402,
-    "seen": 1793331019.8272831,
-    "ast_hash": "e57cc1f5064d9a50591fde7ecd008166",
+    "mtime": 1793337642.6778202,
+    "seen": 1793337653.6564226,
+    "ast_hash": "8640236f4729b9ec7615d86efea6c2ed",
     "semantic_hash": ""
   },
   "JIGControl.Scanner/ScannerApi.cs": {
-    "mtime": 1793330901.377684,
-    "seen": 1793331019.8272831,
-    "ast_hash": "a9384d9d1c957e40f1f40b0774d0b444",
+    "mtime": 1793337580.2119143,
+    "seen": 1793337653.6564226,
+    "ast_hash": "23ab41c8eb6f5d9eaaa47cd04783e149",
     "semantic_hash": ""
   },
   "JIGControl.Web/Features/Api/ApiEndpoints.cs": {
     "mtime": 1793330857.0035217,
     "seen": 1793331019.8272831,
     "ast_hash": "af102bb4216f89aac18e23e0aad34449",
+    "semantic_hash": ""
+  },
+  "JIGControl.Scanner/Forms/SettingsForm.cs": {
+    "mtime": 1793337597.640916,
+    "seen": 1793337653.6564226,
+    "ast_hash": "3dd816e425178f744cbd353868902ca7",
     "semantic_hash": ""
   }
 }
