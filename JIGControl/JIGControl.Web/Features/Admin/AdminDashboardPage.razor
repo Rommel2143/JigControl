@@ -1,0 +1,198 @@
+@page "/"
+@page "/admin"
+@* Home page for every signed-in user; New JIGs links still lead to an admin-only page. *@
+@attribute [Authorize]
+@using JIGControl.Web.Features.Missing
+@inject AdminDashboardHandler Activity
+@inject MissingBySectionHandler MissingBySection
+@inject NavigationManager Nav
+
+<PageTitle>Dashboard</PageTitle>
+
+<div class="ribbon">
+    <FluentSelect TOption="int" Items="months" OptionText="@(m => Lookups.Months[m - 1])" OptionValue="@(m => m.ToString())"
+                  @bind-SelectedOption="month" @bind-SelectedOption:after="LoadAsync" Style="min-width:150px" />
+    <FluentNumberField TValue="int" @bind-Value="year" @bind-Value:after="LoadAsync" Min="2020" Max="2100" Style="width:110px" />
+    <FluentDivider Orientation="Orientation.Vertical" Style="height:24px" />
+    <FluentAnchor Appearance="Appearance.Stealth" IconStart="@(new Icons.Regular.Size20.ErrorCircle())" Href="@MissingUrl(null)">Missing JIGs</FluentAnchor>
+    <FluentAnchor Appearance="Appearance.Stealth" IconStart="@(new Icons.Regular.Size20.CalendarAdd())" Href="/new-jigs">New JIGs</FluentAnchor>
+    <FluentAnchor Appearance="Appearance.Stealth" IconStart="@(new Icons.Regular.Size20.ArrowDownload())" Href="@($"/reports/export?kind=summary&year={year}&month={month}")" Target="_blank">Export coverage</FluentAnchor>
+</div>
+
+<h1 class="page-title">Dashboard <span class="muted">· all sections · @Lookups.Months[month - 1] @year inventory</span></h1>
+
+@if (data is null || coverage is null)
+{
+    <FluentProgressRing />
+}
+else
+{
+    <div class="kpi-row">
+        <FluentCard Class="kpi">
+            <div class="kpi-label">JIGs in master list</div>
+            <div class="kpi-value">@data.Sections.Sum(s => s.MasterTotal)</div>
+        </FluentCard>
+        <FluentCard Class="kpi">
+            <div class="kpi-label">Scanned of @all.Total expected · @all.Percentage%</div>
+            <div class="kpi-value">@all.Scanned</div>
+            <div class="bar-track"><div class="bar-fill" style="width:@Pct(all.Percentage)%"></div></div>
+        </FluentCard>
+        <FluentCard Class="kpi kpi-warn kpi-action" @onclick="@(() => Nav.NavigateTo(MissingUrl(null)))">
+            <div class="kpi-label">Missing@(IsCurrentMonth ? $" · {DaysLeft} days left" : "")</div>
+            <div class="kpi-value">@all.Missing</div>
+            <div class="muted">View missing JIGs →</div>
+        </FluentCard>
+        <FluentCard Class="kpi kpi-action" @onclick="@(() => Nav.NavigateTo("/new-jigs"))">
+            <div class="kpi-label">New JIGs this month</div>
+            <div class="kpi-value">+@data.Sections.Sum(s => s.NewThisMonth)</div>
+            <div class="muted">View new JIGs →</div>
+        </FluentCard>
+        <FluentCard Class="kpi">
+            <div class="kpi-label">Scans · @data.Scanners.Count active scanner@(data.Scanners.Count == 1 ? "" : "s")</div>
+            <div class="kpi-value">@data.Days.Sum(d => d.Scans)</div>
+        </FluentCard>
+    </div>
+
+    <h2 class="section-title">Sections <span class="muted">· click a row for its missing JIGs</span></h2>
+    <div class="matrix-wrap">
+        <table class="matrix section-table">
+            <thead>
+                <tr>
+                    <th class="matrix-section">Section</th><th>Master list</th><th>New</th><th>Expected</th><th>Scanned</th><th>Missing</th>
+                    <th style="width:28%">Coverage</th><th>Last scan</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var c in coverage)
+                {
+                    var a = data.Sections.FirstOrDefault(s => s.Section == c.Section);
+                    var name = c.Section;
+                    <tr class="pick-row" @onclick="@(() => Nav.NavigateTo(MissingUrl(name)))">
+                        <th class="matrix-section">@name</th>
+                        <td>@(a?.MasterTotal ?? 0)</td>
+                        <td>@(a?.NewThisMonth > 0 ? $"+{a.NewThisMonth}" : "–")</td>
+                        <td>@c.Total</td>
+                        <td>@c.Scanned</td>
+                        <td class="@(c.Missing > 0 ? "warn-text" : "")">@c.Missing</td>
+                        <td>@Bar(c.Percentage)</td>
+                        <td class="muted">@(a?.LastScan?.ToString("MMM d HH:mm") ?? "no scans")</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr class="pick-row matrix-total" @onclick="@(() => Nav.NavigateTo(MissingUrl(null)))">
+                    <th class="matrix-section">All sections</th>
+                    <td>@data.Sections.Sum(s => s.MasterTotal)</td>
+                    <td>+@data.Sections.Sum(s => s.NewThisMonth)</td>
+                    <td>@all.Total</td>
+                    <td>@all.Scanned</td>
+                    <td class="@(all.Missing > 0 ? "warn-text" : "")">@all.Missing</td>
+                    <td>@Bar(all.Percentage)</td>
+                    <td class="muted">@(data.Sections.Max(s => s.LastScan)?.ToString("MMM d HH:mm") ?? "no scans")</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <div class="two-col" style="margin-top:16px">
+        <FluentCard>
+            <h2 class="card-title">Scans per day <span class="muted">· @Lookups.Months[month - 1]</span></h2>
+            @if (data.Days.Count == 0)
+            {
+                <p class="muted">No scans this month.</p>
+            }
+            else
+            {
+                var max = data.Days.Max(d => d.Scans);
+                <div class="day-chart">
+                    @for (var d = 1; d <= DateTime.DaysInMonth(year, month); d++)
+                    {
+                        var day = new DateTime(year, month, d);
+                        var n = data.Days.FirstOrDefault(x => x.Day == day)?.Scans ?? 0;
+                        <div class="day-col" title="@($"{day:ddd MMM d}: {n} scan{(n == 1 ? "" : "s")}")">
+                            <div class="day-bar" style="height:@Pct(max == 0 ? 0 : n * 100.0 / max)%"></div>
+                            <div class="day-label">@(d == 1 || d % 5 == 0 ? d.ToString() : "")</div>
+                        </div>
+                    }
+                </div>
+            }
+        </FluentCard>
+        <FluentCard>
+            <h2 class="card-title">Scanners <span class="muted">· @Lookups.Months[month - 1]</span></h2>
+            @if (data.Scanners.Count == 0)
+            {
+                <p class="muted">No scans this month.</p>
+            }
+            else
+            {
+                <FluentDataGrid Items="data.Scanners.AsQueryable()" ShowHover="true">
+                    <PropertyColumn Property="@(s => s.User)" Title="User" Sortable="true" />
+                    <PropertyColumn Property="@(s => s.Scans)" Title="Scans" Sortable="true" Align="Align.End" IsDefaultSortColumn="true" InitialSortDirection="SortDirection.Descending" />
+                    <PropertyColumn Property="@(s => s.LastScan)" Title="Last scan" Format="MMM d HH:mm" Sortable="true" />
+                </FluentDataGrid>
+            }
+        </FluentCard>
+    </div>
+
+    <div class="two-col" style="margin-top:16px">
+        <FluentCard>
+            <h2 class="card-title">Scan results by status <span class="muted">· @Lookups.Months[month - 1]</span></h2>
+            @LabelBars(data.ScanStatuses, "No scans this month.")
+        </FluentCard>
+        <FluentCard>
+            <h2 class="card-title">Master list by JIG status <span class="muted">· now</span></h2>
+            @LabelBars(data.JigStatuses, "No JIGs.")
+        </FluentCard>
+    </div>
+}
+
+@code {
+    private static readonly int[] months = Enumerable.Range(1, 12).ToArray();
+    private int month = DateTime.Now.Month;
+    private int year = DateTime.Now.Year;
+    private AdminActivity? data;
+    private List<SectionMissing>? coverage;
+    private SectionMissing all = new("", 0, 0);
+
+    private bool IsCurrentMonth => year == DateTime.Now.Year && month == DateTime.Now.Month;
+    private int DaysLeft => DateTime.DaysInMonth(year, month) - DateTime.Now.Day;
+    private string MissingUrl(string? section) => $"/missing?year={year}&month={month}&section={Uri.EscapeDataString(section ?? "")}";
+
+    protected override Task OnInitializedAsync() => LoadAsync();
+
+    private async Task LoadAsync()
+    {
+        data = await Activity.Handle(year, month);
+        coverage = await MissingBySection.Handle(year, month);
+        all = new SectionMissing("", coverage.Sum(s => s.Total), coverage.Sum(s => s.Missing));
+    }
+
+    private static string Pct(double p) => Math.Min(100, p).ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+    private static RenderFragment Bar(double pct) => __builder =>
+    {
+        <div class="bar-inline">
+            <div class="bar-track"><div class="bar-fill" style="width:@Pct(pct)%"></div></div>
+            <span class="bar-value">@pct%</span>
+        </div>
+    };
+
+    private static RenderFragment LabelBars(List<LabelCount> items, string empty) => __builder =>
+    {
+        if (items.Count == 0)
+        {
+            <p class="muted">@empty</p>
+            return;
+        }
+        var total = items.Sum(i => i.Count);
+        foreach (var i in items)
+        {
+            var pct = total == 0 ? 0 : Math.Round(i.Count * 100.0 / total, 1);
+            <div class="bar-row bar-row-compact" title="@($"{pct}%")">
+                <span class="bar-label">@i.Label</span>
+                <div class="bar-track"><div class="bar-fill" style="width:@Pct(pct)%"></div></div>
+                <span class="bar-value">@i.Count</span>
+            </div>
+        }
+    };
+}

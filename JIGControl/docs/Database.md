@@ -14,6 +14,7 @@ QR code format: `TRCJIG|<jig_id>` (validated in `JIGQueries.InsertJIG` and web `
 ## Month logic (shared by both apps)
 - Every per-month query filters `jig_inventory.scan_month` / `scan_year` (never `MONTH(timestamp)`): `JIGInventory`, `ReportDataset`, `Dashboard`, web `InventoryQueries`, `Reports`.
 - "Date added" of a JIG = `jig_masterlist.timestamp`; the web `/new-jigs` page groups JIGs by it (assumes the column is set on insert and never auto-updated, the same assumption the missing logic makes).
+- All web pages use this rule (Reports included since 2026-10-30); WinForms `printGraph` still uses end-of-month ([[Risks]] #9).
 - A JIG counts toward a month only if `jig_masterlist.timestamp` (creation) is on/before that month — "missing" = existed by the 1st, no scan row that month (`ListMissingHandler`).
 
 \*`imageUrl` is added by the web app migration (`JIGControl.Web/Database/001_jig_image_url.sql`): full share path of the JIG photo. See [[Web-App]].

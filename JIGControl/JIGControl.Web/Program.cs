@@ -1,6 +1,7 @@
 using Dapper;
 using JIGControl.Web.Common;
 using JIGControl.Web.Components;
+using JIGControl.Web.Features.Api;
 using JIGControl.Web.Features.Auth;
 using JIGControl.Web.Features.Jigs;
 using JIGControl.Web.Features.Reports;
@@ -26,7 +27,9 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         o.ExpireTimeSpan = TimeSpan.FromHours(12);
         o.SlidingExpiration = true;
         o.Cookie.Name = "jigcontrol.auth";
-    });
+    })
+    // Bearer tokens for /api (desktop clients); one shift per sign-in.
+    .AddBearerToken(o => o.BearerTokenExpiration = TimeSpan.FromHours(12));
 builder.Services.AddAuthorization();
 builder.Services.AddCascadingAuthenticationState();
 
@@ -37,7 +40,9 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
     app.UseHsts();
 }
-app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
+// HTML error pages for the site only; /api clients get the plain status code (401, 404, ...).
+app.UseWhen(ctx => !ctx.Request.Path.StartsWithSegments("/api"),
+    site => site.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true));
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
@@ -48,6 +53,7 @@ app.MapStaticAssets();
 app.MapAuthEndpoints();
 app.MapJigPhotoEndpoints();
 app.MapReportEndpoints();
+app.MapApiEndpoints();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 

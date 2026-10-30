@@ -28,15 +28,15 @@ body {
 .app-user { display: flex; align-items: center; gap: 12px; }
 .app-user form { margin: 0; }
 .app-user fluent-persona, .app-user .fluent-persona { color: #fff; }
-.section-chip { font-size: 12px; padding: 2px 10px; border-radius: 12px; background: rgba(255,255,255,.2); }
 
 .app-body { flex: 1; display: flex; min-height: 0; }
 .app-nav { flex: none; background: var(--neutral-layer-1); border-right: 1px solid var(--card-border); padding-top: 8px; overflow-y: auto; }
 .app-content { flex: 1; overflow: auto; padding: 0 24px 32px; }
 
 /* Ribbon-like command bar */
+/* z-index above the data grid's sticky header, so ribbon dropdowns open over the grid. */
 .ribbon {
-    position: sticky; top: 0; z-index: 2; display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+    position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
     margin: 0 -24px 8px; padding: 8px 24px; background: var(--neutral-layer-1); border-bottom: 1px solid var(--card-border);
 }
 
@@ -60,16 +60,6 @@ fluent-card, .fluent-card { padding: 16px; border-radius: 8px; }
 .photo-meta { display: flex; align-items: center; justify-content: space-between; padding: 2px 4px 2px 8px; font-size: 12px; }
 .photo-meta span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-/* Scan */
-.scan-card { max-width: 900px; }
-.scan-input { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 280px; }
-.scan-input label { font-size: 13px; }
-.scan-input input {
-    font: 600 20px/1.2 "Cascadia Mono", Consolas, monospace; padding: 10px 12px;
-    border: 1px solid var(--card-border); border-bottom: 2px solid var(--accent-fill-rest); border-radius: 4px;
-    background: var(--neutral-layer-1); color: inherit;
-}
-.scan-input input:focus { outline: 2px solid var(--accent-fill-rest); }
 
 /* Dashboard */
 .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
@@ -99,6 +89,17 @@ fluent-card, .fluent-card { padding: 16px; border-radius: 8px; }
 .matrix-cell.has-new .matrix-added { font-weight: 600; font-size: 15px; color: var(--accent-fill-rest); }
 .matrix-total-small { font-size: 11px; color: var(--text-muted); }
 .matrix-active { outline: 2px solid var(--accent-fill-rest); outline-offset: -2px; }
+.pick-row { cursor: pointer; }
+.pick-row:hover th, .pick-row:hover td { background: var(--neutral-layer-2); }
+.section-table td { text-align: right; }
+.bar-inline { display: grid; grid-template-columns: 1fr 52px; align-items: center; gap: 8px; }
+.warn-text { color: #C50F1F; font-weight: 600; }
+.bar-row-compact { grid-template-columns: 110px 1fr 40px; padding: 4px 0; }
+.bar-mine .bar-label { color: var(--accent-fill-rest); }
+.day-chart { display: flex; align-items: flex-end; gap: 2px; height: 160px; }
+.day-col { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; height: 100%; min-width: 0; }
+.day-bar { background: var(--accent-fill-rest); border-radius: 2px 2px 0 0; min-height: 0; }
+.day-label { font-size: 10px; color: var(--text-muted); text-align: center; height: 14px; }
 .matrix-total th, .matrix-total td { border-top: 2px solid var(--card-border); font-weight: 600; }
 
 /* Bars */

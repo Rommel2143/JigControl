@@ -35,14 +35,6 @@
             <label for="password">Password</label>
             <InputText id="password" type="password" @bind-Value="Input!.Password" autocomplete="current-password" />
 
-            <label for="section">Section</label>
-            <InputSelect id="section" @bind-Value="Input!.Section">
-                @foreach (var s in Lookups.Sections)
-                {
-                    <option value="@s">@s</option>
-                }
-            </InputSelect>
-
             <button type="submit" class="login-btn">Sign in</button>
         </EditForm>
     </div>
@@ -74,9 +66,8 @@
             error = "Wrong username or password.";
             return;
         }
-        var section = Lookups.Sections.Contains(Input.Section) ? Input.Section : Lookups.Sections[0];
         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-            AuthEndpoints.BuildPrincipal(user, section),
+            AuthEndpoints.BuildPrincipal(user),
             new AuthenticationProperties { IsPersistent = true });
 
         var target = !string.IsNullOrEmpty(ReturnUrl) && ReturnUrl.StartsWith('/') && !ReturnUrl.StartsWith("//") ? ReturnUrl : "/";
@@ -87,6 +78,5 @@
     {
         [Required] public string Username { get; set; } = "";
         public string? Password { get; set; }
-        public string Section { get; set; } = Lookups.Sections[0];
     }
 }

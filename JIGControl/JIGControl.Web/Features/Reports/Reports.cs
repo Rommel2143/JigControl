@@ -2,6 +2,7 @@ using ClosedXML.Excel;
 using Dapper;
 using JIGControl.Web.Common;
 using JIGControl.Web.Features.Inventory;
+using JIGControl.Web.Features.Missing;
 using JIGControl.Web.Features.NewJigs;
 
 namespace JIGControl.Web.Features.Reports;
@@ -25,6 +26,8 @@ public sealed class MonthCard
 }
 
 /// Scan coverage per section for one month (the WinForms printGraph report).
+/// Expected = JIGs that existed by the 1st of the month, the same rule as the Inventory and Missing pages.
+/// (WinForms printGraph still counts JIGs that existed by the end of the month.)
 public sealed class SectionSummaryHandler(IDbConnectionFactory db)
 {
     public async Task<List<SectionSummary>> Handle(int year, int month, CancellationToken ct = default)
@@ -37,27 +40,30 @@ public sealed class SectionSummaryHandler(IDbConnectionFactory db)
             FROM jig_masterlist jm
             LEFT JOIN (SELECT DISTINCT jig_id FROM jig_inventory WHERE scan_month = @month AND scan_year = @year) ji
                    ON ji.jig_id = jm.jig_id
-            WHERE DATE(jm.timestamp) < @endDate
+            WHERE DATE(jm.timestamp) <= @fromDate
             GROUP BY jm.section
             ORDER BY jm.section
-            """, new { year, month, endDate = new DateTime(year, month, 1).AddMonths(1) });
+            """, new { year, month, fromDate = new DateTime(year, month, 1) });
         return rows.AsList();
     }
 }
 
-/// One card per scanned month: distinct JIGs scanned vs. JIGs that existed by month end (the WinForms Dashboard).
+/// One card per scanned month: expected JIGs (existed by the 1st, as on the Missing page) and how many of them were scanned.
 public sealed class MonthCardsHandler(IDbConnectionFactory db)
 {
     public async Task<List<MonthCard>> Handle(int year, CancellationToken ct = default)
     {
         using var con = await db.OpenAsync(ct);
         var rows = await con.QueryAsync<MonthCard>("""
-            SELECT s.scan_year, s.scan_month, s.total_scanned,
-                   (SELECT COUNT(*) FROM jig_masterlist jm
-                     WHERE jm.timestamp < DATE_ADD(MAKEDATE(s.scan_year, 1), INTERVAL s.scan_month MONTH)) AS total_master
-            FROM (SELECT scan_year, scan_month, COUNT(DISTINCT jig_id) AS total_scanned
-                  FROM jig_inventory WHERE scan_year = @year
-                  GROUP BY scan_year, scan_month) s
+            SELECT s.scan_year, s.scan_month,
+                   (SELECT COUNT(DISTINCT ji.jig_id) FROM jig_inventory ji
+                     JOIN jig_masterlist jm ON jm.jig_id = ji.jig_id
+                     WHERE ji.scan_year = s.scan_year AND ji.scan_month = s.scan_month
+                       AND DATE(jm.timestamp) <= s.month_start) AS total_scanned,
+                   (SELECT COUNT(*) FROM jig_masterlist jm WHERE DATE(jm.timestamp) <= s.month_start) AS total_master
+            FROM (SELECT DISTINCT scan_year, scan_month,
+                         DATE_ADD(MAKEDATE(scan_year, 1), INTERVAL scan_month - 1 MONTH) AS month_start
+                  FROM jig_inventory WHERE scan_year = @year) s
             ORDER BY s.scan_month
             """, new { year });
         return rows.AsList();
@@ -69,26 +75,36 @@ public static class ReportEndpoints
     public static void MapReportEndpoints(this WebApplication app)
     {
         app.MapGet("/reports/export", async (string kind, int year, int month, HttpContext ctx,
-            ListScannedHandler scanned, ListMissingHandler missing, SectionSummaryHandler summary, ListNewJigsHandler newJigs) =>
+            ListScannedHandler scanned, ListMissingHandler missing, SectionSummaryHandler summary, ListNewJigsHandler newJigs, MissingJigsHandler missingAll) =>
         {
             if (month is < 1 or > 12) return Results.BadRequest();
-            var section = ctx.User.Section();
+            // Inventory page: ?section= (empty or unknown = all sections).
+            var picked = Lookups.SectionOrNull(ctx.Request.Query["section"].ToString());
+            var section = picked ?? "all";
             using var wb = new XLWorkbook();
             var stamp = $"{year}-{month:00}";
 
             switch (kind)
             {
                 case "scanned":
-                    wb.Worksheets.Add("Scanned").Cell(1, 1).InsertTable(await scanned.Handle(section, year, month));
+                    wb.Worksheets.Add("Scanned").Cell(1, 1).InsertTable(await scanned.Handle(picked, year, month));
                     break;
                 case "missing":
-                    wb.Worksheets.Add("Missing").Cell(1, 1).InsertTable(await missing.Handle(section, year, month));
+                    wb.Worksheets.Add("Missing").Cell(1, 1).InsertTable(await missing.Handle(picked, year, month));
                     break;
                 case "summary":
                     var rows = (await summary.Handle(year, month))
                         .Select(r => new { r.Section, Total = r.TotalJig, r.Scanned, Missing = r.TotalMissing, Percent = r.Percentage });
                     wb.Worksheets.Add("Summary").Cell(1, 1).InsertTable(rows);
                     section = "all";
+                    break;
+                case "missing-all":
+                    // Missing JIGs page: ?section= (empty = all sections), with last scan per JIG.
+                    var sec = ctx.Request.Query["section"].ToString();
+                    section = sec == "" ? "all" : sec;
+                    var unscanned = (await missingAll.Handle(sec == "" ? null : sec, year, month))
+                        .Select(r => new { r.Section, r.ControlNo, r.Partcode, r.Partname, JigStatus = r.Status, r.LastScanned, r.LastScanStatus, r.DateAdded });
+                    wb.Worksheets.Add("Missing").Cell(1, 1).InsertTable(unscanned);
                     break;
                 case "new":
                     // Admin dashboard export: ?section= (empty = all sections).

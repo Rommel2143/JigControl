@@ -1,0 +1,4 @@
+bin/
+obj/
+# Per-PC settings
+station.json

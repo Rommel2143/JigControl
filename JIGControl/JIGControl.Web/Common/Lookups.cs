@@ -9,6 +9,11 @@ public static class Lookups
         "QC F2", "QC F1", "RETAINER", "RUBBER", "SHAFT", "TUBEPUMP"
     ];
 
+    /// Section dropdowns on list pages; AllSections maps to a null (no) filter.
+    public const string AllSections = "All sections";
+    public static readonly string[] SectionFilter = [AllSections, .. Sections];
+    public static string? SectionOrNull(string? s) => Sections.Contains(s) ? s : null;
+
     public static readonly string[] JigStatuses = ["Available", "In-Use", "Under Repair", "For Modification", "Other"];
 
     public static readonly string[] Months =

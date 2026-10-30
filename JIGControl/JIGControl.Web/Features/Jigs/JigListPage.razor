@@ -6,9 +6,10 @@
 <PageTitle>JIG Master List</PageTitle>
 
 <div class="ribbon">
-    <FluentButton Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size20.Add())" OnClick="@(() => Nav.NavigateTo("/jigs/new"))">New JIG</FluentButton>
+    <FluentButton Appearance="Appearance.Accent" IconStart="@(new Icons.Regular.Size20.Add())" OnClick="NewJig">New JIG</FluentButton>
     <FluentButton Appearance="Appearance.Stealth" IconStart="@(new Icons.Regular.Size20.ArrowClockwise())" OnClick="LoadAsync">Refresh</FluentButton>
     <FluentDivider Orientation="Orientation.Vertical" Style="height:24px" />
+    <FluentSelect TOption="string" Items="Lookups.SectionFilter" @bind-Value="section" @bind-Value:after="LoadAsync" Style="min-width:170px" />
     <FluentSearch @bind-Value="search" @bind-Value:after="StateHasChanged" Immediate="true" Placeholder="Search control no, part code, part name" Style="width:320px" />
     <FluentSelect TOption="string" Items="statusFilter" @bind-Value="status" Style="min-width:170px" />
 </div>
@@ -33,6 +34,10 @@ else
                 <FluentIcon Value="@(new Icons.Regular.Size24.Image())" Color="Color.Disabled" />
             }
         </TemplateColumn>
+        @if (Lookups.SectionOrNull(section) is null)
+        {
+            <PropertyColumn Property="@(j => j.Section)" Title="Section" Sortable="true" />
+        }
         <PropertyColumn Property="@(j => j.ControlNo)" Title="Control No" Sortable="true" />
         <PropertyColumn Property="@(j => j.Partcode)" Title="Part Code" Sortable="true" />
         <PropertyColumn Property="@(j => j.Partname)" Title="Part Name" Sortable="true" />
@@ -48,11 +53,11 @@ else
     private List<JigItem>? jigs;
     private string search = "";
     private string status = "All statuses";
-    private string section = "";
+    private string section = Lookups.AllSections;
     private readonly PaginationState pagination = new() { ItemsPerPage = 15 };
     private static readonly string[] statusFilter = ["All statuses", .. Lookups.JigStatuses];
 
-    [CascadingParameter] private Task<AuthenticationState> Auth { get; set; } = default!;
+    [SupplyParameterFromQuery(Name = "section")] private string? QuerySection { get; set; }
 
     private IQueryable<JigItem> Filtered => (jigs ?? []).AsQueryable()
         .Where(j => status == "All statuses" || j.Status == status)
@@ -63,11 +68,18 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        section = (await Auth).User.Section();
+        section = Lookups.SectionOrNull(QuerySection) ?? Lookups.AllSections;
         await LoadAsync();
     }
 
-    private async Task LoadAsync() => jigs = await ListJigs.Handle(section);
+    private async Task LoadAsync()
+    {
+        jigs = await ListJigs.Handle(Lookups.SectionOrNull(section));
+        await pagination.SetCurrentPageIndexAsync(0);
+    }
+
+    // The new JIG starts in the section picked here (changeable on the form).
+    private void NewJig() => Nav.NavigateTo($"/jigs/new?section={Uri.EscapeDataString(Lookups.SectionOrNull(section) ?? "")}");
 
     private void OpenRow(FluentDataGridRow<JigItem> row)
     {

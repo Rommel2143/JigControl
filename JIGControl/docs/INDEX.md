@@ -3,14 +3,16 @@
 System for tracking QC **JIGs** (fixtures): master list, monthly QR-scan inventory, missing-JIG reports, user accounts. Two front ends on one MySQL DB:
 - **Desktop** — C# WinForms, .NET Framework 4.8, namespace `QCInventoryF2` (`SystemFramework/`)
 - **Web** — Blazor Server, .NET 10, namespace `JIGControl.Web` (`JIGControl.Web/`)
+- **Scanner** — WinForms, .NET 10, namespace `JIGControl.Scanner` (`JIGControl.Scanner/`), one section per station
 
 ## Start here
 - [[Architecture]] — layers, startup, navigation shell
 - [[Database]] — MySQL schema & every query location
 - [[Flows]] — login, monthly scan, reporting, auto-update
-- [[Risks]] — security & code-quality issues found (WinForms #1–5, web #6–8; #6–7 fixed)
+- [[Risks]] — security & code-quality issues found (WinForms #1–5, web #6–10; #6–7 fixed)
 - [[Graphify]] — how to query the knowledge graph
 - [[Web-App]] — Blazor .NET 10 web version (VSA, Dapper, Fluent UI, JIG photos)
+- [[Scanner]] — .NET 10 WinForms scanning station, locked to one section per PC, uses the web `/api`
 
 ## Modules
 - [[modules/Account]] · [[modules/JIG]] · [[modules/Reporting]] · [[modules/Dashboard]] · [[modules/Data-Access]]

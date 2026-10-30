@@ -8,28 +8,7 @@
 
 <h1 class="page-title">Account settings</h1>
 
-@if (Saved == "section")
-{
-    <FluentMessageBar Intent="MessageIntent.Success" Style="margin-bottom:12px">Section changed to @section.</FluentMessageBar>
-}
-
 <div class="three-col">
-    <FluentCard>
-        <h2 class="card-title">Section</h2>
-        <p class="muted">Pages show JIGs for this section.</p>
-        @* Plain form post: the section is stored in the sign-in cookie, which only a full request can rewrite. *@
-        <form method="post" action="/account/section">
-            <AntiforgeryToken />
-            <select name="section" class="native-select">
-                @foreach (var s in Lookups.Sections)
-                {
-                    <option value="@s" selected="@(s == section)">@s</option>
-                }
-            </select>
-            <FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent" Style="margin-top:12px">Switch section</FluentButton>
-        </form>
-    </FluentCard>
-
     <FluentCard>
         <h2 class="card-title">Name</h2>
         <FluentStack Orientation="Orientation.Vertical" VerticalGap="12">
@@ -53,10 +32,7 @@
 
 @code {
     [CascadingParameter] private Task<AuthenticationState> Auth { get; set; } = default!;
-    [SupplyParameterFromQuery] public string? Saved { get; set; }
-
     private int userId;
-    private string section = "";
     private string firstname = "", lastname = "";
     private string current = "", next = "", confirm = "";
 
@@ -64,7 +40,6 @@
     {
         var user = (await Auth).User;
         userId = user.UserId();
-        section = user.Section();
         var parts = user.DisplayName().Split(' ', 2);
         firstname = parts[0];
         lastname = parts.Length > 1 ? parts[1] : "";
