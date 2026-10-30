@@ -1,5 +1,5 @@
 # JIGControl.Scanner (scanning station)
-Back: [[INDEX]] · Rules: [[Database]] · Web counterpart: [[Web-App]] `/scan`
+Back: [[INDEX]] · Rules: [[Database]] · Web API: [[Web-App]] `/api` (the web `/scan` page was removed)
 
 Small **.NET 10 WinForms** app for the PCs with barcode scanners. One station = one section. It talks only to the **web API** ([[Web-App]] `/api`) — no database connection or DB password on the station. Same `jig_users` accounts as the other apps.
 

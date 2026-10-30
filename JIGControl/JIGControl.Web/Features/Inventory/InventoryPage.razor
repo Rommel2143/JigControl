@@ -6,6 +6,7 @@
 <PageTitle>Inventory</PageTitle>
 
 <div class="ribbon">
+    <FluentSelect TOption="string" Items="Lookups.SectionFilter" @bind-Value="section" @bind-Value:after="LoadAsync" Style="min-width:170px" />
     <FluentSelect TOption="int" Items="months" OptionText="@(m => Lookups.Months[m - 1])" OptionValue="@(m => m.ToString())"
                   @bind-SelectedOption="month" @bind-SelectedOption:after="LoadAsync" Style="min-width:150px" />
     <FluentNumberField TValue="int" @bind-Value="year" @bind-Value:after="LoadAsync" Min="2020" Max="2100" Style="width:110px" />
@@ -21,6 +22,10 @@
         @if (scanned is not null)
         {
             <FluentDataGrid Items="scanned.AsQueryable()" Pagination="pScanned" ShowHover="true">
+                @if (AllSections)
+                {
+                    <PropertyColumn Property="@(r => r.Section)" Title="Section" Sortable="true" />
+                }
                 <PropertyColumn Property="@(r => r.ControlNo)" Title="Control No" Sortable="true" />
                 <PropertyColumn Property="@(r => r.Partname)" Title="Part Name" Sortable="true" />
                 <PropertyColumn Property="@(r => r.InventoryStatus)" Title="Status" Sortable="true" />
@@ -34,6 +39,10 @@
         @if (missing is not null)
         {
             <FluentDataGrid Items="missing.AsQueryable()" Pagination="pMissing" ShowHover="true">
+                @if (AllSections)
+                {
+                    <PropertyColumn Property="@(r => r.Section)" Title="Section" Sortable="true" />
+                }
                 <PropertyColumn Property="@(r => r.ControlNo)" Title="Control No" Sortable="true" />
                 <PropertyColumn Property="@(r => r.Partcode)" Title="Part Code" Sortable="true" />
                 <PropertyColumn Property="@(r => r.Partname)" Title="Part Name" Sortable="true" />
@@ -47,29 +56,35 @@
 </FluentTabs>
 
 @code {
-    [CascadingParameter] private Task<AuthenticationState> Auth { get; set; } = default!;
+    [SupplyParameterFromQuery(Name = "section")] private string? QuerySection { get; set; }
 
     private static readonly int[] months = Enumerable.Range(1, 12).ToArray();
     private int month = DateTime.Now.Month;
     private int year = DateTime.Now.Year;
     private string tab = "scanned";
-    private string section = "";
+    private string section = Lookups.AllSections;
     private List<ScannedRow>? scanned;
     private List<MissingRow>? missing;
     private readonly PaginationState pScanned = new() { ItemsPerPage = 15 };
     private readonly PaginationState pMissing = new() { ItemsPerPage = 15 };
 
-    private string ExportUrl(string kind) => $"/reports/export?kind={kind}&year={year}&month={month}";
+    private bool AllSections => Lookups.SectionOrNull(section) is null;
+
+    private string ExportUrl(string kind) =>
+        $"/reports/export?kind={kind}&year={year}&month={month}&section={Uri.EscapeDataString(Lookups.SectionOrNull(section) ?? "")}";
 
     protected override async Task OnInitializedAsync()
     {
-        section = (await Auth).User.Section();
+        section = Lookups.SectionOrNull(QuerySection) ?? Lookups.AllSections;
         await LoadAsync();
     }
 
     private async Task LoadAsync()
     {
-        scanned = await ListScanned.Handle(section, year, month);
-        missing = await ListMissing.Handle(section, year, month);
+        var filter = Lookups.SectionOrNull(section);
+        scanned = await ListScanned.Handle(filter, year, month);
+        missing = await ListMissing.Handle(filter, year, month);
+        await pScanned.SetCurrentPageIndexAsync(0);
+        await pMissing.SetCurrentPageIndexAsync(0);
     }
 }

@@ -117,7 +117,6 @@ else
 }
 
 @code {
-    [CascadingParameter] private Task<AuthenticationState> Auth { get; set; } = default!;
 
     private static readonly int[] months = Enumerable.Range(1, 12).ToArray();
     private readonly GridSort<MissingJigRow> lastScannedSort = GridSort<MissingJigRow>.ByAscending(r => r.LastScanned);
@@ -147,15 +146,7 @@ else
     {
         if (QueryYear is >= 2020 and <= 2100) year = QueryYear.Value;
         if (QueryMonth is >= 1 and <= 12) month = QueryMonth.Value;
-        if (QuerySection is not null)
-        {
-            selSection = QuerySection == "" ? null : QuerySection;
-        }
-        else
-        {
-            var mine = (await Auth).User.Section();
-            selSection = string.IsNullOrEmpty(mine) ? null : mine;
-        }
+        selSection = Lookups.SectionOrNull(QuerySection);
         await LoadAsync();
     }
 

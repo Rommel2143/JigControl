@@ -1,11 +1,13 @@
+@page "/"
 @page "/admin"
-@attribute [Authorize(Roles = AppClaims.AdminRole)]
+@* Home page for every signed-in user; New JIGs links still lead to an admin-only page. *@
+@attribute [Authorize]
 @using JIGControl.Web.Features.Missing
 @inject AdminDashboardHandler Activity
 @inject MissingBySectionHandler MissingBySection
 @inject NavigationManager Nav
 
-<PageTitle>Admin Dashboard</PageTitle>
+<PageTitle>Dashboard</PageTitle>
 
 <div class="ribbon">
     <FluentSelect TOption="int" Items="months" OptionText="@(m => Lookups.Months[m - 1])" OptionValue="@(m => m.ToString())"
@@ -17,7 +19,7 @@
     <FluentAnchor Appearance="Appearance.Stealth" IconStart="@(new Icons.Regular.Size20.ArrowDownload())" Href="@($"/reports/export?kind=summary&year={year}&month={month}")" Target="_blank">Export coverage</FluentAnchor>
 </div>
 
-<h1 class="page-title">Admin Dashboard <span class="muted">· all sections · @Lookups.Months[month - 1] @year inventory</span></h1>
+<h1 class="page-title">Dashboard <span class="muted">· all sections · @Lookups.Months[month - 1] @year inventory</span></h1>
 
 @if (data is null || coverage is null)
 {

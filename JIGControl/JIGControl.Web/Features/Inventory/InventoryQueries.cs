@@ -25,7 +25,7 @@ public sealed class MissingRow
 
 public sealed class ListScannedHandler(IDbConnectionFactory db)
 {
-    public async Task<List<ScannedRow>> Handle(string section, int year, int month, CancellationToken ct = default)
+    public async Task<List<ScannedRow>> Handle(string? section, int year, int month, CancellationToken ct = default)
     {
         using var con = await db.OpenAsync(ct);
         var rows = await con.QueryAsync<ScannedRow>("""
@@ -35,7 +35,7 @@ public sealed class ListScannedHandler(IDbConnectionFactory db)
             FROM jig_inventory ji
             JOIN jig_masterlist jm ON ji.jig_id = jm.jig_id
             JOIN trc_user.jig_users ju ON ju.user_id = ji.user_id
-            WHERE ji.scan_month = @month AND ji.scan_year = @year AND jm.section = @section
+            WHERE ji.scan_month = @month AND ji.scan_year = @year AND (@section IS NULL OR jm.section = @section)
             ORDER BY ji.record_id DESC
             """, new { section, year, month });
         return rows.AsList();
@@ -45,15 +45,15 @@ public sealed class ListScannedHandler(IDbConnectionFactory db)
 /// A JIG is missing for a month when it existed by the 1st of that month and has no scan in it.
 public sealed class ListMissingHandler(IDbConnectionFactory db)
 {
-    public async Task<List<MissingRow>> Handle(string section, int year, int month, CancellationToken ct = default)
+    public async Task<List<MissingRow>> Handle(string? section, int year, int month, CancellationToken ct = default)
     {
         using var con = await db.OpenAsync(ct);
         var rows = await con.QueryAsync<MissingRow>("""
             SELECT jm.jig_id, jm.control_no, jm.partcode, jm.partname, jm.section
             FROM jig_masterlist jm
             LEFT JOIN jig_inventory ji ON ji.jig_id = jm.jig_id AND ji.scan_month = @month AND ji.scan_year = @year
-            WHERE jm.section = @section AND ji.jig_id IS NULL AND DATE(jm.timestamp) <= @fromDate
-            ORDER BY jm.control_no
+            WHERE (@section IS NULL OR jm.section = @section) AND ji.jig_id IS NULL AND DATE(jm.timestamp) <= @fromDate
+            ORDER BY jm.section, jm.control_no
             """, new { section, year, month, fromDate = new DateTime(year, month, 1) });
         return rows.AsList();
     }

@@ -78,17 +78,19 @@ public static class ReportEndpoints
             ListScannedHandler scanned, ListMissingHandler missing, SectionSummaryHandler summary, ListNewJigsHandler newJigs, MissingJigsHandler missingAll) =>
         {
             if (month is < 1 or > 12) return Results.BadRequest();
-            var section = ctx.User.Section();
+            // Inventory page: ?section= (empty or unknown = all sections).
+            var picked = Lookups.SectionOrNull(ctx.Request.Query["section"].ToString());
+            var section = picked ?? "all";
             using var wb = new XLWorkbook();
             var stamp = $"{year}-{month:00}";
 
             switch (kind)
             {
                 case "scanned":
-                    wb.Worksheets.Add("Scanned").Cell(1, 1).InsertTable(await scanned.Handle(section, year, month));
+                    wb.Worksheets.Add("Scanned").Cell(1, 1).InsertTable(await scanned.Handle(picked, year, month));
                     break;
                 case "missing":
-                    wb.Worksheets.Add("Missing").Cell(1, 1).InsertTable(await missing.Handle(section, year, month));
+                    wb.Worksheets.Add("Missing").Cell(1, 1).InsertTable(await missing.Handle(picked, year, month));
                     break;
                 case "summary":
                     var rows = (await summary.Handle(year, month))

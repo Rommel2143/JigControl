@@ -11,7 +11,7 @@ JIGControl.Web/
   Components/             App (render-mode switch), Routes (AuthorizeRouteView), Layout (Office shell)
   Database/001_jig_image_url.sql   adds jig_masterlist.imageUrl
   Features/<Slice>/       one folder per feature: *Handler classes (Dapper SQL) + .razor page
-    Auth       LoginPage (static SSR, writes cookie), /logout, /account/section
+    Auth       LoginPage (static SSR, writes cookie), /logout
     Dashboard  KPIs + month cards
     Jigs       master list grid, add/edit/delete, **photo upload**, one per JIG (/jig-photos/{jig_id})
     Scan       QR scan → jig_inventory (same rules as JIGQueries.InsertJIG)
@@ -31,16 +31,14 @@ JIGControl.Web/
 | Route | Slice | Access |
 |---|---|---|
 | `/login` | Auth (static SSR, `ExcludeFromInteractiveRouting`) | anonymous |
-| `/` | Dashboard (`MissingBySectionHandler`, `ListScannedHandler`, `JigStatusCountsHandler`, `ListNewJigsHandler`, `MonthCardsHandler`) | signed in |
+| `/` (also `/admin`) | Dashboard, all sections (`AdminDashboardHandler` + `MissingBySectionHandler`) | signed in |
 | `/missing` | Missing (`MissingJigsHandler`, `MissingBySectionHandler`); accepts `?year=&month=&section=` | signed in |
-| `/jigs`, `/jigs/new`, `/jigs/{id}` | Jigs | signed in; Delete / Remove photo admin-only ([[Risks]] #6) |
-| `/scan` | Scan (`ScanJigHandler`) | signed in |
-| `/admin` | Admin (`AdminDashboardHandler` + `MissingBySectionHandler`) | **Admin role** |
+| `/jigs`, `/jigs/new`, `/jigs/{id}` | Jigs; section dropdown (All sections default), `?section=`; new JIG picks its section | signed in; Delete / Remove photo admin-only ([[Risks]] #6) |
 | `/new-jigs` | NewJigs (`NewJigDashboardHandler`, `ListNewJigsHandler`) | **Admin role** |
-| `/inventory` | Inventory (`ListScannedHandler`, `ListMissingHandler`) | signed in |
+| `/inventory` | Inventory (`ListScannedHandler`, `ListMissingHandler`); section dropdown, `?section=`, exports pass `| `/inventory` | Inventory (`ListScannedHandler`, `ListMissingHandler`) | signed in |section=` | signed in |
 | `/reports`, `/reports/export` | Reports (`SectionSummaryHandler`, ClosedXML) | signed in |
 | `/users` | Users | **Admin role** |
-| `/account`, POST `/account/section` | Account / Auth | signed in |
+| `/account` | Account (name, password) | signed in |
 | GET `/jig-photos/{jigId}` | Jigs (`JigPhotoEndpoints`) | signed in |
 | POST `/logout` | Auth | signed in |
 
@@ -62,8 +60,8 @@ Call with `Authorization: Bearer <accessToken>`. Serve the site over HTTPS outsi
 ## WinForms ↔ Web map
 | WinForms | Web slice / handler |
 |---|---|
-| `Login` + `User.getUser` | `LoginHandler` → `AuthEndpoints.BuildPrincipal` (claims: id, name, given name, `section`, Admin role) |
-| `User.userSection` / `Settings.Default.Section` | `section` claim in cookie `jigcontrol.auth` (12 h sliding) |
+| `Login` + `User.getUser` | `LoginHandler` → `AuthEndpoints.BuildPrincipal` (claims: id, name, given name, Admin role; `section` only on scanner station tokens) |
+| `User.userSection` / `Settings.Default.Section` | none on the web — pages pick a section with a dropdown; scanner stations lock it in station settings ([[Scanner]]) |
 | `JIGQueries.InsertJIG` | `ScanJigHandler` (duplicate → `MySqlErrorCode.DuplicateKeyEntry`) |
 | `AddJIG` / `ManageJIG` | `ListJigsHandler`, `GetJigHandler`, `Create/Update/DeleteJigHandler` |
 | `JIGInventory` grids | `ListScannedHandler`, `ListMissingHandler` |
